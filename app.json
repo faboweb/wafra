@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "thirdweb playground",
-    "slug": "thirdweb-playground",
+    "name": "Wafra Demo",
+    "slug": "wafra-demo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "com.thirdweb.demo",
+    "scheme": "com.wafra.demo",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -14,10 +14,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.thirdweb.demo",
+      "bundleIdentifier": "com.wafra.demo",
       "associatedDomains": [
-        "webcredentials:thirdweb.com",
-        "applinks:thirdweb.com"
+        "webcredentials:wafra.money",
+        "applinks:wafra.money"
       ]
     },
     "android": {
@@ -25,7 +25,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.thirdweb.demo",
+      "package": "com.wafra.demo",
       "intentFilters": [
         {
           "autoVerify": true,
@@ -52,6 +52,7 @@
             "minSdkVersion": 26
           },
           "ios": {
+            "deploymentTarget": "15.6",
             "extraPods": [
               {
                 "name": "OpenSSL-Universal",
