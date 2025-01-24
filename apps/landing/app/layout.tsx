@@ -9,15 +9,15 @@ import Link from "next/link";
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Next.js Portfolio Starter",
-    template: "%s | Next.js Portfolio Starter",
+    default: "Wafra.money | Banking that pays",
+    template: "%s | Wafra.money",
   },
-  description: "This is my portfolio.",
+  description: "Banking that pays",
   openGraph: {
-    title: "My Portfolio",
-    description: "This is my portfolio.",
+    title: "Wafra.money",
+    description: "Banking that pays",
     url: baseUrl,
-    siteName: "My Portfolio",
+    siteName: "Wafra.money",
     locale: "en_US",
     type: "website",
   },
