@@ -2635,6 +2635,11 @@
   dependencies:
     semver "^7.3.5"
 
+"@onramp.money/onramp-react-native-sdk@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@onramp.money/onramp-react-native-sdk/-/onramp-react-native-sdk-0.4.3.tgz#527d7937dfe7e470270420db88cd16bd669937df"
+  integrity sha512-HER4mlSjzO/VgafNRkLvrttAQI0VrEJhXrH7Kk8Hxw09lu5h4kHNBVS+NXrULH0CTXMiTXvm3cngXoSKvf+ouw==
+
 "@passwordless-id/webauthn@^2.1.2":
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/@passwordless-id/webauthn/-/webauthn-2.1.2.tgz#011d0d03a1e2dd9e560d7b305bd9c749a435d761"
@@ -3025,6 +3030,11 @@
   version "11.3.1"
   resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-11.3.1.tgz#4539371a2f4bd402d932031be82c2449ed63a1a5"
   integrity sha512-UBnJxyV0b7i9Moa97Av+HKho1ByzX0DtbJXzUQS5E3xhQs6P2D/Os0iw3ouy7joY1TVd6uIhplPbr7l1SJNaNQ==
+
+"@react-native-picker/picker@^2.11.0":
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/@react-native-picker/picker/-/picker-2.11.0.tgz#4587fbce6a382adedad74311e96ee10bb2b2d63a"
+  integrity sha512-QuZU6gbxmOID5zZgd/H90NgBnbJ3VV6qVzp6c7/dDrmWdX8S0X5YFYgDcQFjE3dRen9wB9FWnj2VVdPU64adSg==
 
 "@react-native/assets-registry@0.76.5":
   version "0.76.5"
@@ -6330,6 +6340,20 @@ expo-linking@^7.0.3:
     expo-constants "~17.0.0"
     invariant "^2.2.4"
 
+expo-local-authentication@~15.0.2:
+  version "15.0.2"
+  resolved "https://registry.yarnpkg.com/expo-local-authentication/-/expo-local-authentication-15.0.2.tgz#c45460046d9d040370a2a9e18df399abb3df4913"
+  integrity sha512-v7TOfovuivGWffA8B0FudEas+njMKTrjhaPpJYLASiTLTP3zUYqtumNgZ9pkaDB6Cagq0+DeNH39AI8tdEBUkQ==
+  dependencies:
+    invariant "^2.2.4"
+
+expo-localization@^16.0.1:
+  version "16.0.1"
+  resolved "https://registry.yarnpkg.com/expo-localization/-/expo-localization-16.0.1.tgz#a6016288f0e4a5acef143d2a39ac3e5b4ac8963e"
+  integrity sha512-kUrXiV/Pq9r7cG+TMt+Qa49IUQ9Y/czVwen4hmiboTclTopcWdIeCzYZv6JGtufoPpjEO9vVx1QJrXYl9V2u0Q==
+  dependencies:
+    rtl-detect "^1.0.2"
+
 expo-manifests@~0.15.0:
   version "0.15.4"
   resolved "https://registry.yarnpkg.com/expo-manifests/-/expo-manifests-0.15.4.tgz#43627d00c5ef8163ffd1880e42093d342bc7e80f"
@@ -6377,6 +6401,11 @@ expo-router@^4.0.15:
     schema-utils "^4.0.1"
     semver "~7.6.3"
     server-only "^0.0.1"
+
+expo-secure-store@~14.0.1:
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/expo-secure-store/-/expo-secure-store-14.0.1.tgz#8953d5966430f5ff262f4d99e7551205870078d7"
+  integrity sha512-QUS+j4+UG4jRQalgnpmTvvrFnMVLqPiUZRzYPnG3+JrZ5kwVW2w6YS3WWerPoR7C6g3y/a2htRxRSylsDs+TaQ==
 
 expo-splash-screen@^0.29.18:
   version "0.29.18"
@@ -10024,6 +10053,11 @@ rimraf@~2.6.2:
   integrity sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==
   dependencies:
     glob "^7.1.3"
+
+rtl-detect@^1.0.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/rtl-detect/-/rtl-detect-1.1.2.tgz#ca7f0330af5c6bb626c15675c642ba85ad6273c6"
+  integrity sha512-PGMBq03+TTG/p/cRB7HCLKJ1MgDIi07+QU1faSjiYRfmY5UsAttV9Hs08jDAHVwcOwmVLcSJkpwyfXszVjWfIQ==
 
 run-parallel@^1.1.9:
   version "1.2.0"
