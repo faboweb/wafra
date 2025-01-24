@@ -56,7 +56,14 @@ export default function RootLayout({
       >
         <main className="flex-grow flex flex-col items-center justify-center px-4 text-center relative max-w-xl mx-auto">
           <header className="w-full p-4 flex justify-between items-center">
-            <div></div>
+            <div>
+              <Image
+                src="/wafra-concept-1b.svg"
+                alt="Wafra.money"
+                width={100}
+                height={100}
+              />
+            </div>
             <button
               className="bg-[#007c01] text-white px-4 py-2 rounded-full text-sm font-semibold opacity-50"
               disabled
@@ -69,7 +76,7 @@ export default function RootLayout({
             Watch the video <ArrowRight className="ml-2 h-4 w-4" />
           </button> */}
 
-          <h1 className="text-6xl font-bold mb-4">Be Your Bank</h1>
+          <h1 className="text-6xl font-bold mb-4 mt-8">Be Your Bank</h1>
 
           <div className="relative w-full max-w-md mt-[-100px] relative">
             <Image
