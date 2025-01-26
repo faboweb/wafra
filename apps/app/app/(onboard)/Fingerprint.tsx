@@ -1,59 +1,34 @@
-import * as LocalAuthentication from "expo-local-authentication";
-import * as SecureStore from "expo-secure-store";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import * as React from "react";
 import { Text, StyleSheet, View } from "react-native";
 import { Image } from "expo-image";
+import Explainer from "@/components/Explainer";
 import Btn from "@/components/Btn";
-import { FontSize, FontFamily, Color, Border } from "@/GlobalStyles";
+import {
+  FontSize,
+  FontFamily,
+  Color,
+  Border,
+  Padding,
+} from "../../GlobalStyles";
 import { useRouter } from "expo-router";
 
-const UnlockScreen = () => {
+const Fingerprint = () => {
   const router = useRouter();
-
-  React.useEffect(() => {
-    AsyncStorage.getItem("account").then((result) => {
-      if (result) {
-        router.push("/(dashboard)");
-      }
-    });
-  }, []);
-
-  const enableFaceId = async () => {
-    const faceIdResult = await LocalAuthentication.authenticateAsync();
-    if (faceIdResult.success) {
-      try {
-        const result = await SecureStore.getItemAsync("account", {
-          requireAuthentication: true,
-        });
-        console.log("result", result);
-        if (!result) {
-          router.push("/(onboard)");
-          return;
-        }
-        await AsyncStorage.setItem("account", JSON.stringify(result));
-        if (result) {
-          router.push("/(dashboard)");
-        }
-      } catch (err) {
-        console.log("failed", err);
-      }
-    }
-  };
-
-  // React.useEffect(() => {
-  //   enableFaceId();
-  // }, []);
 
   return (
     <View style={styles.fingerprint}>
       <View style={[styles.hero, styles.heroLayout]}>
         <View style={[styles.frame, styles.heroLayout]}>
           <Text style={[styles.enableFingerprint, styles.scanning67FlexBox]}>
-            Unlock Wafra
+            Enable Fingerprint
           </Text>
           <View style={styles.fingerprint1}>
+            <View style={[styles.frame1, styles.framePosition]}>
+              <Text style={[styles.scanning67, styles.scanning67FlexBox]}>
+                <Text style={styles.scanning}>{`Scanning `}</Text>
+                <Text style={styles.text}>(67%)</Text>
+              </Text>
+            </View>
             <Image
               style={[styles.frameIcon, styles.framePosition]}
               contentFit="cover"
@@ -62,15 +37,37 @@ const UnlockScreen = () => {
           </View>
         </View>
       </View>
-      <View style={[styles.buttongroup]}>
+      <Explainer />
+      <View style={[styles.buttongroup, styles.buttongroupPosition]}>
         <Btn
           icon={false}
-          caption="Next"
-          onButtonPress={() => enableFaceId()}
-          style={{
-            width: "100%",
-          }}
+          size="Large"
+          getStarted="Skip"
+          buttonAlignSelf="stretch"
+          buttonPosition="absolute"
+          buttonTop={-9}
+          buttonLeft={1}
+          buttonWidth="unset"
+          buttonHeight="unset"
+          buttonBackgroundColor="rgba(27, 23, 37, 0)"
+          getStartedColor="#1b1725"
+          onButtonPress={() => router.push("/dashboard")}
         />
+        <Btn
+          icon={false}
+          size="Large"
+          getStarted="Next"
+          buttonAlignSelf="stretch"
+          buttonPosition="absolute"
+          buttonTop={65}
+          buttonLeft={0}
+          buttonWidth="unset"
+          buttonHeight="unset"
+          buttonBackgroundColor="#1b1725"
+          getStartedColor="#fff"
+          onButtonPress={() => router.push("/dashboard")}
+        />
+        <View style={[styles.buttongroupChild, styles.buttongroupPosition]} />
       </View>
     </View>
   );
@@ -78,6 +75,8 @@ const UnlockScreen = () => {
 
 const styles = StyleSheet.create({
   heroLayout: {
+    height: 314,
+    width: 173,
     alignItems: "center",
     overflow: "hidden",
   },
@@ -88,6 +87,10 @@ const styles = StyleSheet.create({
   framePosition: {
     position: "absolute",
     overflow: "hidden",
+  },
+  buttongroupPosition: {
+    zIndex: 2,
+    position: "absolute",
   },
   enableFingerprint: {
     fontSize: FontSize.size_lg,
@@ -133,18 +136,34 @@ const styles = StyleSheet.create({
   hero: {
     zIndex: 0,
   },
+  buttongroupChild: {
+    alignSelf: "stretch",
+    top: 130,
+    left: 114,
+    backgroundColor: Color.colorGainsboro,
+    height: 24,
+  },
   buttongroup: {
-    marginTop: "auto",
+    bottom: 0,
+    left: 24,
+    width: 328,
+    height: 152,
+    paddingHorizontal: 147,
+    paddingVertical: 0,
+    gap: 10,
+    alignItems: "center",
   },
   fingerprint: {
     borderRadius: Border.br_13xl,
     backgroundColor: Color.colorLightgoldenrodyellow,
     flex: 1,
-    height: "100%",
-    padding: 24,
-    paddingTop: 200,
+    width: "100%",
+    height: 812,
+    padding: Padding.p_5xl,
+    gap: 93,
+    alignItems: "center",
     overflow: "hidden",
   },
 });
 
-export default UnlockScreen;
+export default Fingerprint;
