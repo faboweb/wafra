@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { ThirdwebProvider } from "thirdweb/react";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { Button, Text } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -18,9 +18,10 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    DMSans: require("@/assets/fonts/DMSans-Regular.ttf"),
+    DMSansBold: require("@/assets/fonts/DMSans-Bold.ttf"),
+    // TODO
   });
-  const router = useRouter();
 
   useEffect(() => {
     if (loaded) {
@@ -35,24 +36,46 @@ export default function RootLayout() {
   return (
     <ThirdwebProvider>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Text>Space</Text>
-        <Text>Space</Text>
-        <Text>Space</Text>
-        <Text>Space</Text>
-        <Text>Space</Text>
-        <Button onPress={() => router.push("/")} title="Home" />
-        <Stack>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="(onboard)" />
+        <View style={[styles.statusBarBackground]}></View>
+        <Stack
+          screenOptions={{
+            // Hide the header for all other routes.
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen
+            name="index"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="(onboard)"
+            options={{
+              headerShown: false,
+            }}
+          />
           <Stack.Screen
             name="dashboard"
             options={{
               headerShown: false,
             }}
           />
-          <Stack.Screen name="+not-found" />
+          <Stack.Screen
+            name="+not-found"
+            options={{
+              headerShown: false,
+            }}
+          />
         </Stack>
       </ThemeProvider>
     </ThirdwebProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  statusBarBackground: {
+    height: Platform.OS === "ios" ? 40 : 0, //this is just to test if the platform is iOS to give it a height of 18, else, no height (Android apps have their own status bar)
+    backgroundColor: "#dfffdf",
+  },
+});
