@@ -1,29 +1,49 @@
 import * as React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, TextInput } from "react-native";
 import { Color, FontSize, FontFamily } from "../GlobalStyles";
 
-const PinInput = () => {
+const PinInput = ({ value }: { value: number | undefined }) => {
   return (
     <View style={styles.verification}>
-      <View style={styles.verificationChild} />
-      <View style={styles.verificationItem} />
-      <View style={styles.verificationInner} />
-      <View style={styles.lineView} />
-      <Text style={styles.text}>8</Text>
-      <Text style={styles.text1}>3</Text>
+      <TextInput
+        style={[
+          styles.text,
+          {
+            letterSpacing: 20,
+            lineHeight: 52,
+            fontSize: 48,
+            fontFamily: FontFamily.mono,
+          },
+        ]}
+        value={value?.toString()}
+        maxLength={6}
+        keyboardType="numeric"
+        returnKeyType="done"
+      />
+      <View
+        style={{
+          flexDirection: "row",
+          gap: 12,
+          marginLeft: -8,
+        }}
+      >
+        {Array.from({ length: 6 }).map((_, index) => (
+          <View key={index} style={[styles.verificationChild]} />
+        ))}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   verificationChild: {
-    position: "absolute",
-    top: 53,
-    left: 0,
+    // position: "absolute",
+    // top: 53,
+    // left: 0,
     borderStyle: "solid",
     borderColor: Color.colorBlack,
-    borderTopWidth: 1,
-    width: 57,
+    borderTopWidth: 2,
+    width: 36,
     height: 1,
   },
   verificationItem: {
@@ -56,18 +76,7 @@ const styles = StyleSheet.create({
     width: 57,
     height: 1,
   },
-  text: {
-    position: "absolute",
-    top: 0,
-    left: 70,
-    fontSize: FontSize.size_13xl,
-    letterSpacing: 0.6,
-    lineHeight: 45,
-    fontWeight: "500",
-    fontFamily: FontFamily.poppinsMedium,
-    color: Color.colorGray_100,
-    textAlign: "center",
-  },
+  text: {},
   text1: {
     position: "absolute",
     top: 0,
@@ -76,12 +85,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0.6,
     lineHeight: 45,
     fontWeight: "500",
-    fontFamily: FontFamily.poppinsMedium,
+    fontFamily: FontFamily.dMSansBold,
     color: Color.colorGray_100,
     textAlign: "center",
   },
   verification: {
-    width: 272,
     height: 53,
     marginLeft: 1,
   },

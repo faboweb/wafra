@@ -1,56 +1,109 @@
 import * as React from "react";
 import { Image } from "expo-image";
-import { StyleSheet, Text, View } from "react-native";
-import Icons from "@/assets/icons.svg";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import PinInput from "@/components/PinInput";
 import NumberKeyboard from "@/components/NumberKeyboard";
 import Btn from "@/components/Btn";
-import {
-  FontSize,
-  FontFamily,
-  Color,
-  Padding,
-  Border,
-} from "../../GlobalStyles";
-import { useRouter } from "expo-router";
+import { FontSize, FontFamily, Color, Padding, Border } from "@/GlobalStyles";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
+import { inAppWallet, preAuthenticate } from "thirdweb/wallets";
+import { client } from "@/constants/thirdweb";
+import { useAccount } from "@/hooks/useAccount";
 
 const PhoneVerification = () => {
   const router = useRouter();
+  const { phone, country } = useLocalSearchParams<{
+    phone: string;
+    country: string;
+  }>();
+  const [otp, setOTP] = React.useState<number>();
+  const { setAccount } = useAccount();
+
+  const verifyOtp = async () => {
+    console.log("verifying otp", phone, otp);
+    var wallet = inAppWallet();
+    try {
+      const account = await wallet.connect({
+        client,
+        chain: {
+          id: 1,
+          rpc: "https://mainnet.infura.io/v3/1c9b1b3f3b8b4f",
+        },
+        strategy: "phone",
+        phoneNumber: "+" + phone.trim(),
+        verificationCode: String(otp),
+      });
+      const localAccount = {
+        phone,
+        country,
+        address: account.address,
+      };
+      setAccount(localAccount);
+      await SecureStore.setItemAsync("account", JSON.stringify(localAccount), {
+        requireAuthentication: true,
+      });
+      router.push("../(dashboard)");
+    } catch (err) {
+      console.log("Failed to verify OTP", err);
+    }
+  };
+
+  const requestAgain = async () => {
+    await preAuthenticate({
+      client,
+      strategy: "phone",
+      phoneNumber: phone,
+    });
+  };
 
   return (
     <View style={styles.phoneVerification}>
       <View style={styles.headerParent}>
         <View style={styles.header}>
           <View style={styles.frame}>
-            <Icons style={styles.icons} width={24} height={24} />
+            <Pressable onPress={() => router.back()}>
+              <Image
+                source={require("@/assets/icons.svg")}
+                style={[
+                  styles.icons,
+                  {
+                    width: 24,
+                    height: 24,
+                  },
+                ]}
+              />
+            </Pressable>
             <Text style={styles.phoneVerification1}>Phone Verification</Text>
           </View>
         </View>
         <Text style={styles.weSentYouContainer}>
           <Text style={styles.weSentYou}>{`We sent you an SMS code to
 `}</Text>
-          <Text style={styles.text}>+62 812 3456 789</Text>
+          <Text style={styles.text}>{"+" + phone.trim()}</Text>
         </Text>
         <View style={styles.form}>
-          <PinInput />
+          <PinInput value={otp} />
           <Text style={styles.didntReceiveCodeContainer}>
             <Text
               style={styles.didntReceiveCode}
             >{`Didn’t receive code? `}</Text>
-            <Text style={styles.requestAgain}>Request Again</Text>
+            <Pressable onPress={requestAgain}>
+              <Text style={styles.requestAgain}>Request Again</Text>
+            </Pressable>
           </Text>
         </View>
       </View>
       <View style={styles.keyboard}>
         <View style={styles.frame1}>
-          <NumberKeyboard showDribble color="Green" line />
+          <NumberKeyboard
+            showDribble
+            onPress={(value) => setOTP((otp || 0) * 10 + value)}
+            onDelete={() => setOTP(Math.floor((otp || 0) / 10))}
+          />
           <View style={styles.buttongroup}>
-            <Btn
-              icon={false}
-              size="Large"
-              getStarted="Verify"
-              onButtonPress={() => router.push("/Fingerprint")}
-            />
+            <Btn caption="Verify" onButtonPress={verifyOtp} />
             <View style={styles.buttongroupChild} />
           </View>
         </View>

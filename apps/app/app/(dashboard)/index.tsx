@@ -6,8 +6,21 @@ import Overview from "@/components/Overview";
 import HistoryList from "@/components/HistoryList";
 import Footer from "@/components/Footer";
 import { Padding, Gap } from "../../GlobalStyles";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAccount } from "@/hooks/useAccount";
+import { useRouter } from "expo-router";
 
 const Dashboard = () => {
+  const insets = useSafeAreaInsets();
+  const { account } = useAccount();
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (!account) {
+      router.push("../");
+    }
+  }, []);
+
   return (
     <>
       <LinearGradient
@@ -15,6 +28,11 @@ const Dashboard = () => {
         locations={[0, 0.38]}
         colors={["#dfffdf", "#fff"]}
       >
+        <View
+          style={{
+            paddingTop: insets.top,
+          }}
+        />
         <Header />
         <Overview />
         <HistoryList />

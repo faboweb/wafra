@@ -8,19 +8,21 @@ import { Image } from "expo-image";
 import Btn from "@/components/Btn";
 import { FontSize, FontFamily, Color, Border } from "@/GlobalStyles";
 import { useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAccount } from "@/hooks/useAccount";
 
 const UnlockScreen = () => {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const { account, setAccount } = useAccount();
 
   React.useEffect(() => {
-    AsyncStorage.getItem("account").then((result) => {
-      if (result) {
-        router.push("/(dashboard)");
-      }
-    });
+    if (account) {
+      router.push("/(dashboard)");
+    }
   }, []);
 
-  const enableFaceId = async () => {
+  const unlock = async () => {
     const faceIdResult = await LocalAuthentication.authenticateAsync();
     if (faceIdResult.success) {
       try {
@@ -32,10 +34,8 @@ const UnlockScreen = () => {
           router.push("/(onboard)");
           return;
         }
-        await AsyncStorage.setItem("account", JSON.stringify(result));
-        if (result) {
-          router.push("/(dashboard)");
-        }
+        setAccount(JSON.parse(result));
+        router.push("/(dashboard)");
       } catch (err) {
         console.log("failed", err);
       }
@@ -48,6 +48,12 @@ const UnlockScreen = () => {
 
   return (
     <View style={styles.fingerprint}>
+      <View
+        style={{
+          paddingTop: insets.top,
+          backgroundColor: Color.colorLightgoldenrodyellow,
+        }}
+      />
       <View style={[styles.hero, styles.heroLayout]}>
         <View style={[styles.frame, styles.heroLayout]}>
           <Text style={[styles.enableFingerprint, styles.scanning67FlexBox]}>
@@ -66,7 +72,7 @@ const UnlockScreen = () => {
         <Btn
           icon={false}
           caption="Next"
-          onButtonPress={() => enableFaceId()}
+          onButtonPress={() => unlock()}
           style={{
             width: "100%",
           }}

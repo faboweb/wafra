@@ -10,7 +10,10 @@ import { useEffect } from "react";
 import { ThirdwebProvider } from "thirdweb/react";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { Platform, StyleSheet, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { AccountProvider } from "@/hooks/useAccount";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { View } from "react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -22,6 +25,7 @@ export default function RootLayout() {
     DMSansBold: require("@/assets/fonts/DMSans-Bold.ttf"),
     // TODO
   });
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (loaded) {
@@ -34,48 +38,49 @@ export default function RootLayout() {
   }
 
   return (
-    <ThirdwebProvider>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <View style={[styles.statusBarBackground]}></View>
-        <Stack
-          screenOptions={{
-            // Hide the header for all other routes.
-            headerShown: false,
-          }}
+    <AccountProvider>
+      <ThirdwebProvider>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          <Stack.Screen
-            name="index"
-            options={{
+          <StatusBar />
+          <Stack
+            screenOptions={{
+              // Hide the header for all other routes.
               headerShown: false,
+              statusBarBackgroundColor: "#dfffdf",
             }}
-          />
-          <Stack.Screen
-            name="(onboard)"
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="dashboard"
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="+not-found"
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack>
-      </ThemeProvider>
-    </ThirdwebProvider>
+          >
+            <Stack.Screen
+              name="index"
+              options={{
+                statusBarBackgroundColor: "#dfffdf",
+                headerStyle: {
+                  backgroundColor: "#dfffdf",
+                },
+              }}
+            />
+            <Stack.Screen
+              name="(onboard)"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="dashboard"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="+not-found"
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack>
+        </ThemeProvider>
+      </ThirdwebProvider>
+    </AccountProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  statusBarBackground: {
-    height: Platform.OS === "ios" ? 40 : 0, //this is just to test if the platform is iOS to give it a height of 18, else, no height (Android apps have their own status bar)
-    backgroundColor: "#dfffdf",
-  },
-});
