@@ -1,22 +1,47 @@
 import * as React from "react";
-import { Text, StyleSheet, View } from "react-native";
-import SelectCountryCode from "./SelectCountryCode";
-import OutlinedInputField from "./OutlinedInputField";
+import { Text, StyleSheet, View, TextInput } from "react-native";
+// import OutlinedInputField from "./OutlinedInputField";
 import { FontSize, FontFamily, Color, Gap, Padding } from "@/GlobalStyles";
+import Dropdown from "react-native-input-select";
+import countries from "@/constants/countries";
 
-const PhoneForm = () => {
+const PhoneForm = ({
+  onChange,
+}: {
+  onChange: (country: string, phoneNumber: string) => void;
+}) => {
+  const [country, setCountry] = React.useState("");
+  const [phoneNumber, setPhoneNumber] = React.useState("");
+
+  React.useEffect(() => {
+    if (country && phoneNumber) onChange(country, phoneNumber);
+  }, [country, phoneNumber]);
+
   return (
     <View style={[styles.form, styles.formFlexBox]}>
       <View style={styles.formFlexBox}>
         <View style={styles.loginForm}>
-          <SelectCountryCode />
+          <Dropdown
+            label="Country"
+            placeholder="Select your country..."
+            options={countries}
+            selectedValue={country}
+            onValueChange={(value: any) => setCountry(value)}
+            isSearchable
+          />
           <Text style={styles.thisIsPermanent}>This is permanent</Text>
-          <OutlinedInputField
+          <TextInput
+            // style={styles.inputValue}
+            placeholder="Phone Number"
+            placeholderTextColor={Color.colorTextNeutralSubtle100}
+            onChangeText={setPhoneNumber}
+          />
+          {/* <OutlinedInputField
             assistiveText
             interactionState="1 Default"
             trailingOption="None"
             showCaption={false}
-          />
+          /> */}
         </View>
       </View>
     </View>
@@ -37,7 +62,6 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   loginForm: {
-    height: 178,
     gap: Gap.gap_xl,
     alignSelf: "stretch",
   },

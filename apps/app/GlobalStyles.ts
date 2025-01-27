@@ -11,6 +11,8 @@ export const FontFamily = {
   interMedium: "Inter-Medium",
   interSemiBold: "Inter-SemiBold",
   poppinsLight: "Poppins-Light",
+  monoBold: "SpaceMono-Bold",
+  mono: "SpaceMono-Regular",
 };
 /* font sizes */
 export const FontSize = {

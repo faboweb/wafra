@@ -1,21 +1,26 @@
 import * as React from "react";
 import { Image } from "expo-image";
 import { StyleSheet, Text, View } from "react-native";
-import Ornament4 from "@/assets/ornament4.svg";
-import Picture from "@/assets/picture.svg";
-import Frame2 from "@/assets/frame2.svg";
 import { FontSize, FontFamily, Color, Gap } from "../GlobalStyles";
 
 const Hero = () => {
   return (
     <View style={styles.hero}>
       <View style={styles.frame}>
-        <View style={styles.frame1}>
+        <View
+          style={[
+            styles.frame1,
+            {
+              position: "relative",
+            },
+          ]}
+        >
           <Image
             source={require("@/assets/ornament4.svg")}
             style={{
               width: 499,
               height: 229,
+              position: "absolute",
             }}
           />
           <View style={styles.frame2}>
@@ -29,7 +34,7 @@ const Hero = () => {
             />
           </View>
         </View>
-        <Image
+        {/* <Image
           source={require("@/assets/frame2.svg")}
           style={[
             styles.frameIcon,
@@ -38,7 +43,7 @@ const Hero = () => {
               height: 36,
             },
           ]}
-        />
+        /> */}
       </View>
     </View>
   );

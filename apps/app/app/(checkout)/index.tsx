@@ -6,21 +6,36 @@ import NumberKeyboard from "@/components/NumberKeyboard";
 import Btn from "@/components/Btn";
 import { Color, Border, Padding, Gap } from "../../GlobalStyles";
 import { useRouter } from "expo-router";
-import { useActiveAccount } from "thirdweb/react";
 import {
   onRampSDKNativeEvent,
   startOnrampSDK,
 } from "@onramp.money/onramp-react-native-sdk";
 import IconButton from "@/components/IconButton";
+import { useAccount } from "@/hooks/useAccount";
+import countries, { onrampCurrencyCodes } from "@/constants/countries";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const SendMoneyPeopleStep = () => {
   const [amount, setAmount] = React.useState(100);
   const router = useRouter();
-  const account = useActiveAccount();
+  const { account } = useAccount();
+  const insets = useSafeAreaInsets();
+  const country = countries.find((c) => c.value === account?.country);
 
   const FUND_CONTRACT = account?.address;
 
   const deposit = () => {
+    if (!country) return;
+    // @ts-ignore
+    const onrampCurrency = onrampCurrencyCodes[country.currency];
+    if (!onrampCurrency) {
+      throw new Error("Onramp doesn't support currency");
+    }
+    const prefix = country.phoneCode;
+    const phoneNumber = encodeURIComponent(
+      prefix + "-" + account?.phone.trim().slice(prefix.length - 1)
+    );
+    console.log(phoneNumber);
     startOnrampSDK({
       appId: 1424661, // Replace this with the appID obtained during onboarding
       walletAddress: FUND_CONTRACT, // Replace with the user's wallet address
@@ -29,6 +44,9 @@ const SendMoneyPeopleStep = () => {
       // paymentMethod: 1, // 1 -> Instant transfer (UPI), 2 -> Bank transfer (IMPS/FAST)
       // ... Include other configuration options here
       addressTag: account?.address,
+      fiatAmount: amount,
+      fiatType: onrampCurrency,
+      phoneNumber,
     });
   };
 
@@ -65,26 +83,37 @@ const SendMoneyPeopleStep = () => {
           alignItems: "flex-start",
           flexDirection: "row",
           alignSelf: "stretch",
-          marginLeft: 24,
+          paddingTop: insets.top,
         }}
       >
         <Pressable onPress={() => router.push("/(dashboard)")}>
-          <IconButton image={require("@/assets/search01.svg")} />
+          <IconButton image={require("@/assets/arrow-left.svg")} />
         </Pressable>
       </View>
       <Hero />
-      <UnderlineInput value={amount} />
-      <View style={[styles.keyboard, styles.frameLayout]}>
-        <View style={[styles.frame, styles.frameLayout]}>
-          <NumberKeyboard
-            showDribble={false}
-            onPress={(val) => setAmount(amount * 10 + val)}
-            onDelete={() => setAmount(Math.floor(amount / 10))}
+      <UnderlineInput value={amount} prefix={country?.currency} />
+      <View
+        style={[
+          styles.frame,
+          styles.frameLayout,
+          {
+            marginTop: 24,
+          },
+        ]}
+      >
+        <NumberKeyboard
+          showDribble={false}
+          onPress={(val) => setAmount(amount * 10 + val)}
+          onDelete={() => setAmount(Math.floor(amount / 10))}
+        />
+        <View style={styles.buttongroup}>
+          <Btn
+            caption="Deposit"
+            onButtonPress={() => deposit()}
+            style={{
+              flex: 1,
+            }}
           />
-          <View style={styles.buttongroup}>
-            <Btn caption="Deposit" onButtonPress={() => deposit()} />
-            <View style={styles.buttongroupChild} />
-          </View>
         </View>
       </View>
     </View>
@@ -93,20 +122,15 @@ const SendMoneyPeopleStep = () => {
 
 const styles = StyleSheet.create({
   frameLayout: {
-    width: 375,
+    flex: 1,
     alignItems: "center",
     overflow: "hidden",
   },
-  buttongroupChild: {
-    backgroundColor: Color.colorGainsboro,
-    width: 100,
-    height: 24,
-  },
   buttongroup: {
-    width: 327,
-    height: 92,
-    marginTop: -92,
-    alignItems: "center",
+    flexDirection: "row",
+    marginTop: "auto",
+    alignSelf: "stretch",
+    justifyContent: "center",
   },
   frame: {
     height: 447,
@@ -125,7 +149,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     height: 812,
-    paddingHorizontal: 0,
+    paddingHorizontal: 24,
     paddingVertical: Padding.p_5xl,
     gap: Gap.gap_sm,
     alignItems: "center",

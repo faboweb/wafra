@@ -22,7 +22,7 @@ const UnderlineInput = ({
   return (
     <View style={styles.textfield}>
       <View style={styles.inputContainer}>
-        <Text style={styles.prefix}>{prefix}</Text>
+        <Text style={styles.prefix}>{prefix} </Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"

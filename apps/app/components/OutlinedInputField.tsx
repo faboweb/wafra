@@ -8,7 +8,7 @@ import {
   Gap,
   Padding,
   Border,
-} from "../GlobalStyles";
+} from "@/GlobalStyles";
 
 export type OutlinedInputFieldType = {
   showCaption?: boolean;

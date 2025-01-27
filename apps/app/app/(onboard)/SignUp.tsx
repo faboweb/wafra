@@ -12,9 +12,34 @@ import {
   Border,
 } from "../../GlobalStyles";
 import { useRouter } from "expo-router";
+import { preAuthenticate } from "thirdweb/wallets";
+import { client } from "@/constants/thirdweb";
+import countries from "@/constants/countries";
 
 const SignUp = () => {
   const router = useRouter();
+  const [phone, setPhone] = React.useState("");
+  const [country, setCountry] = React.useState("");
+  const [error, setError] = React.useState("");
+
+  const signUp = async () => {
+    const phoneNumber =
+      countries.find((c) => c.value === country)?.phoneCode + phone;
+    try {
+      console.log("Sending code to", phoneNumber);
+      await preAuthenticate({
+        client,
+        strategy: "phone",
+        phoneNumber,
+      });
+      router.push(
+        "./PhoneVerification?phone=" + phoneNumber + "&country=" + country
+      );
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
   return (
     <View style={styles.signUp}>
       <View style={[styles.topsection, styles.heroFlexBox]}>
@@ -31,13 +56,16 @@ const SignUp = () => {
           />
           <Text style={styles.openYourAccount}>Open Your Account</Text>
         </View>
-        <PhoneForm />
+        <PhoneForm
+          onChange={(country, phoneNumber) => {
+            setCountry(country);
+            setPhone(phoneNumber);
+          }}
+        />
+        {error && <Text style={{ color: "red" }}>{error}</Text>}
       </View>
       <View style={[styles.buttongroup, styles.heroSpaceBlock]}>
-        <Btn
-          caption="Continue"
-          onButtonPress={() => router.push("/PhoneVerification")}
-        />
+        <Btn caption="Continue" onButtonPress={signUp} />
         <View style={styles.buttongroupChild} />
       </View>
     </View>
@@ -95,13 +123,10 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   signUp: {
-    borderRadius: Border.br_13xl,
     backgroundColor: Color.colorLightgoldenrodyellow,
     width: "100%",
-    height: 812,
     paddingHorizontal: 0,
     paddingVertical: Padding.p_5xl,
-    gap: 167,
     alignItems: "center",
     overflow: "hidden",
     flex: 1,
