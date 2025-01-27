@@ -58,7 +58,7 @@ export default function RootLayout({
           <header className="w-full p-4 flex justify-between items-center">
             <div>
               <Image
-                src="/wafra-concept-1b.svg"
+                src="/logo.svg"
                 alt="Wafra.money"
                 width={100}
                 height={100}
