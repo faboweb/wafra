@@ -24,6 +24,9 @@ const PhoneVerification = () => {
   const verifyOtp = async () => {
     console.log("verifying otp", phone, otp);
     var wallet = inAppWallet();
+    const phoneNumber = phone.trim().startsWith("+")
+      ? phone.trim()
+      : "+" + phone.trim();
     try {
       const account = await wallet.connect({
         client,
@@ -32,11 +35,11 @@ const PhoneVerification = () => {
           rpc: "https://mainnet.infura.io/v3/1c9b1b3f3b8b4f",
         },
         strategy: "phone",
-        phoneNumber: "+" + phone.trim(),
+        phoneNumber,
         verificationCode: String(otp),
       });
       const localAccount = {
-        phone,
+        phone: phoneNumber,
         country,
         address: account.address,
       };

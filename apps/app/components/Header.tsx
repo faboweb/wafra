@@ -10,7 +10,7 @@ const Header = () => {
       <Image
         style={[styles.wafraConcept1b1Icon, styles.headerLayout]}
         contentFit="cover"
-        source={require("@/assets/wafraconcept1b-11.png")}
+        source={require("@/assets/logo.svg")}
       />
       <View style={[styles.frameParent, styles.headerFlexBox]}>
         <IconButton image={require("@/assets/search01.svg")} />
@@ -30,13 +30,12 @@ const styles = StyleSheet.create({
     height: 36,
   },
   wafraConcept1b1Icon: {
-    width: 118,
+    width: 126,
   },
   frameParent: {
     gap: Gap.gap_3xs,
   },
   header: {
-    width: 343,
     gap: Gap.gap_4xl,
     zIndex: 0,
     overflow: "hidden",
