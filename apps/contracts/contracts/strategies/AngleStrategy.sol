@@ -30,4 +30,8 @@ contract StrategyAngle is IStrategy {
         // Placeholder: track AUSD balance or on-chain logic for current value
         return ausd.balanceOf(address(this));
     }
+
+    function strategyName() external pure override returns (string memory) {
+        return "Angle Savings";
+    }
 }

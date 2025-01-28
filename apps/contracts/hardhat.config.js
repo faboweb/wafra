@@ -1,4 +1,3 @@
-require("@nomiclabs/hardhat-ethers");
 require("@nomicfoundation/hardhat-verify"); // Optional for contract verification
 require("@openzeppelin/hardhat-upgrades");
 require("dotenv").config(); // Load environment variables from .env file
@@ -17,7 +16,7 @@ module.exports = {
       accounts: [PRIVATE_KEY], // Use PRIVATE_KEY from environment variables
     },
     baseTestnet: {
-      url: "https://goerli.base.org", // Base Goerli testnet RPC URL
+      url: "https://sepolia.base.org", // Base Goerli testnet RPC URL
       accounts: [PRIVATE_KEY], // Use PRIVATE_KEY from environment variables
     },
   },

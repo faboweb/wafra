@@ -7,4 +7,6 @@ interface IStrategy {
     function withdraw(uint256 amount) external returns (uint256);
 
     function totalValue() external view returns (uint256);
+
+    function strategyName() external pure returns (string memory);
 }

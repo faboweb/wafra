@@ -4,8 +4,9 @@ pragma solidity ^0.8.28;
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "hardhat/console.sol";
 import "./WFRToken.sol";
 import "./interfaces/IStrategy.sol";
 
@@ -13,8 +14,14 @@ contract FundContract is
     Initializable,
     OwnableUpgradeable,
     UUPSUpgradeable,
-    ReentrancyGuard
+    ReentrancyGuardUpgradeable
 {
+    struct StrategyInfo {
+        address strategyAddress;
+        string strategyName;
+        uint256 strategyWeight;
+    }
+
     IERC20 public usdc;
     WFRToken public wfrToken;
     IStrategy[] public strategies;
@@ -56,6 +63,7 @@ contract FundContract is
     function initialize(address _usdc, address _wfrToken) external initializer {
         __Ownable_init(msg.sender);
         __UUPSUpgradeable_init();
+        __ReentrancyGuard_init();
 
         usdc = IERC20(_usdc);
         wfrToken = WFRToken(_wfrToken);
@@ -110,6 +118,37 @@ contract FundContract is
         }
     }
 
+    // @notice should only be usedd off chain as high gas cost
+    function getStrategies() external view returns (StrategyInfo[] memory) {
+        require(strategies.length == strategyWeights.length, "Not configured");
+
+        StrategyInfo[] memory result = new StrategyInfo[](strategies.length);
+        for (uint256 i = 0; i < strategies.length; i++) {
+            result[i] = StrategyInfo({
+                strategyAddress: address(strategies[i]),
+                strategyName: strategies[i].strategyName(),
+                strategyWeight: strategyWeights[i]
+            });
+        }
+        return result;
+    }
+
+    function removeStrategies(
+        uint256[] calldata indexes
+    ) external onlyWhitelisted {
+        require(indexes.length > 0, "No indexes provided");
+
+        for (uint256 i = 0; i < indexes.length; i++) {
+            require(indexes[i] < strategies.length, "Index out of range");
+            strategies[indexes[i]] = strategies[strategies.length - 1];
+            strategies.pop();
+            strategyWeights[indexes[i]] = strategyWeights[
+                strategyWeights.length - 1
+            ];
+            strategyWeights.pop();
+        }
+    }
+
     //--------------------------------------------------------------------------
     // Deposit
     //--------------------------------------------------------------------------
@@ -121,18 +160,30 @@ contract FundContract is
         uint256 amount,
         string calldata userMemo
     ) external nonReentrant {
+        address userAddress = msg.sender;
+        if (bytes(userMemo).length > 0) {
+            userAddress = address(
+                uint160(uint256(keccak256(abi.encodePacked(userMemo))))
+            );
+            require(
+                userAddress != address(0),
+                "Memo Is Invalid Ethereum address"
+            );
+        }
         require(amount > 0, "Invalid deposit");
 
         // Transfer USDC to the contract
         usdc.transferFrom(msg.sender, address(this), amount);
 
         // Mint WFR tokens to the user
-        _mintWFRForDeposit(amount, msg.sender);
+        _mintWFRForDeposit(amount, userAddress);
+        console.log("minted");
 
         // Update the principle of the fund we don't charge fees on
         fundPrincipleAfterFees += amount;
+        console.log("fundPrincipleAfterFees", fundPrincipleAfterFees);
 
-        emit Deposit(msg.sender, amount, userMemo);
+        emit Deposit(msg.sender, amount, "");
     }
 
     function _mintWFRForDeposit(

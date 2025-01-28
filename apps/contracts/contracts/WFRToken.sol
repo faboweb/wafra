@@ -24,8 +24,6 @@ contract WFRToken is
         __Ownable_init(initialOwner);
         __ERC20Permit_init("WafraToken");
         __UUPSUpgradeable_init();
-
-        _mint(msg.sender, 1000000 * 10 ** decimals());
     }
 
     function mint(address to, uint256 amount) public onlyOwner {
