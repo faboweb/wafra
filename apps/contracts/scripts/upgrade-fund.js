@@ -18,15 +18,12 @@ async function main() {
 
   // Deploy contract using the UUPS proxy pattern
   const FundContract = await ethers.getContractFactory("FundContract");
-  const fundContract = await upgrades.deployProxy(
-    FundContract,
-    [usdcAddress, fundTokenAddress],
-    {
-      initializer: "initialize",
-    }
+  const fundContract = await upgrades.upgradeProxy(
+    process.env.FUND_CONTRACT_ADDRESS,
+    FundContract
   );
 
-  console.log("FundContract deployed to (proxy):", fundContract.address);
+  console.log("FundContract upgraded:", fundContract.address);
 }
 
 main()

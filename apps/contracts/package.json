@@ -5,20 +5,23 @@
   "main": "hardhat.config.js",
   "scripts": {
     "deploy:token": "npx hardhat run scripts/deploy-token.js",
-    "deploy:pool": "npx hardhat run scripts/deploy-pool.js",
-    "deploy:strategy": "npx hardhat run scripts/deploy-strategy.js"
+    "deploy:fund": "npx hardhat run scripts/deploy-fund.js",
+    "deploy:strategy-aave": "npx hardhat run scripts/deploy-strategy-aave.js",
+    "deploy:add-strategies": "npx hardhat run scripts/add-strategies.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@nomicfoundation/hardhat-verify": "^2.0.12",
-    "@nomiclabs/hardhat-ethers": "^2.2.3",
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "hardhat": "2.22.18",
+    "keccak256": "^1.0.6"
   },
   "dependencies": {
     "@aave/core-v3": "^1.19.3",
     "@openzeppelin/contracts": "^5.2.0",
     "@openzeppelin/contracts-upgradeable": "^5.2.0",
-    "@openzeppelin/hardhat-upgrades": "^3.9.0"
+    "@openzeppelin/hardhat-upgrades": "^3.9.0",
+    "ethers-decode-error": "^2.1.3"
   }
 }

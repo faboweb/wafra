@@ -17,16 +17,13 @@ async function main() {
   }
 
   // Deploy contract using the UUPS proxy pattern
-  const FundContract = await ethers.getContractFactory("FundContract");
-  const fundContract = await upgrades.deployProxy(
-    FundContract,
-    [usdcAddress, fundTokenAddress],
-    {
-      initializer: "initialize",
-    }
+  const Strategy = await ethers.getContractFactory("AaveStrategy");
+  const fundContract = await upgrades.upgradeProxy(
+    process.env.AAVE_STRATEGY_ADDRESS,
+    Strategy
   );
 
-  console.log("FundContract deployed to (proxy):", fundContract.address);
+  console.log("Strategy upgraded:", fundContract.address);
 }
 
 main()
