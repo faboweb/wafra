@@ -34,7 +34,7 @@ const Onboarding = () => {
       <Image
         style={[styles.wafraConcept1b1Icon, styles.aNewEraPosition]}
         contentFit="cover"
-        source={require("@/assets/wafraconcept1b-1.png")}
+        source={require("@/assets/logo.svg")}
       />
       <Btn
         style={{

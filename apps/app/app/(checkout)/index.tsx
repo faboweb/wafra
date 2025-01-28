@@ -46,6 +46,8 @@ const SendMoneyPeopleStep = () => {
       addressTag: account?.address,
       fiatAmount: amount,
       fiatType: onrampCurrency,
+      coinCode: "116",
+      network: "8453",
       phoneNumber,
     });
   };
