@@ -12,11 +12,15 @@ module.exports = {
   solidity: "0.8.28",
   networks: {
     base: {
-      url: "https://mainnet.base.org", // Base mainnet RPC URL
+      url: "https://mainnet.base.org",
       accounts: [PRIVATE_KEY], // Use PRIVATE_KEY from environment variables
     },
     baseTestnet: {
-      url: "https://sepolia.base.org", // Base Goerli testnet RPC URL
+      url: "https://sepolia.base.org",
+      accounts: [PRIVATE_KEY], // Use PRIVATE_KEY from environment variables
+    },
+    ethTestnet: {
+      url: "https://1rpc.io/sepolia",
       accounts: [PRIVATE_KEY], // Use PRIVATE_KEY from environment variables
     },
   },

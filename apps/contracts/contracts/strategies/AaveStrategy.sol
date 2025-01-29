@@ -32,7 +32,9 @@ contract AaveStrategy is
     function initialize(
         address _aavePool,
         address _aToken,
-        address _usdc
+        address _usdc,
+        address admin,
+        address controller
     ) public initializer {
         __AccessControl_init();
         __UUPSUpgradeable_init();
@@ -40,8 +42,9 @@ contract AaveStrategy is
         // without these, no one has a role and the contract is bricked
         _setRoleAdmin(ADMIN_ROLE, ADMIN_ROLE);
         _setRoleAdmin(CONTROLLER_ROLE, ADMIN_ROLE);
-        _grantRole(ADMIN_ROLE, msg.sender);
-        _grantRole(CONTROLLER_ROLE, msg.sender);
+        _grantRole(ADMIN_ROLE, admin);
+        _grantRole(CONTROLLER_ROLE, admin);
+        _grantRole(CONTROLLER_ROLE, controller);
 
         aavePool = IPool(_aavePool);
         aToken = IAToken(_aToken);
@@ -55,14 +58,15 @@ contract AaveStrategy is
     function deposit(
         uint256 amount
     ) external override onlyRole(CONTROLLER_ROLE) {
+        usdc.transferFrom(msg.sender, address(this), amount); // TODO can we do this directly?
         usdc.approve(address(aavePool), amount);
-        aavePool.supply(address(usdc), amount, msg.sender, 0);
+        aavePool.deposit(address(usdc), amount, address(this), 0);
     }
 
     function withdraw(
         uint256 amount
     ) external override onlyRole(CONTROLLER_ROLE) returns (uint256) {
-        return aavePool.withdraw(address(usdc), amount, msg.sender);
+        return aavePool.withdraw(address(usdc), amount, address(this));
     }
 
     //--------------------------------------------------------------------------

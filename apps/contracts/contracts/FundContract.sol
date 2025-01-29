@@ -20,6 +20,7 @@ contract FundContract is
         address strategyAddress;
         string strategyName;
         uint256 strategyWeight;
+        uint256 value;
     }
 
     IERC20 public usdc;
@@ -99,6 +100,16 @@ contract FundContract is
         address _strategy,
         uint256 _weight
     ) external onlyWhitelisted {
+        try IStrategy(_strategy).strategyName() returns (string memory) {
+            // Strategy interface exists
+        } catch {
+            revert("Invalid strategy implementation");
+        }
+        try IStrategy(_strategy).totalValue() returns (uint256) {
+            // Strategy interface exists
+        } catch {
+            revert("Invalid strategy implementation");
+        }
         strategies.push(IStrategy(_strategy));
         strategyWeights.push(_weight);
     }
@@ -127,7 +138,8 @@ contract FundContract is
             result[i] = StrategyInfo({
                 strategyAddress: address(strategies[i]),
                 strategyName: strategies[i].strategyName(),
-                strategyWeight: strategyWeights[i]
+                strategyWeight: strategyWeights[i],
+                value: strategies[i].totalValue()
             });
         }
         return result;
@@ -198,7 +210,6 @@ contract FundContract is
             // If first deposit or no value, mint 1:1
             sharesToMint = depositAmount;
         } else {
-            // sharesToMint = depositAmount * currentSupply / fundValue
             sharesToMint = (depositAmount * currentSupply) / fundValue;
         }
 
@@ -213,19 +224,26 @@ contract FundContract is
      * @dev Deploys contract USDC to each strategy according to strategyWeights
      */
     function deployCapital() external onlyWhitelisted nonReentrant {
-        require(strategies.length == strategyWeights.length, "Not configured");
+        require(
+            strategies.length == strategyWeights.length,
+            "strategies not configured properly"
+        );
 
         uint256 balance = usdc.balanceOf(address(this));
-        uint256 totalWeight;
+        uint256 totalWeight = 0;
         for (uint256 w = 0; w < strategyWeights.length; w++) {
             totalWeight += strategyWeights[w];
+        }
+
+        if (totalWeight == 0) {
+            return;
         }
 
         for (uint256 i = 0; i < strategies.length; i++) {
             uint256 amount = (balance * strategyWeights[i]) / totalWeight;
             if (amount > 0) {
                 usdc.approve(address(strategies[i]), amount);
-                strategies[i].deposit(amount);
+                // strategies[i].deposit(amount);
             }
         }
     }
@@ -336,7 +354,7 @@ contract FundContract is
     //--------------------------------------------------------------------------
 
     function _currentFundValue() internal view returns (uint256) {
-        uint256 total;
+        uint256 total = 0;
         for (uint256 i = 0; i < strategies.length; i++) {
             total += strategies[i].totalValue();
         }
