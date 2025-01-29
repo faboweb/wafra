@@ -36,6 +36,10 @@ async function main() {
   // const balance = await tokenContract.balanceOf(deployer.address);
   // console.log("Deployer USDC balance:", ethers.formatUnits(balance, 6)); // Assuming USDC has 6 decimals
 
+  const wafraTokenContract = await ethers.getContractFactory("WFRToken");
+  const wafraToken = wafraTokenContract.attach(process.env.FUND_TOKEN_ADDRESS);
+  console.log("Wafra Token Owner:", await wafraToken.owner());
+
   console.log("USDC approved for transfer.");
 
   // Deposit into FundContract
@@ -44,7 +48,7 @@ async function main() {
   // Simulate deposit
   console.log("Simulating deposit...");
   try {
-    const result = await fundContract.deposit.staticCall(10);
+    const result = await fundContract.deposit.staticCall(10, "");
     console.log("Simulation succeeded:", result);
   } catch (error) {
     if (error.data && fundContract) {
@@ -54,14 +58,6 @@ async function main() {
       console.log(`Error in Deposit:`, error);
     }
     return;
-  }
-
-  try {
-    const depositTx = await fundContract.deposit(amount);
-    await depositTx.wait();
-    console.log("Deposit successful.");
-  } catch (err) {
-    console.error("Deposit failed:", err);
   }
 }
 

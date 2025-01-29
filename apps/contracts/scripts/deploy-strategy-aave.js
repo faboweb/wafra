@@ -20,6 +20,8 @@ async function main() {
       process.env.AAVE_POOL_CONTRACT,
       process.env.AAVE_USDC_CONTRACT,
       process.env.USDC_ADDRESS,
+      deployer.address,
+      process.env.FUND_TOKEN_ADDRESS,
     ],
     {
       initializer: "initialize",
