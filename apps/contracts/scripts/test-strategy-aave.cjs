@@ -20,16 +20,16 @@ async function main() {
 
   const amount = ethers.parseUnits("0.001", 6);
 
-  console.log("Approving USDC transfer...");
-  let tx = await usdcContract.approve(
-    process.env.AAVE_STRATEGY_ADDRESS,
-    amount
-  );
-  await tx.wait();
+  // console.log("Approving USDC transfer...");
+  // let tx = await usdcContract.approve(
+  //   process.env.AAVE_STRATEGY_ADDRESS,
+  //   amount
+  // );
+  // await tx.wait();
 
-  console.log("Deposit...");
-  tx = await aaveStrategy.deposit(amount);
-  console.log("Succeeded:", await tx.wait());
+  // console.log("Deposit...");
+  // tx = await aaveStrategy.deposit(amount);
+  // console.log("Succeeded:", await tx.wait());
 
   console.log("Withdraw...");
   tx = await aaveStrategy.withdraw(amount, deployer.address);

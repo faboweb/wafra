@@ -33,26 +33,26 @@ async function main() {
 
   const amount = ethers.parseUnits("0.001", 6);
   // Approve USDC transfer
-  // console.log("Approving USDC transfer...");
-  // let tx = await usdcContract.approve(
-  //   process.env.FUND_CONTRACT_ADDRESS,
-  //   amount
-  // );
-  // console.log("USDC approved for transfer.", await tx.wait());
+  console.log("Approving USDC transfer...");
+  let tx = await usdcContract.approve(
+    process.env.FUND_CONTRACT_ADDRESS,
+    amount
+  );
+  console.log("USDC approved for transfer.", await tx.wait());
 
-  // console.log("Deposit...");
-  // tx = await fundContract.deposit(10, "");
-  // console.log("Deposit succeeded:", await tx.wait());
+  console.log("Deposit...");
+  tx = await fundContract.deposit(10, "");
+  console.log("Deposit succeeded:", await tx.wait());
 
-  // console.log("Deploy...");
-  // tx = await fundContract.deployCapital();
-  // console.log("Deploy succeeded:", await tx.wait());
+  console.log("Deploy...");
+  tx = await fundContract.deployCapital();
+  console.log("Deploy succeeded:", await tx.wait());
 
-  // console.log("Redeem...");
-  // tx = await wfrToken.approve(process.env.FUND_CONTRACT_ADDRESS, 5);
-  // await tx.wait();
-  // tx = await fundContract.requestRedemption(5);
-  // console.log("Redeemtion Request succeeded:", await tx.wait());
+  console.log("Redeem...");
+  tx = await wfrToken.approve(process.env.FUND_CONTRACT_ADDRESS, 5);
+  await tx.wait();
+  tx = await fundContract.requestRedemption(5);
+  console.log("Redeemtion Request succeeded:", await tx.wait());
 
   console.log("Redeem Queue...");
   // console.log("Queue", await fundContract.redemptionQueue())
