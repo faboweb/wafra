@@ -221,7 +221,7 @@ describe("FundContract - processRedemptionsBatch", function () {
     await fundContract.deployCapital();
 
     // Increase value of strategy
-    usdc
+    await usdc
       .connect(deployer)
       .approve(strategy.target, ethers.parseUnits("100", 6));
     await strategy.deposit(ethers.parseUnits("100", 6));

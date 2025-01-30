@@ -75,6 +75,11 @@ contract FundContract is
         treasury = msg.sender; // Default treasury is contract deployer
     }
 
+    function setProtocolFee(uint256 _fee) external onlyOwner {
+        require(_fee <= 100, "Fee too high");
+        protocolFee = _fee;
+    }
+
     //--------------------------------------------------------------------------
     // Access Control
     //--------------------------------------------------------------------------
@@ -339,6 +344,22 @@ contract FundContract is
         fundPrincipleAfterFees = currentFundValue();
 
         emit RedemptionProcessed(start, end);
+    }
+
+    // the queue can grow for a while and will increase gas costs
+    // here we are timming the length
+    function trimRedemptionQueue() external onlyWhitelisted {
+        uint256 i = 0;
+        while (i < redemptionQueue.length) {
+            if (redemptionQueue[i].amount == 0) {
+                redemptionQueue[i] = redemptionQueue[
+                    redemptionQueue.length - 1
+                ];
+                redemptionQueue.pop();
+            } else {
+                i++;
+            }
+        }
     }
 
     //--------------------------------------------------------------------------
