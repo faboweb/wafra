@@ -9,7 +9,20 @@ if (!PRIVATE_KEY) {
 }
 
 module.exports = {
-  solidity: "0.8.28",
+  // solidity: "0.8.28",
+  solidity: {
+    compilers: [
+      {
+        version: "0.8.28",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 77,
+          },
+        },
+      },
+    ],
+  },
   networks: {
     base: {
       url: "https://mainnet.base.org",
