@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/fabo/Desktop/Development/wafra/apps/contracts/contracts/FundContract.sol": {
-      "lastModificationDate": 1738131581773,
-      "contentHash": "788775ad60a51cacb09fa99d5d18de72",
+      "lastModificationDate": 1738240071250,
+      "contentHash": "879ea159c64e8950713669997c3058e9",
       "sourceName": "contracts/FundContract.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -91,8 +91,8 @@
       ]
     },
     "/Users/fabo/Desktop/Development/wafra/apps/contracts/contracts/interfaces/IStrategy.sol": {
-      "lastModificationDate": 1738076508767,
-      "contentHash": "935d389fb294c103bce934ac9296341c",
+      "lastModificationDate": 1738137943803,
+      "contentHash": "d89a50e2df5083f1345e5aee54cd670f",
       "sourceName": "contracts/interfaces/IStrategy.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -1214,8 +1214,8 @@
       ]
     },
     "/Users/fabo/Desktop/Development/wafra/apps/contracts/contracts/strategies/AaveStrategy.sol": {
-      "lastModificationDate": 1738135991990,
-      "contentHash": "47218f4d053f69db693c00daea2ae3f7",
+      "lastModificationDate": 1738153205505,
+      "contentHash": "ab8dc8d8df95851535aa2977b33079ce",
       "sourceName": "contracts/strategies/AaveStrategy.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -1565,8 +1565,8 @@
       ]
     },
     "/Users/fabo/Desktop/Development/wafra/apps/contracts/contracts/strategies/AngleStrategy.sol": {
-      "lastModificationDate": 1738077017729,
-      "contentHash": "e9035bfd1c33ed5d3df41fe34592ad12",
+      "lastModificationDate": 1738137975933,
+      "contentHash": "df46c8733314f4454aa76438831119aa",
       "sourceName": "contracts/strategies/AngleStrategy.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -1834,6 +1834,203 @@
       ],
       "artifacts": [
         "console"
+      ]
+    },
+    "/Users/fabo/Desktop/Development/wafra/apps/contracts/node_modules/.pnpm/@openzeppelin+contracts@5.2.0/node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol": {
+      "lastModificationDate": 1738056940281,
+      "contentHash": "227a6eb2225701c12d9c959b758b6333",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./IERC20.sol",
+        "./extensions/IERC20Metadata.sol",
+        "../../utils/Context.sol",
+        "../../interfaces/draft-IERC6093.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "ERC20"
+      ]
+    },
+    "/Users/fabo/Desktop/Development/wafra/apps/contracts/node_modules/.pnpm/@openzeppelin+contracts@5.2.0/node_modules/@openzeppelin/contracts/utils/Context.sol": {
+      "lastModificationDate": 1738056940276,
+      "contentHash": "67bfbc07588eb8683b3fd8f6f909563e",
+      "sourceName": "@openzeppelin/contracts/utils/Context.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "Context"
+      ]
+    },
+    "/Users/fabo/Desktop/Development/wafra/apps/contracts/contracts/mocks/MockWfrToken.sol": {
+      "lastModificationDate": 1738217882489,
+      "contentHash": "2c3be944a1a90da942f198f761ab5227",
+      "sourceName": "contracts/mocks/MockWfrToken.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "MockWFRToken"
+      ]
+    },
+    "/Users/fabo/Desktop/Development/wafra/apps/contracts/contracts/mocks/MockStrategy.sol": {
+      "lastModificationDate": 1738231665065,
+      "contentHash": "fa9ad0de1ac740036f66b67c582fafcd",
+      "sourceName": "contracts/mocks/MockStrategy.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+        "../interfaces/IStrategy.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "MockStrategy"
+      ]
+    },
+    "/Users/fabo/Desktop/Development/wafra/apps/contracts/contracts/mocks/MockERC20.sol": {
+      "lastModificationDate": 1738217869008,
+      "contentHash": "79fd6966703817ca7cffb34c4d8d5250",
+      "sourceName": "contracts/mocks/MockERC20.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "MockERC20"
       ]
     }
   }

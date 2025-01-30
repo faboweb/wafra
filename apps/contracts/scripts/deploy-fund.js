@@ -25,8 +25,12 @@ async function main() {
       initializer: "initialize",
     }
   );
+  await fundContract.waitForDeployment();
 
-  console.log("FundContract deployed to (proxy):", fundContract.address);
+  console.log(
+    "FundContract deployed to (proxy):",
+    await fundContract.getAddress()
+  );
 }
 
 main()

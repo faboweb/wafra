@@ -19,8 +19,12 @@ async function main() {
       initializer: "initialize",
     }
   );
+  await tokenContract.waitForDeployment();
 
-  console.log("TokenContract deployed to (proxy):", tokenContract.address);
+  console.log(
+    "TokenContract deployed to (proxy):",
+    await tokenContract.getAddress()
+  );
 }
 
 main()
