@@ -15,4 +15,4 @@ npx hardhat run scripts/deploy-strategy-aave.js --network ethTestnet
 
 npx hardhat run scripts/test-strategy-aave.js --network ethTestnet
 npx hardhat run scripts/add-strategies.js --network ethTestnet
-npx hardhat run scripts/test-deposit.js --network ethTestnet
+npx hardhat run scripts/test-fund-deposit.js --network ethTestnet

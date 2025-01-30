@@ -21,55 +21,19 @@ async function main() {
   const amount = ethers.parseUnits("0.001", 6);
 
   console.log("Approving USDC transfer...");
-  let approveTx = await usdcContract.approve(
-    process.env.AAVE_POOL_CONTRACT,
-    amount
-  );
-  await approveTx.wait();
-
-  const aavePool = await ethers.getContractAt(
-    "IPool",
-    process.env.AAVE_POOL_CONTRACT
-  );
-
-  console.log("Simulating Aave deposit...");
-  const tx = await aavePool.deposit.staticCall(
-    process.env.USDC_ADDRESS,
-    amount,
-    deployer.address,
-    0
-  );
-  await tx.wait();
-
-  // Make sure the deployer can deposit
-  // const ControllerRole = ethers.keccak256(
-  //   ethers.toUtf8Bytes("CONTROLLER_ROLE")
-  // );
-  // aaveStrategy.grantRole(ControllerRole, deployer.address);
-
-  console.log("Approving USDC transfer...");
-  approveTx = await usdcContract.approve(
+  let tx = await usdcContract.approve(
     process.env.AAVE_STRATEGY_ADDRESS,
     amount
   );
-  await approveTx.wait();
+  await tx.wait();
 
-  // Simulate deposit
-  console.log("Simulating deposit...");
-  try {
-    const result = await aaveStrategy.deposit.staticCall(amount, {
-      gasLimit: 500000,
-    });
-    console.log("Simulation succeeded:", result);
-  } catch (error) {
-    if (error.data && aaveStrategy) {
-      const decodedError = aaveStrategy.interface.parseError(error.data);
-      console.log(`Transaction failed: ${decodedError?.name}`);
-    } else {
-      console.log(`Error in Deposit:`, error);
-    }
-    return;
-  }
+  console.log("Deposit...");
+  tx = await aaveStrategy.deposit(amount);
+  console.log("Succeeded:", await tx.wait());
+
+  console.log("Withdraw...");
+  tx = await aaveStrategy.withdraw(amount, deployer.address);
+  console.log("Succeeded:", await tx.wait());
 }
 
 main()

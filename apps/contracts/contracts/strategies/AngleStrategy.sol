@@ -19,7 +19,10 @@ contract StrategyAngle is IStrategy {
         ausd.transfer(msg.sender, amount);
     }
 
-    function withdraw(uint256 amount) external override returns (uint256) {
+    function withdraw(
+        uint256 amount,
+        address receiver
+    ) external override returns (uint256) {
         // Placeholder: actual Angle Protocol withdrawal or reverse swap logic
         ausd.transferFrom(msg.sender, address(this), amount);
         usdc.transfer(msg.sender, amount);

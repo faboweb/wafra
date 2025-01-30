@@ -64,9 +64,16 @@ contract AaveStrategy is
     }
 
     function withdraw(
-        uint256 amount
+        uint256 amount,
+        address receiver
     ) external override onlyRole(CONTROLLER_ROLE) returns (uint256) {
-        return aavePool.withdraw(address(usdc), amount, address(this));
+        uint256 balance = aavePool.withdraw(
+            address(usdc),
+            amount,
+            address(this)
+        );
+        usdc.transfer(receiver, balance);
+        return balance;
     }
 
     //--------------------------------------------------------------------------

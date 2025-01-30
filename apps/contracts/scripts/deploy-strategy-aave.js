@@ -27,8 +27,12 @@ async function main() {
       initializer: "initialize",
     }
   );
+  await strategyContract.waitForDeployment();
 
-  console.log("Strategy AaveStrategy deployed to:", strategyContract.address);
+  console.log(
+    "Strategy AaveStrategy deployed to (proxy):",
+    await strategyContract.getAddress()
+  );
 }
 
 main()

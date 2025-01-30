@@ -47,7 +47,9 @@ contract FundContract is
 
     modifier onlyWhitelisted() {
         require(
-            owner() == msg.sender || whitelisted[msg.sender],
+            owner() == msg.sender ||
+                whitelisted[msg.sender] ||
+                address(this) == msg.sender,
             "Not allowed"
         );
         _;
@@ -189,11 +191,9 @@ contract FundContract is
 
         // Mint WFR tokens to the user
         _mintWFRForDeposit(amount, userAddress);
-        console.log("minted");
 
         // Update the principle of the fund we don't charge fees on
         fundPrincipleAfterFees += amount;
-        console.log("fundPrincipleAfterFees", fundPrincipleAfterFees);
 
         emit Deposit(msg.sender, amount, "");
     }
@@ -202,7 +202,7 @@ contract FundContract is
         uint256 depositAmount,
         address account
     ) internal {
-        uint256 fundValue = _currentFundValue();
+        uint256 fundValue = currentFundValue() - depositAmount;
         uint256 currentSupply = wfrToken.totalSupply();
 
         uint256 sharesToMint;
@@ -229,21 +229,41 @@ contract FundContract is
             "strategies not configured properly"
         );
 
-        uint256 balance = usdc.balanceOf(address(this));
+        uint256 totalCapital = usdc.balanceOf(address(this));
+        for (uint256 i = 0; i < strategies.length; i++) {
+            totalCapital += strategies[i].totalValue();
+        }
+
         uint256 totalWeight = 0;
         for (uint256 w = 0; w < strategyWeights.length; w++) {
             totalWeight += strategyWeights[w];
         }
-
         if (totalWeight == 0) {
             return;
         }
 
         for (uint256 i = 0; i < strategies.length; i++) {
-            uint256 amount = (balance * strategyWeights[i]) / totalWeight;
-            if (amount > 0) {
-                usdc.approve(address(strategies[i]), amount);
-                // strategies[i].deposit(amount);
+            uint256 desired = (totalCapital * strategyWeights[i]) / totalWeight;
+            uint256 current = strategies[i].totalValue();
+            if (current > desired) {
+                strategies[i].withdraw(current - desired, address(this));
+            }
+        }
+
+        uint256 remaining = usdc.balanceOf(address(this));
+        for (uint256 i = 0; i < strategies.length; i++) {
+            uint256 desired = (totalCapital * strategyWeights[i]) / totalWeight;
+            uint256 current = strategies[i].totalValue();
+            if (current < desired) {
+                uint256 toDeposit = desired - current;
+                if (toDeposit > remaining) {
+                    toDeposit = remaining;
+                }
+                if (toDeposit > 0) {
+                    usdc.approve(address(strategies[i]), toDeposit);
+                    strategies[i].deposit(toDeposit);
+                    remaining -= toDeposit;
+                }
             }
         }
     }
@@ -274,7 +294,7 @@ contract FundContract is
         if (redemptionQueue.length == 0) return;
 
         // First collect any pending fees
-        uint256 currentValue = _currentFundValue();
+        uint256 currentValue = currentFundValue();
         if (currentValue > fundPrincipleAfterFees) {
             this.collectProtocolFees();
         }
@@ -288,22 +308,35 @@ contract FundContract is
         uint256 totalSupply = wfrToken.totalSupply();
         require(totalSupply > 0, "No WFR tokens exist");
 
+        // if redemption total is greater then usdc balance, withdraw
+        uint256 totalRedemptionWfr = 0;
+        for (uint256 i = start; i < end; i++) {
+            totalRedemptionWfr += redemptionQueue[i].amount;
+        }
+        uint256 totalRedemptionValue = (currentValue * totalRedemptionWfr) /
+            totalSupply;
+
+        if (totalRedemptionValue > usdc.balanceOf(address(this))) {
+            _withdrawFromStrategies(
+                totalRedemptionValue - usdc.balanceOf(address(this))
+            );
+        }
+
         // Process each redemption without taking additional fees
         for (uint256 i = start; i < end; i++) {
             RedemptionRequest memory request = redemptionQueue[i];
             if (request.amount == 0) continue; // Skip already processed requests
 
-            uint256 userShares = request.amount;
-            uint256 userValue = (currentValue * userShares) / totalSupply;
+            uint256 userValue = (currentValue * request.amount) / totalSupply;
 
             // Burn tokens and transfer USDC
-            wfrToken.burn(address(this), userShares);
+            wfrToken.burn(address(this), request.amount);
             usdc.transfer(request.user, userValue);
             redemptionQueue[i].amount = 0;
         }
 
         // Update fundPrincipleAfterFees to reflect redemptions
-        fundPrincipleAfterFees = _currentFundValue();
+        fundPrincipleAfterFees = currentFundValue();
 
         emit RedemptionProcessed(start, end);
     }
@@ -312,17 +345,21 @@ contract FundContract is
     // Fee Calculation (Separate from Redemption)
     //--------------------------------------------------------------------------
 
+    function currentFundValue() public view returns (uint256) {
+        uint256 total = 0;
+        for (uint256 i = 0; i < strategies.length; i++) {
+            total += strategies[i].totalValue();
+        }
+        total += usdc.balanceOf(address(this));
+        return total;
+    }
+
     /**
      * @dev Collects protocol fees on any new gains since last collection
      * @return feeAmount The amount of fees collected
      */
-    function collectProtocolFees()
-        external
-        onlyWhitelisted
-        nonReentrant
-        returns (uint256)
-    {
-        uint256 currentValue = _currentFundValue();
+    function collectProtocolFees() external onlyWhitelisted returns (uint256) {
+        uint256 currentValue = currentFundValue();
         require(
             currentValue > fundPrincipleAfterFees,
             "No new gains to collect"
@@ -353,26 +390,55 @@ contract FundContract is
     // Internal Helpers
     //--------------------------------------------------------------------------
 
-    function _currentFundValue() internal view returns (uint256) {
-        uint256 total = 0;
-        for (uint256 i = 0; i < strategies.length; i++) {
-            total += strategies[i].totalValue();
-        }
-        total += usdc.balanceOf(address(this));
-        return total;
-    }
-
     function _withdrawFromStrategies(uint256 amount) internal {
         uint256 remaining = amount;
+        uint256 totalWeight = 0;
         for (uint256 i = 0; i < strategies.length; i++) {
-            uint256 val = strategies[i].totalValue();
-            if (val == 0) continue;
+            totalWeight += strategyWeights[i];
+        }
 
-            uint256 toWithdraw = remaining < val ? remaining : val;
-            strategies[i].withdraw(toWithdraw);
-            remaining -= toWithdraw;
-
+        // withdraw from the strats according to weights
+        for (uint256 i = 0; i < strategies.length; i++) {
             if (remaining == 0) break;
+            uint256 reversedIndex = strategies.length - 1 - i;
+            uint256 stratValue = strategies[reversedIndex].totalValue();
+            if (stratValue == 0) continue;
+
+            uint256 weightedWithdraw = (strategyWeights[reversedIndex] *
+                amount) / totalWeight;
+            if (weightedWithdraw >= remaining) {
+                weightedWithdraw = remaining;
+            }
+            if (weightedWithdraw > stratValue) {
+                weightedWithdraw = stratValue;
+            }
+
+            if (weightedWithdraw > 0) {
+                strategies[reversedIndex].withdraw(
+                    weightedWithdraw,
+                    address(this)
+                );
+                remaining -= weightedWithdraw;
+            }
+        }
+
+        if (remaining == 0) return;
+
+        // now take the rest linearly from the strats
+        for (uint256 i = 0; i < strategies.length; i++) {
+            uint256 stratValue = strategies[i].totalValue();
+            if (stratValue == 0) continue;
+            if (stratValue >= remaining) {
+                strategies[i].withdraw(remaining, address(this));
+                remaining = 0;
+                break;
+            }
+            strategies[i].withdraw(stratValue, address(this));
+            remaining -= stratValue;
+        }
+
+        if (remaining > 0) {
+            revert("Insufficient funds in strategies");
         }
     }
 
@@ -392,7 +458,7 @@ contract FundContract is
      * @dev Returns the current gains that haven't had fees taken yet
      */
     function getPendingFees() external view returns (uint256) {
-        uint256 currentValue = _currentFundValue();
+        uint256 currentValue = currentFundValue();
         if (currentValue <= fundPrincipleAfterFees) return 0;
 
         uint256 newGains = currentValue - fundPrincipleAfterFees;
