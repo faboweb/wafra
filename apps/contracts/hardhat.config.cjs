@@ -1,6 +1,10 @@
 require("@nomicfoundation/hardhat-verify"); // Optional for contract verification
 require("@openzeppelin/hardhat-upgrades");
-require("dotenv").config(); // Load environment variables from .env file
+require("dotenv").config({ path: `.env` });
+require("dotenv").config({
+  path: `.env.${process.env.HARDHAT_NETWORK}`,
+  override: true,
+});
 
 const { PRIVATE_KEY, ETHERSCAN_API_KEY } = process.env;
 
