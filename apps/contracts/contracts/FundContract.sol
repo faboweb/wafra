@@ -471,6 +471,13 @@ contract FundContract is
         address newImplementation
     ) internal override onlyOwner {}
 
+    function upgradeToken(address newImplementation) external onlyOwner {
+        UUPSUpgradeable(address(wfrToken)).upgradeToAndCall(
+            newImplementation,
+            ""
+        );
+    }
+
     //--------------------------------------------------------------------------
     // Queries
     //--------------------------------------------------------------------------

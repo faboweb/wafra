@@ -2,6 +2,73 @@ import { expect } from "chai";
 import hre from "hardhat";
 const ethers = hre.ethers;
 
+describe("FundContract - initialize", function () {
+  let deployer,
+    user1,
+    user2,
+    treasury,
+    fundContract,
+    usdc,
+    wfrToken,
+    strategy,
+    strategy2;
+
+  beforeEach(async function () {
+    [deployer, user1, user2, treasury] = await ethers.getSigners();
+
+    // Deploy mock USDC token
+    const USDC = await ethers.getContractFactory("MockERC20");
+    usdc = await USDC.deploy("USD Coin", "USDC", 6);
+    await usdc.waitForDeployment();
+
+    // Deploy mock WFR token
+    const WFRToken = await ethers.getContractFactory("MockWFRToken");
+    wfrToken = await WFRToken.deploy();
+    await wfrToken.waitForDeployment();
+
+    // Deploy mock strategy
+    const MockStrategy = await ethers.getContractFactory("MockStrategy");
+    strategy = await MockStrategy.deploy(usdc.target);
+    await strategy.waitForDeployment();
+    strategy2 = await MockStrategy.deploy(usdc.target);
+    await strategy2.waitForDeployment();
+
+    // Deploy the FundContract
+    const FundContract = await ethers.getContractFactory("FundContract");
+    fundContract = await FundContract.deploy();
+    await fundContract.waitForDeployment();
+
+    // Initialize the contract
+    await fundContract.initialize(usdc.target, wfrToken.target);
+    await fundContract.setTreasuryManager(deployer.address);
+    await fundContract.updateTreasury(treasury.address);
+    await fundContract.addStrategy(strategy.target, 10);
+    await fundContract.addStrategy(strategy2.target, 5);
+    await fundContract.setWhitelist(deployer.address, true);
+
+    // Mint and approve USDC to users
+    await usdc.mint(user1.address, ethers.parseUnits("1000", 6));
+    await usdc.mint(user2.address, ethers.parseUnits("1000", 6));
+  });
+
+  it("should mint even small portions in the beginning", async function () {
+    const totalSupply = await wfrToken.totalSupply();
+    expect(totalSupply).to.equal(BigInt(0));
+
+    await usdc
+      .connect(user1)
+      .approve(fundContract.target, ethers.parseUnits("1000", 6));
+    await fundContract
+      .connect(user1)
+      .deposit(ethers.parseUnits("0.001", 6), "");
+
+    expect(await wfrToken.totalSupply()).to.be.gt(0);
+    expect(await wfrToken.balanceOf(user1.address)).to.be.eq(
+      ethers.parseUnits("0.001", 6)
+    );
+  });
+});
+
 describe("FundContract - processRedemptionsBatch", function () {
   let deployer,
     user1,

@@ -13,4 +13,8 @@ contract MockWFRToken is ERC20 {
     function burn(address from, uint256 amount) external {
         _burn(from, amount);
     }
+
+    function decimals() public view virtual override returns (uint8) {
+        return 6;
+    }
 }
