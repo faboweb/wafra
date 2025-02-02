@@ -65,6 +65,10 @@ app.get("/deposit/address", async (req: any, res: any) => {
   }
 });
 
+app.get("/health", async (req: any, res: any) => {
+  res.status(200).send({ message: "OK" });
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
