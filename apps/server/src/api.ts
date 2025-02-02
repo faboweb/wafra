@@ -59,6 +59,10 @@ app.get("/deposit/address", async (req: any, res: any) => {
       },
     });
 
+    if (!wallet) {
+      res.status(500).send({ error: "Wallet not initialized" });
+      return;
+    }
     res.status(200).send({ depositAddress: wallet.address });
   } catch (err) {
     res.status(500).send({ message: "Internal Server Error" });

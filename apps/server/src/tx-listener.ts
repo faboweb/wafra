@@ -1,7 +1,7 @@
 import { ethers, keccak256, toUtf8Bytes } from "ethers";
 import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
-import { transfer } from "./transfer";
+import { transfer } from "./transfer.js";
 dotenv.config();
 
 const prisma = new PrismaClient();
@@ -23,9 +23,8 @@ async function getLatestStoredBlock() {
   const latestBlock = await prisma.block.findFirst({
     orderBy: { blockNumber: "desc" },
   });
-  return latestBlock?.blockNumber < process.env.MIN_BLOCK!
-    ? process.env.MIN_BLOCK!
-    : latestBlock?.blockNumber || 0;
+  const minBlock = parseInt(process.env.MIN_BLOCK || "0", 10);
+  return (latestBlock?.blockNumber || 0) < minBlock;
 }
 
 // Track the latest block
@@ -36,7 +35,7 @@ async function checkNewBlocks() {
   blockProcessing = true;
   try {
     if (latestBlockNumber === 0) {
-      latestBlockNumber = await getLatestStoredBlock();
+      latestBlockNumber = Number(await getLatestStoredBlock());
     }
 
     const currentBlockNumber = await provider.getBlockNumber();
@@ -125,21 +124,20 @@ export async function processBlock(fromBlock: number, toBlock: number) {
               continue;
             }
 
-            const { hash, ownerAddress } = await transfer(
-              address,
-              decoded.amount
-            );
+            const { transferTxHash, depositTxHash, ownerAddress } =
+              await transfer(address, decoded.amount);
             await prisma.deposit.create({
               data: {
                 referenceHash: log.transactionHash,
                 from: address,
                 to: ownerAddress,
                 value: decoded.amount.toString(),
-                hash,
+                depositTxHash,
+                transferTxHash,
               },
             });
 
-            console.log(`Transfer successful: ${hash}`);
+            console.log(`Transfer successful: ${depositTxHash}`);
           } catch (error: any) {
             await prisma.deposit.create({
               data: {
@@ -156,11 +154,12 @@ export async function processBlock(fromBlock: number, toBlock: number) {
       }
     }
 
+    if (!block.hash) throw new Error("Block hash is null");
     await prisma.block.create({
       data: {
-        blockNumber: block.number,
         hash: block.hash,
-        timestamp: new Date(block.timestamp * 1000),
+        blockNumber: block.number,
+        timestamp: new Date(block.timestamp),
       },
     });
   } catch (error) {

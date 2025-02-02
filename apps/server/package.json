@@ -6,11 +6,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "vite-node -w src/index.ts"
+    "dev": "vite-node -w src/index.ts",
+    "start": "node dist/src/index.js",
+    "prisma:generate": "prisma generate",
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/express": "^5.0.0",
     "@types/mocha": "^10.0.10",
     "chai": "^5.1.2",
     "nodemon": "^3.1.9",

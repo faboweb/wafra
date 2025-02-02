@@ -1,2 +1,2 @@
-import "./api.ts";
-import "./tx-listener.ts";
+import "./api.js";
+import "./tx-listener.js";
