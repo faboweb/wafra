@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import express from "express";
 import { PrismaClient } from "@prisma/client";
+import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -10,6 +11,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(cors());
 
 app.get("/deposit/address", async (req: any, res: any) => {
   try {
