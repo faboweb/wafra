@@ -13,7 +13,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
 
-app.get("/deposit/address", async (req: any, res: any) => {
+app.get("/deposit/address/:address", async (req: any, res: any) => {
   try {
     const headers = req.headers;
     const authorization = headers.authorization;
@@ -21,8 +21,7 @@ app.get("/deposit/address", async (req: any, res: any) => {
       return res.status(401).send({ message: "Unauthorized" });
     }
 
-    const depositData = req.body;
-    const address = depositData.address;
+    const address = req.params.address;
     if (!address || !ethers.isAddress(address)) {
       return res.status(400).send({ message: "Address is required" });
     }
