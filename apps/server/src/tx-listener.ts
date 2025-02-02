@@ -20,12 +20,12 @@ const provider = new ethers.JsonRpcProvider(RPC_URL);
 
 // Get the latest block from Prisma
 async function getLatestStoredBlock() {
-  if (process.env.MIN_BLOCK) return Number(process.env.MIN_BLOCK);
-
   const latestBlock = await prisma.block.findFirst({
     orderBy: { blockNumber: "desc" },
   });
-  return latestBlock.blockNumber;
+  return latestBlock?.blockNumber < process.env.MIN_BLOCK!
+    ? process.env.MIN_BLOCK!
+    : latestBlock?.blockNumber || 0;
 }
 
 // Track the latest block
