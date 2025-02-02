@@ -23,8 +23,9 @@ async function getLatestStoredBlock() {
   const latestBlock = await prisma.block.findFirst({
     orderBy: { blockNumber: "desc" },
   });
-  const minBlock = parseInt(process.env.MIN_BLOCK || "0", 10);
-  return (latestBlock?.blockNumber || 0) < minBlock;
+  const block = latestBlock?.blockNumber || 0;
+  const minBlock = process.env.MIN_BLOCK || 0;
+  return block < minBlock ? minBlock : block;
 }
 
 // Track the latest block
