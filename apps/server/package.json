@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --exec vite-node src/index.ts"
+    "start": "vite-node -w src/index.ts"
   },
   "author": "",
   "license": "ISC",
