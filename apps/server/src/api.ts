@@ -32,17 +32,18 @@ app.get("/deposit/address", async (req: any, res: any) => {
     });
 
     if (!depositWallet) {
-      depositWallet = ethers.Wallet.createRandom();
+      const newDepositWallet = ethers.Wallet.createRandom();
+      depositWallet = {
+        address,
+        depositAddress: newDepositWallet.address,
+        privateKey: newDepositWallet.privateKey,
+      };
       await prisma.wallet.create({
-        data: {
-          address,
-          depositAddress: depositWallet.address,
-          privateKey: depositWallet.privateKey,
-        },
+        data: depositWallet,
       });
     }
 
-    res.status(200).send({ depositAddress: depositWallet.address });
+    res.status(200).send({ depositAddress: depositWallet.depositAddress });
   } catch (err) {
     res.status(500).send({ message: "Internal Server Error" });
   }
