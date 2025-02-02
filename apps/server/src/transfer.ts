@@ -44,7 +44,7 @@ const usdcContract = new ethers.Contract(
  */
 const fundContract = new ethers.Contract(
   fundContractAddress,
-  ["function deposit(uint256 amount, string calldata userMemo)"],
+  ["function depositTo(uint256 amount, address receiverAddress)"],
   provider
 );
 
@@ -69,18 +69,18 @@ const transferWallet = new ethers.Wallet(
  */
 export async function transfer(depositAddress: string, amount: number) {
   // Retrieve wallet data from database
-  const walletData = await prisma.wallet.findFirst({
+  const userWalletData = await prisma.wallet.findFirst({
     where: { depositAddress },
   });
 
-  if (!walletData) {
+  if (!userWalletData) {
     throw new Error("Wallet not found");
   }
 
   // Create wallet instance and verify address matches
-  const wallet = new ethers.Wallet(walletData.privateKey, provider);
+  const depositWallet = new ethers.Wallet(userWalletData.privateKey, provider);
 
-  if (wallet.address !== walletData.depositAddress) {
+  if (depositWallet.address !== userWalletData.depositAddress) {
     throw new Error("Invalid wallet");
   }
 
@@ -88,17 +88,17 @@ export async function transfer(depositAddress: string, amount: number) {
     "Depositing",
     ethers.formatUnits(amount, 6),
     "USDC to",
-    walletData.address
+    userWalletData.address
   );
 
   // Step 1: Get permission to transfer using permit
-  await permitUsdcTransfer(amount, wallet);
+  await permitUsdcTransfer(amount, depositWallet);
 
   // Step 2: Transfer USDC to transfer wallet
   let tx = await usdcContract
     .connect(transferWallet)
     // @ts-ignore
-    .transferFrom(wallet.address, transferWallet.address, amount);
+    .transferFrom(depositWallet.address, transferWallet.address, amount);
   await tx.wait();
   console.log(
     "Moved",
@@ -125,14 +125,14 @@ export async function transfer(depositAddress: string, amount: number) {
   tx = await fundContract
     .connect(transferWallet)
     // @ts-ignore
-    .deposit(BigInt(amount), wallet.address);
+    .depositTo(BigInt(amount), userWalletData.address);
   await tx.wait();
   const depositTxHash = tx.hash;
 
   return {
     transferTxHash,
     depositTxHash,
-    ownerAddress: walletData.address,
+    ownerAddress: userWalletData.address,
   };
 }
 
