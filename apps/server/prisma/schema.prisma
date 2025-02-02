@@ -31,3 +31,23 @@ model Block {
   hash        String     @unique
   timestamp   DateTime
 }
+
+model Deposit {
+  id          Int      @id @default(autoincrement())
+  transferTxHash        String?
+  depositTxHash        String?
+  referenceHash String?
+  from        String
+  to          String?
+  value       String
+  createdAt   DateTime @default(now())
+  error       String?
+}
+
+model Wallet {
+  id          Int      @id @default(autoincrement())
+  address     String   @unique
+  depositAddress String @unique
+  privateKey  String @unique
+  createdAt   DateTime @default(now())
+}
