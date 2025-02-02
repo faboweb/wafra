@@ -172,24 +172,9 @@ contract FundContract is
     // Deposit
     //--------------------------------------------------------------------------
 
-    /**
-     * @dev Deposits USDC into the fund, mints WFR tokens based on fund share price
-     */
-    function deposit(
-        uint256 amount,
-        string calldata userMemo
-    ) external nonReentrant {
-        address userAddress = msg.sender;
-        if (bytes(userMemo).length > 0) {
-            userAddress = address(
-                uint160(uint256(keccak256(abi.encodePacked(userMemo))))
-            );
-            require(
-                userAddress != address(0),
-                "Memo Is Invalid Ethereum address"
-            );
-        }
+    function _deposit(uint256 amount, address userAddress) internal {
         require(amount > 0, "Invalid deposit");
+        require(userAddress != address(0), "Invalid user address");
 
         // Transfer USDC to the contract
         usdc.transferFrom(msg.sender, address(this), amount);
@@ -201,6 +186,25 @@ contract FundContract is
         fundPrincipleAfterFees += amount;
 
         emit Deposit(msg.sender, amount, "");
+    }
+
+    /**
+     * @dev Deposits USDC into the fund, mints WFR tokens based on fund share price
+     */
+    function deposit(uint256 amount) external nonReentrant {
+        _deposit(amount, msg.sender);
+    }
+
+    /**
+     * @dev Deposits USDC into the fund, mints WFR tokens based on fund share price
+     * @param amount The amount of USDC to deposit
+     * @param receiverAddress The address to mint WFR tokens to
+     */
+    function depositTo(
+        uint256 amount,
+        address receiverAddress
+    ) external nonReentrant {
+        _deposit(amount, receiverAddress);
     }
 
     function _mintWFRForDeposit(

@@ -40,6 +40,7 @@ const main = async () => {
           transferTxHash,
           depositTxHash,
           to: ownerAddress,
+          error: null, // important so we don't do this again
         },
       });
       console.log(`Deposit successful: ${depositTxHash}`);
