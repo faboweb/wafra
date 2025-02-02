@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
-import { transfer } from "../src/transfer";
+import { transfer } from "../src/transfer.js";
 dotenv.config();
 
 const prisma = new PrismaClient();
