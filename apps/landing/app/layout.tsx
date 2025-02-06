@@ -79,7 +79,7 @@ export default function RootLayout({
               data-tally-emoji-text="👋"
               data-tally-emoji-animation="wave"
             >
-              Sign Up
+              Join Waitlist
             </button>
           </header>
 
@@ -141,7 +141,7 @@ export default function RootLayout({
             data-tally-emoji-text="👋"
             data-tally-emoji-animation="wave"
           >
-            Sign Up
+            Join Waitlist
           </button>
         </main>
 
