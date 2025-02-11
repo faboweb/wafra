@@ -33,6 +33,14 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  icons: [
+    {
+      rel: "icon",
+      type: "image/svg",
+      url: "/wafra-icon.svg",
+      sizes: "180x180",
+    },
+  ],
 };
 
 const cx = (...classes) => classes.filter(Boolean).join(" ");
@@ -51,10 +59,7 @@ export default function RootLayout({
         GeistMono.variable
       )}
     >
-      <body
-        className="antialiased"
-        style={{ background: "linear-gradient(to bottom, #DFFFDF, #FFFFFF)" }}
-      >
+      <body className="antialiased" style={{ background: "#D5EFD5" }}>
         <script async src="https://tally.so/widgets/embed.js"></script>
         <main className="flex-grow flex flex-col items-center justify-center px-4 text-center relative max-w-xl mx-auto">
           <header className="w-full p-4 flex justify-between items-center">
