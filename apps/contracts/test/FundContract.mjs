@@ -58,9 +58,7 @@ describe("FundContract - initialize", function () {
     await usdc
       .connect(user1)
       .approve(fundContract.target, ethers.parseUnits("1000", 6));
-    await fundContract
-      .connect(user1)
-      .deposit(ethers.parseUnits("0.001", 6), "");
+    await fundContract.connect(user1).deposit(ethers.parseUnits("0.001", 6));
 
     expect(await wfrToken.totalSupply()).to.be.gt(0);
     expect(await wfrToken.balanceOf(user1.address)).to.be.eq(
@@ -120,12 +118,13 @@ describe("FundContract - processRedemptionsBatch", function () {
     // Mint and approve USDC to users
     await usdc.mint(user1.address, initialDeposit);
     await usdc.mint(user2.address, initialDeposit);
+    await usdc.mint(deployer, initialDeposit);
     await usdc.connect(user1).approve(fundContract.target, initialDeposit);
     await usdc.connect(user2).approve(fundContract.target, initialDeposit);
 
     // Users deposit into the fund
-    await fundContract.connect(user1).deposit(initialDeposit, "");
-    await fundContract.connect(user2).deposit(initialDeposit, "");
+    await fundContract.connect(user1).deposit(initialDeposit);
+    await fundContract.connect(user2).deposit(initialDeposit);
 
     // Verify fund balance
     expect(await usdc.balanceOf(fundContract.target)).to.equal(

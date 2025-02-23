@@ -61,14 +61,14 @@ export default function CompoundInterestCalculator() {
       <h2>
         <b>See the difference</b>
       </h2>
-      <ResponsiveContainer width={400} height={200}>
+      <ResponsiveContainer width={300} height={300}>
         <AreaChart
           data={data}
           margin={{ top: 10, right: 0, left: 90, bottom: 0 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="year" />
-          <YAxis tickFormatter={(value) => formatCurrency(value)} />
+          {/* <YAxis tickFormatter={(value) => formatCurrency(value)} /> */}
           {/* <ChartTooltip
             content={
               <ChartTooltipContent

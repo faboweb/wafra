@@ -1,7 +1,8 @@
-import { ethers, keccak256, toUtf8Bytes } from "ethers";
+import { ethers } from "ethers";
 import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
-import { transfer } from "./transfer.js";
+import { topicHandlers } from "./handlers.js";
+
 dotenv.config();
 
 const prisma = new PrismaClient();
@@ -9,11 +10,6 @@ const prisma = new PrismaClient();
 // Load environment variables
 const RPC_URL = process.env.RPC_URL!;
 const USDC_CONTRACT = process.env.USDC_CONTRACT!.toLowerCase();
-
-// ERC-20 Transfer event signature (Keccak-256 hash of Transfer(address,address,uint256))
-const TRANSFER_EVENT_SIGNATURE = keccak256(
-  toUtf8Bytes("Transfer(address,address,uint256)")
-);
 
 // Create a provider
 const provider = new ethers.JsonRpcProvider(RPC_URL);
@@ -24,13 +20,14 @@ async function getLatestStoredBlock() {
     orderBy: { blockNumber: "desc" },
   });
   const block = latestBlock?.blockNumber || 0;
-  const minBlock = process.env.MIN_BLOCK || 0;
+  const minBlock = Number(process.env.MIN_BLOCK) || 0;
   return block < minBlock ? minBlock : block;
 }
 
 // Track the latest block
 let latestBlockNumber = 0;
 let blockProcessing = false;
+
 async function checkNewBlocks() {
   if (blockProcessing) return;
   blockProcessing = true;
@@ -77,80 +74,18 @@ export async function processBlock(fromBlock: number, toBlock: number) {
     const block = await provider.getBlock(toBlock);
     if (!block) return;
 
-    const logs = await provider.getLogs({
-      fromBlock,
-      toBlock,
-      address: USDC_CONTRACT,
-      topics: [TRANSFER_EVENT_SIGNATURE],
-    });
+    for (const handler of topicHandlers) {
+      const logs = await provider.getLogs({
+        fromBlock,
+        toBlock,
+        address: USDC_CONTRACT,
+        topics: [handler.signature],
+      });
 
-    const depositAddresses = await prisma.wallet
-      .findMany({
-        select: { depositAddress: true },
-      })
-      .then((wallets: any[]) => wallets.map((wallet) => wallet.depositAddress));
-
-    for (const log of logs) {
-      const decoded = decodeUSDCLog(log);
-      if (decoded) {
-        const address = decoded.to;
-        if (depositAddresses.includes(address)) {
-          console.log(`🔹 USDC Transfer detected in block ${log.blockNumber}`);
-          console.log(`TX Hash: ${log.transactionHash}`);
-          console.log(`From: ${decoded.from}`);
-          console.log(`To: ${decoded.to}`);
-          console.log(`Amount: ${ethers.formatUnits(decoded.amount, 6)} USDC`);
-
-          await prisma.transaction.create({
-            data: {
-              type: "usdc.transfer",
-              hash: log.transactionHash,
-              blockNumber: log.blockNumber,
-              from: decoded.from,
-              to: decoded.to,
-              value: decoded.amount.toString(),
-            },
-          });
-
-          // transfer the deposited USDC to the owner's address in the fund
-          try {
-            // check if deposit already done
-            const deposit = await prisma.deposit.findFirst({
-              where: {
-                referenceHash: log.transactionHash,
-              },
-            });
-            if (deposit) {
-              console.log("Deposit already processed");
-              continue;
-            }
-
-            const { transferTxHash, depositTxHash, ownerAddress } =
-              await transfer(address, decoded.amount);
-            await prisma.deposit.create({
-              data: {
-                referenceHash: log.transactionHash,
-                from: address,
-                to: ownerAddress,
-                value: decoded.amount.toString(),
-                depositTxHash,
-                transferTxHash,
-              },
-            });
-
-            console.log(`Transfer successful: ${depositTxHash}`);
-          } catch (error: any) {
-            await prisma.deposit.create({
-              data: {
-                referenceHash: log.transactionHash,
-                from: address,
-                value: decoded.amount.toString(),
-                error: error.message,
-              },
-            });
-
-            console.log(`Transfer unsuccessful: ${error.message}`);
-          }
+      for (const log of logs) {
+        const decoded = handler.decoder(log);
+        if (decoded) {
+          await handler.handler(decoded, log);
         }
       }
     }
@@ -160,33 +95,11 @@ export async function processBlock(fromBlock: number, toBlock: number) {
       data: {
         hash: block.hash,
         blockNumber: block.number,
-        timestamp: new Date(block.timestamp),
+        timestamp: new Date(block.timestamp * 1000),
       },
     });
   } catch (error) {
     console.error(`Error processing blocks ${fromBlock} ${toBlock}:`, error);
-  }
-}
-
-export function decodeUSDCLog(log: any) {
-  try {
-    if (!log.topics || log.topics.length < 3) {
-      throw new Error("Invalid log format: missing topics");
-    }
-
-    const decoded = ethers.AbiCoder.defaultAbiCoder().decode(
-      ["uint256"],
-      log.data
-    );
-
-    return {
-      from: ethers.getAddress("0x" + log.topics[1].slice(26)),
-      to: ethers.getAddress("0x" + log.topics[2].slice(26)),
-      amount: decoded[0],
-    };
-  } catch (error) {
-    console.error("Error decoding USDC log:", error);
-    return null;
   }
 }
 

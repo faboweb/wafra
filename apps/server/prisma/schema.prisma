@@ -51,3 +51,22 @@ model Wallet {
   privateKey  String @unique
   createdAt   DateTime @default(now())
 }
+
+model AccountBalance {
+  id          Int      @id @default(autoincrement())
+  address     String   @unique
+  balance     String   @default("0")
+  availableBalance String @default("0")
+  updatedAt   DateTime @updatedAt
+}
+
+model RedemptionQueue {
+  id          Int      @id @default(autoincrement())
+  address     String   
+  amount      String
+  status      String   @default("pending") // pending, processing, completed, failed
+  txHash      String?  @unique
+  createdAt   DateTime @default(now())
+  processedAt DateTime?
+  error       String?
+}
