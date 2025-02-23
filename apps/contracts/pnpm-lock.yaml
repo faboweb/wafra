@@ -11,6 +11,9 @@ importers:
       '@aave/core-v3':
         specifier: ^1.19.3
         version: 1.19.3
+      '@aerodrome-finance/slipstream':
+        specifier: github:aerodrome-finance/slipstream
+        version: https://codeload.github.com/aerodrome-finance/slipstream/tar.gz/5b529b4d418a6d2e394391a153dfbd0c98de937d
       '@openzeppelin/contracts':
         specifier: ^5.2.0
         version: 5.2.0
@@ -57,6 +60,11 @@ packages:
 
   '@adraffy/ens-normalize@1.10.1':
     resolution: {integrity: sha512-96Z2IP3mYmF1Xg2cDm8f1gWGf/HUVedQ3FMifV4kG/PQ4yEP51xDtRAEfhVNt5f/uzpNkZHwWQuUcu6D6K+Ekw==}
+
+  '@aerodrome-finance/slipstream@https://codeload.github.com/aerodrome-finance/slipstream/tar.gz/5b529b4d418a6d2e394391a153dfbd0c98de937d':
+    resolution: {tarball: https://codeload.github.com/aerodrome-finance/slipstream/tar.gz/5b529b4d418a6d2e394391a153dfbd0c98de937d}
+    version: 1.0.1
+    engines: {node: '>=10'}
 
   '@aws-crypto/crc32@5.2.0':
     resolution: {integrity: sha512-nLbCWqQNgUiwwtFsen1AdzAtvuLRsQS8rYgMuxCrdKf9kOssamGLuPwyTY9wyYblNr9+1XM8v6zoDTPPSIeANg==}
@@ -1636,6 +1644,8 @@ snapshots:
   '@aave/core-v3@1.19.3': {}
 
   '@adraffy/ens-normalize@1.10.1': {}
+
+  '@aerodrome-finance/slipstream@https://codeload.github.com/aerodrome-finance/slipstream/tar.gz/5b529b4d418a6d2e394391a153dfbd0c98de937d': {}
 
   '@aws-crypto/crc32@5.2.0':
     dependencies:

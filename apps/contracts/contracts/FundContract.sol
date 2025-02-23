@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "hardhat/console.sol";
 import "./WFRToken.sol";
@@ -14,7 +16,8 @@ contract FundContract is
     Initializable,
     OwnableUpgradeable,
     UUPSUpgradeable,
-    ReentrancyGuardUpgradeable
+    ReentrancyGuardUpgradeable,
+    ERC20Upgradeable
 {
     struct StrategyInfo {
         address strategyAddress;
@@ -67,6 +70,7 @@ contract FundContract is
         __Ownable_init(msg.sender);
         __UUPSUpgradeable_init();
         __ReentrancyGuard_init();
+        __ERC20_init("Wafra Fund", "WFRF");
 
         usdc = IERC20(_usdc);
         wfrToken = WFRToken(_wfrToken);
@@ -185,7 +189,7 @@ contract FundContract is
         // Update the principle of the fund we don't charge fees on
         fundPrincipleAfterFees += amount;
 
-        emit Deposit(msg.sender, amount, "");
+        emit Deposit(msg.sender, amount, userAddress);
     }
 
     /**
@@ -211,7 +215,7 @@ contract FundContract is
         uint256 depositAmount,
         address account
     ) internal {
-        uint256 fundValue = currentFundValue() - depositAmount;
+        uint256 fundValue = totalValue() - depositAmount;
         uint256 currentSupply = wfrToken.totalSupply();
 
         uint256 sharesToMint;
@@ -219,7 +223,18 @@ contract FundContract is
             // If first deposit or no value, mint 1:1
             sharesToMint = depositAmount;
         } else {
-            sharesToMint = (depositAmount * currentSupply) / fundValue;
+            // we need to multiply by 1e18 to avoid precision loss
+            sharesToMint = (depositAmount * currentSupply * 1e18) / fundValue / 1e18; 
+        }
+        if (sharesToMint == 0) {
+            revert(string.concat(
+                "Shares to mint is 0. Supply: ", 
+                Strings.toString(currentSupply),
+                " Value: ",
+                Strings.toString(fundValue),
+                " Deposit: ",
+                Strings.toString(depositAmount)
+            ));
         }
 
         wfrToken.mint(account, sharesToMint);
@@ -281,11 +296,17 @@ contract FundContract is
     // Redemption
     //--------------------------------------------------------------------------
 
+    // @dev calculate the amount of WFR tokens that would be minted for a given amount of USDC
+    function wfrAmount(uint256 amount) public view returns (uint256) {
+        return (amount * wfrToken.totalSupply()) / totalValue();
+    }
+
     /**
      * @dev User requests redemption by transferring WFR tokens into this contract.
      *      The tokens remain locked here until redeemed in a batch by `processRedemptionsBatch`.
      */
     function requestRedemption(uint256 amount) external nonReentrant {
+        require(amount > 0, "Amount must be greater than 0");
         require(wfrToken.balanceOf(msg.sender) >= amount, "Insufficient WFR");
 
         wfrToken.transferFrom(msg.sender, address(this), amount);
@@ -303,7 +324,7 @@ contract FundContract is
         if (redemptionQueue.length == 0) return;
 
         // First collect any pending fees
-        uint256 currentValue = currentFundValue();
+        uint256 currentValue = totalValue();
         if (currentValue > fundPrincipleAfterFees) {
             this.collectProtocolFees();
         }
@@ -314,8 +335,8 @@ contract FundContract is
             end = redemptionQueue.length;
         }
 
-        uint256 totalSupply = wfrToken.totalSupply();
-        require(totalSupply > 0, "No WFR tokens exist");
+        uint256 _totalSupply = wfrToken.totalSupply();
+        require(_totalSupply > 0, "No WFR tokens exist");
 
         // if redemption total is greater then usdc balance, withdraw
         uint256 totalRedemptionWfr = 0;
@@ -323,7 +344,7 @@ contract FundContract is
             totalRedemptionWfr += redemptionQueue[i].amount;
         }
         uint256 totalRedemptionValue = (currentValue * totalRedemptionWfr) /
-            totalSupply;
+            _totalSupply;
 
         if (totalRedemptionValue > usdc.balanceOf(address(this))) {
             _withdrawFromStrategies(
@@ -332,11 +353,16 @@ contract FundContract is
         }
 
         // Process each redemption without taking additional fees
+        RedemptionRequest[] memory processedRedemptions = new RedemptionRequest[](end - start);
         for (uint256 i = start; i < end; i++) {
             RedemptionRequest memory request = redemptionQueue[i];
+            // storing to emit as event
+            processedRedemptions[i - start] = RedemptionRequest(
+                request.user, request.amount
+            );
             if (request.amount == 0) continue; // Skip already processed requests
 
-            uint256 userValue = (currentValue * request.amount) / totalSupply;
+            uint256 userValue = (currentValue * request.amount) / _totalSupply;
 
             // Burn tokens and transfer USDC
             wfrToken.burn(address(this), request.amount);
@@ -345,9 +371,9 @@ contract FundContract is
         }
 
         // Update fundPrincipleAfterFees to reflect redemptions
-        fundPrincipleAfterFees = currentFundValue();
+        fundPrincipleAfterFees = totalValue();
 
-        emit RedemptionProcessed(start, end);
+        emit RedemptionProcessed(start, end, processedRedemptions);
     }
 
     // the queue can grow for a while and will increase gas costs
@@ -367,10 +393,59 @@ contract FundContract is
     }
 
     //--------------------------------------------------------------------------
+    // ERC20 Overrides
+    //--------------------------------------------------------------------------
+
+    function name() public pure override returns (string memory) {
+        return "Wafra Fund";
+    }
+
+    function symbol() public pure override returns (string memory) {
+        return "WFRF";
+    }
+
+    function decimals() public pure override returns (uint8) {
+        return 6;
+    }
+
+    function totalSupply() public view override returns (uint256) {
+        return totalValue();
+    }
+
+    function balanceOf(address account) public view override returns (uint256) {
+        return (wfrToken.balanceOf(account) * totalValue()) / wfrToken.totalSupply();
+    }
+
+    function transfer(address recipient, uint256 amount) public override returns (bool) {
+        uint256 senderBalance = balanceOf(msg.sender);
+        require(senderBalance >= amount, "Insufficient balance");
+
+        uint256 shares = (amount * wfrToken.totalSupply()) / totalValue();
+        wfrToken.burn(msg.sender, shares);
+        wfrToken.mint(recipient, shares);
+
+        return true;
+    }
+
+    function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
+        uint256 senderBalance = balanceOf(sender);
+        require(senderBalance >= amount, "Insufficient balance");
+
+        uint256 currentAllowance = wfrToken.allowance(sender, msg.sender);
+        require(currentAllowance >= amount, "Insufficient allowance");
+
+        uint256 shares = (amount * wfrToken.totalSupply()) / totalValue();
+        wfrToken.burn(sender, shares);
+        wfrToken.mint(recipient, shares);
+
+        return true;
+    }
+
+    //--------------------------------------------------------------------------
     // Fee Calculation (Separate from Redemption)
     //--------------------------------------------------------------------------
 
-    function currentFundValue() public view returns (uint256) {
+    function totalValue() public view returns (uint256) {
         uint256 total = 0;
         for (uint256 i = 0; i < strategies.length; i++) {
             total += strategies[i].totalValue();
@@ -384,7 +459,7 @@ contract FundContract is
      * @return feeAmount The amount of fees collected
      */
     function collectProtocolFees() external onlyWhitelisted returns (uint256) {
-        uint256 currentValue = currentFundValue();
+        uint256 currentValue = totalValue();
         require(
             currentValue > fundPrincipleAfterFees,
             "No new gains to collect"
@@ -397,8 +472,8 @@ contract FundContract is
         uint256 feeAmount = (newGains * protocolFee) / 100;
 
         // Calculate shares to mint
-        uint256 totalSupply = wfrToken.totalSupply();
-        uint256 sharesToMint = (feeAmount * totalSupply) / currentValue;
+        uint256 _totalSupply = wfrToken.totalSupply();
+        uint256 sharesToMint = (feeAmount * _totalSupply) / currentValue;
 
         // Mint to treasury this dilutes everyone proportionally
         // This has the same effect as withdrawing the fee and sending it to the treasury
@@ -490,7 +565,7 @@ contract FundContract is
      * @dev Returns the current gains that haven't had fees taken yet
      */
     function getPendingFees() external view returns (uint256) {
-        uint256 currentValue = currentFundValue();
+        uint256 currentValue = totalValue();
         if (currentValue <= fundPrincipleAfterFees) return 0;
 
         uint256 newGains = currentValue - fundPrincipleAfterFees;
@@ -517,6 +592,6 @@ contract FundContract is
         uint256 sharesToMint,
         address treasury
     );
-    event Deposit(address indexed user, uint256 amount, string memo);
-    event RedemptionProcessed(uint256 start, uint256 end);
+    event Deposit(address indexed user, uint256 amount, address receiver);
+    event RedemptionProcessed(uint256 start, uint256 end, RedemptionRequest[] processedRedemptions);
 }

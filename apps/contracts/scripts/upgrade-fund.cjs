@@ -22,6 +22,7 @@ async function main() {
     process.env.FUND_CONTRACT_ADDRESS,
     FundContract
   );
+  await fundContract.waitForDeployment();
 
   console.log("FundContract upgraded:", fundContract.address);
 }
