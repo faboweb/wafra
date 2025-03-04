@@ -18,14 +18,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const SendMoneyPeopleStep = () => {
   const [amount, setAmount] = React.useState(100);
   const router = useRouter();
-  const { account } = useAccount();
+  const { account, depositAddress } = useAccount();
   const insets = useSafeAreaInsets();
   const country = countries.find((c) => c.value === account?.country);
 
-  const FUND_CONTRACT = account?.address;
-
   const deposit = () => {
     if (!country) return;
+    if (!depositAddress) return;
     // @ts-ignore
     const onrampCurrency = onrampCurrencyCodes[country.currency];
     if (!onrampCurrency) {
@@ -38,7 +37,7 @@ const SendMoneyPeopleStep = () => {
     console.log(phoneNumber);
     startOnrampSDK({
       appId: 1424661, // Replace this with the appID obtained during onboarding
-      walletAddress: FUND_CONTRACT, // Replace with the user's wallet address
+      walletAddress: depositAddress, // Replace with the user's wallet address
       flowType: 1, // 1 -> Onramp, 2 -> Offramp, 3 -> Merchant checkout
       // fiatType: 1, // 1 -> INR, 2 -> TRY (Turkish Lira) etc. visit Fiat Currencies page to view full list of supported fiat currencies
       // paymentMethod: 1, // 1 -> Instant transfer (UPI), 2 -> Bank transfer (IMPS/FAST)

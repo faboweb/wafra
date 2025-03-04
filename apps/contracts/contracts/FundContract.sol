@@ -312,6 +312,8 @@ contract FundContract is
         wfrToken.transferFrom(msg.sender, address(this), amount);
 
         redemptionQueue.push(RedemptionRequest(msg.sender, amount));
+
+        emit RedemptionRequested(msg.sender, amount, redemptionQueue.length - 1);
     }
 
     /**
@@ -353,13 +355,11 @@ contract FundContract is
         }
 
         // Process each redemption without taking additional fees
-        RedemptionRequest[] memory processedRedemptions = new RedemptionRequest[](end - start);
+        address[] memory processedRedemptions = new address[](end - start);
         for (uint256 i = start; i < end; i++) {
             RedemptionRequest memory request = redemptionQueue[i];
             // storing to emit as event
-            processedRedemptions[i - start] = RedemptionRequest(
-                request.user, request.amount
-            );
+            processedRedemptions[i - start] = request.user;
             if (request.amount == 0) continue; // Skip already processed requests
 
             uint256 userValue = (currentValue * request.amount) / _totalSupply;
@@ -593,5 +593,6 @@ contract FundContract is
         address treasury
     );
     event Deposit(address indexed user, uint256 amount, address receiver);
-    event RedemptionProcessed(uint256 start, uint256 end, RedemptionRequest[] processedRedemptions);
+    event RedemptionProcessed(uint256 start, uint256 end, address[] processedRedemptions);
+    event RedemptionRequested(address indexed user, uint256 amount, uint256 index);
 }

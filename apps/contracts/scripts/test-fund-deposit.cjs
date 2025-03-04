@@ -23,26 +23,26 @@ async function main() {
     process.env.USDC_ADDRESS
   );
 
-  // if ((await wfrToken.owner()) !== process.env.FUND_CONTRACT_ADDRESS) {
-  //   throw new Error("Fund needs to own Token");
-  // }
+  if ((await wfrToken.owner()) !== process.env.FUND_CONTRACT_ADDRESS) {
+    throw new Error("Fund needs to own Token");
+  }
 
-  // const amount = ethers.parseUnits("0.001", 6);
-  // // Approve USDC transfer
-  // console.log("Approving USDC transfer...");
-  // let tx = await usdcContract.approve(
-  //   process.env.FUND_CONTRACT_ADDRESS,
-  //   amount
-  // );
-  // console.log("USDC approved for transfer.", await tx.wait());
+  const amount = ethers.parseUnits("0.001", 6);
+  // Approve USDC transfer
+  console.log("Approving USDC transfer...");
+  let tx = await usdcContract.approve(
+    process.env.FUND_CONTRACT_ADDRESS,
+    amount
+  );
+  console.log("USDC approved for transfer.", await tx.wait());
 
-  // console.log("Deposit...");
-  // tx = await fundContract.deposit(110);
-  // console.log("Deposit succeeded:", await tx.wait());
+  console.log("Deposit...");
+  tx = await fundContract.deposit(200);
+  console.log("Deposit succeeded:", await tx.wait());
 
-  // console.log("Deploy...");
-  // tx = await fundContract.deployCapital();
-  // console.log("Deploy succeeded:", await tx.wait());
+  console.log("Deploy...");
+  tx = await fundContract.deployCapital();
+  console.log("Deploy succeeded:", await tx.wait());
 
   const balance = await fundContract.balanceOf(deployer.address);
   console.log("Balance:", balance);
@@ -55,6 +55,7 @@ async function main() {
   console.log("WFR Balance:", wfrBalance);
 
   console.log("Redeem...");
+  await wfrToken.approve(process.env.FUND_CONTRACT_ADDRESS, wfrBalance);
   tx = await fundContract.requestRedemption(wfrBalance);
   console.log("Redeemtion Request succeeded:", await tx.wait());
 

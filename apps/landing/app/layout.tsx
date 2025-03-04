@@ -92,7 +92,7 @@ export default function RootLayout({
             Watch the video <ArrowRight className="ml-2 h-4 w-4" />
           </button> */}
 
-          <h1 className="text-6xl font-bold mb-4 mt-8">Be Your Bank</h1>
+          <h1 className="text-6xl font-bold mb-4 mt-8">Grow Your Money</h1>
 
           <div className="relative w-full max-w-md mt-[-100px]">
             <Image
