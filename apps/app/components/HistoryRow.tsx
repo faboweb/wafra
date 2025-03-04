@@ -8,14 +8,23 @@ import {
   Gap,
   Padding,
 } from "@/GlobalStyles";
+import { TransactionWithConversionRate } from "@/hooks/useHistory";
+import { useCurrency } from "@/hooks/useCurrency";
 
 export type HistoryRowType = {
-  image?: ImageSourcePropType;
-  caption?: string;
-  amount?: string;
+  transaction: TransactionWithConversionRate;
 };
 
-const HistoryRow = ({ image, caption, amount }: HistoryRowType) => {
+const HistoryRow = ({ transaction }: HistoryRowType) => {
+  const { formatCurrency } = useCurrency();
+  console.log("tx", transaction);
+  const image = {
+    deposit: require("@/assets/frame-17.svg"),
+    "redemption.requested": require("@/assets/frame-17.svg"),
+    "redemption.processed": require("@/assets/frame-17.svg"),
+    "fund.transfer": require("@/assets/frame-17.svg"),
+    "usdc.transfer": require("@/assets/frame-17.svg"),
+  }[transaction.type];
   return (
     <View style={[styles.frameParent, styles.frameFlexBox]}>
       <View style={[styles.frameGroup, styles.frameFlexBox]}>
@@ -30,11 +39,13 @@ const HistoryRow = ({ image, caption, amount }: HistoryRowType) => {
           ]}
         />
         <View style={styles.captionParent}>
-          <Text style={styles.caption}>{caption}</Text>
+          <Text style={styles.caption}>{transaction.type}</Text>
         </View>
       </View>
       <View style={styles.amountParent}>
-        <Text style={[styles.amount, styles.textTypo]}>{amount}</Text>
+        <Text style={[styles.amount, styles.textTypo]}>
+          {formatCurrency(transaction.convertedValue)}
+        </Text>
       </View>
     </View>
   );

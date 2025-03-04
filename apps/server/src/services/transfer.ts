@@ -9,44 +9,8 @@
  */
 
 import { ethers, TypedDataDomain, Wallet, Signature } from "ethers";
-import { PrismaClient } from "@prisma/client";
-import dotenv from "dotenv";
-dotenv.config();
-
-// Initialize core services
-const prisma = new PrismaClient();
-const provider = new ethers.JsonRpcProvider(process.env.RPC_URL!);
-
-// Contract addresses from environment variables
-const usdcContractAddress = process.env.USDC_CONTRACT!;
-const fundContractAddress = process.env.FUND_CONTRACT!;
-
-/**
- * USDC Contract interface with required ERC20 and permit functions
- */
-const usdcContract = new ethers.Contract(
-  usdcContractAddress,
-  [
-    "function approve(address spender, uint256 amount) returns (bool)",
-    "function balanceOf(address account) view returns (uint256)",
-    "function nonces(address owner) view returns (uint256)",
-    "function permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s)",
-    "function transferFrom(address sender, address recipient, uint256 amount) returns (bool)",
-    "function version() view returns (string)",
-    "function name() view returns (string)",
-    "function allowance(address owner, address spender) view returns (uint256)",
-  ],
-  provider
-);
-
-/**
- * Fund Contract interface with deposit function
- */
-const fundContract = new ethers.Contract(
-  fundContractAddress,
-  ["function depositTo(uint256 amount, address receiverAddress)"],
-  provider
-);
+import { provider, usdcContract, fundContract } from "../contracts.js";
+import prisma from "../db.js";
 
 // Initialize transfer wallet from private key
 const transferWallet = new ethers.Wallet(
@@ -112,13 +76,13 @@ export async function transfer(depositAddress: string, amount: number) {
   tx = await usdcContract
     .connect(transferWallet)
     // @ts-ignore
-    .approve(fundContractAddress, amount);
+    .approve(process.env.FUND_CONTRACT!, amount);
   await tx.wait();
   console.log(
     "Approved",
     ethers.formatUnits(amount, 6),
     "USDC for",
-    fundContractAddress
+    process.env.FUND_CONTRACT!
   );
 
   // Step 4: Deposit USDC into fund contract
@@ -159,7 +123,7 @@ async function permitUsdcTransfer(amount: number, wallet: Wallet) {
     name,
     version,
     chainId,
-    verifyingContract: usdcContractAddress,
+    verifyingContract: process.env.USDC_CONTRACT!,
   };
 
   // Define EIP-712 typed data structure

@@ -6,8 +6,6 @@ import NumberKeyboard from "@/components/NumberKeyboard";
 import Btn from "@/components/Btn";
 import { FontSize, FontFamily, Color, Padding, Border } from "@/GlobalStyles";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as SecureStore from "expo-secure-store";
 import { inAppWallet, preAuthenticate } from "thirdweb/wallets";
 import { client } from "@/constants/thirdweb";
 import { useAccount } from "@/hooks/useAccount";
@@ -19,7 +17,7 @@ const PhoneVerification = () => {
     country: string;
   }>();
   const [otp, setOTP] = React.useState<number>();
-  const { setAccount } = useAccount();
+  const { signIn } = useAccount();
 
   const verifyOtp = async () => {
     console.log("verifying otp", phone, otp);
@@ -43,11 +41,7 @@ const PhoneVerification = () => {
         country,
         address: account.address,
       };
-      setAccount(localAccount);
-      await SecureStore.setItemAsync("account", JSON.stringify(localAccount), {
-        requireAuthentication: true,
-      });
-      router.push("../(dashboard)");
+      signIn(localAccount);
     } catch (err) {
       console.log("Failed to verify OTP", err);
     }

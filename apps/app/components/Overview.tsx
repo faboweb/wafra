@@ -3,9 +3,21 @@ import ActionButton from "./ActionButton";
 import BalanceCard from "./BalanceCard";
 import { FontSize, FontFamily, Color, Gap } from "@/GlobalStyles";
 import { useRouter } from "expo-router";
+import { useBalances } from "@/hooks/useBalances";
+import { useYield } from "@/hooks/useYield";
+import { useCurrency } from "@/hooks/useCurrency";
 
 const Overview = () => {
   const router = useRouter();
+  const { data: balances, refetch: refetchBalances } = useBalances();
+  const { balance, availableBalance, effectiveYield } = balances || {
+    balance: BigInt(0),
+    availableBalance: BigInt(0),
+    effectiveYield: BigInt(0),
+  };
+  const { data: _yield } = useYield();
+  const { formatCurrency } = useCurrency();
+  console.log("balances", balances);
 
   return (
     <View style={[styles.overview, styles.frameFlexBox]}>
@@ -14,8 +26,11 @@ const Overview = () => {
           {/* <Text style={[styles.totalEarned, styles.e2011699FlexBox]}>
             Total Earned
           </Text> */}
-          <Text style={[styles.e2011699, styles.e2011699FlexBox]}>
-            E£20,116.99
+          <Text
+            style={[styles.e2011699, styles.e2011699FlexBox]}
+            onPress={() => refetchBalances()}
+          >
+            {formatCurrency(balance)}
           </Text>
           <Text
             style={{
@@ -26,7 +41,7 @@ const Overview = () => {
               lineHeight: 16,
             }}
           >
-            + E£1,208.54
+            + {formatCurrency(effectiveYield)}
           </Text>
         </View>
         <View style={[styles.actions, styles.actionsFlexBox]}>
@@ -49,13 +64,12 @@ const Overview = () => {
         </View>
       </View>
       <View style={[styles.balancegroups, styles.actionsFlexBox]}>
-        <BalanceCard balanceGroup="Wallet" balance="E£1,627.56" apr={0.4} />
         <BalanceCard
-          balanceGroup="Earn"
-          balance="E£1,627.56"
-          apr={0.44}
-          disabled
+          balanceGroup="Wallet"
+          balance={availableBalance}
+          apr={_yield}
         />
+        <BalanceCard balanceGroup="Earn" balance={0} apr={0.44} disabled />
       </View>
     </View>
   );

@@ -18,7 +18,7 @@ model Transaction {
   hash        String   @unique
   type        String
   from        String
-  to          String
+  to          String?
   value       String
   blockNumber Int
   memo        String?
@@ -30,13 +30,14 @@ model Block {
   blockNumber      Int        @unique
   hash        String     @unique
   timestamp   DateTime
+  error       String?
 }
 
 model Deposit {
   id          Int      @id @default(autoincrement())
-  transferTxHash        String?
-  depositTxHash        String?
-  referenceHash String?
+  transferTxHash        String? @unique
+  depositTxHash        String? @unique
+  referenceHash String @unique
   from        String
   to          String?
   value       String
@@ -55,18 +56,41 @@ model Wallet {
 model AccountBalance {
   id          Int      @id @default(autoincrement())
   address     String   @unique
-  balance     String   @default("0")
-  availableBalance String @default("0")
+  balance     BigInt
+  availableBalance BigInt
   updatedAt   DateTime @updatedAt
+  yieldLastUpdatedAt DateTime
+  effectiveYield BigInt @default(0)
 }
 
 model RedemptionQueue {
   id          Int      @id @default(autoincrement())
   address     String   
   amount      String
+  index       BigInt @unique
   status      String   @default("pending") // pending, processing, completed, failed
   txHash      String?  @unique
   createdAt   DateTime @default(now())
   processedAt DateTime?
   error       String?
+}
+
+model CurrencyRate {
+  id        Int      @id @default(autoincrement())
+  currency  String   // e.g., "EUR", "GBP"
+  rate      Decimal  @db.Decimal(18, 8)
+  timestamp DateTime @default(now())
+
+  @@unique([currency, timestamp])
+  @@index([timestamp])
+}
+
+model FundMetrics {
+  id          Int      @id @default(autoincrement())
+  timestamp   DateTime @default(now())
+  totalSupply String   // Using String for BigNumber values
+  totalValue  String
+  sharePrice  Float   // Derived from totalValue/totalSupply
+
+  @@index([timestamp])
 }

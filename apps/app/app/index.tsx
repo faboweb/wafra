@@ -1,6 +1,5 @@
 import * as LocalAuthentication from "expo-local-authentication";
 import * as SecureStore from "expo-secure-store";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import * as React from "react";
 import { Text, StyleSheet, View } from "react-native";
@@ -14,33 +13,13 @@ import { useAccount } from "@/hooks/useAccount";
 const UnlockScreen = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { account, setAccount } = useAccount();
+  const { account, unlock } = useAccount();
 
   React.useEffect(() => {
     if (account) {
       router.push("/(dashboard)");
     }
   }, []);
-
-  const unlock = async () => {
-    const faceIdResult = await LocalAuthentication.authenticateAsync();
-    if (faceIdResult.success) {
-      try {
-        const result = await SecureStore.getItemAsync("account", {
-          requireAuthentication: true,
-        });
-        console.log("result", result);
-        if (!result) {
-          router.push("/(onboard)");
-          return;
-        }
-        setAccount(JSON.parse(result));
-        router.push("/(dashboard)");
-      } catch (err) {
-        console.log("failed", err);
-      }
-    }
-  };
 
   // React.useEffect(() => {
   //   enableFaceId();

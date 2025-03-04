@@ -1,7 +1,7 @@
 import { ethers, keccak256, toUtf8Bytes } from "ethers";
 import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
-import { decodeUSDCLog } from "../src/tx-listener.js";
+import { decodeUSDCLog } from "../src/services/tx-listener.js";
 dotenv.config();
 
 const prisma = new PrismaClient();

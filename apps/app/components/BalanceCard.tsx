@@ -10,10 +10,11 @@ import {
   Gap,
   Padding,
 } from "@/GlobalStyles";
+import { useCurrency } from "@/hooks/useCurrency";
 
 export type BalanceCardType = {
   balanceGroup: string;
-  balance: string;
+  balance: number;
   apr?: number;
   disabled?: boolean;
 };
@@ -24,6 +25,7 @@ const BalanceCard = ({
   balance,
   disabled,
 }: BalanceCardType) => {
+  const { formatCurrency } = useCurrency();
   return (
     <View
       style={[
@@ -47,7 +49,9 @@ const BalanceCard = ({
         />
       </View>
       <View style={styles.e162756Parent}>
-        <Text style={[styles.e162756, styles.walletClr]}>{balance}</Text>
+        <Text style={[styles.e162756, styles.walletClr]}>
+          {formatCurrency(balance)}
+        </Text>
         {apr && (
           <Text style={styles.avgApy}>
             {Math.round(apr * 10000) / 100}% Avg. APR

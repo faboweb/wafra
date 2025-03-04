@@ -1,15 +1,12 @@
 import { ethers } from "ethers";
-import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
-import { topicHandlers } from "./handlers.js";
+import { TopicHandler, topicHandlers } from "./handlers.js";
+import prisma from "../db.js";
 
 dotenv.config();
 
-const prisma = new PrismaClient();
-
 // Load environment variables
 const RPC_URL = process.env.RPC_URL!;
-const USDC_CONTRACT = process.env.USDC_CONTRACT!.toLowerCase();
 
 // Create a provider
 const provider = new ethers.JsonRpcProvider(RPC_URL);
@@ -74,36 +71,79 @@ export async function processBlock(fromBlock: number, toBlock: number) {
     const block = await provider.getBlock(toBlock);
     if (!block) return;
 
-    for (const handler of topicHandlers) {
+    // group handlers by contract
+    const handlersByContract = topicHandlers.reduce((acc, handler) => {
+      acc[handler.contract] = [...(acc[handler.contract] || []), handler];
+      return acc;
+    }, {} as Record<string, TopicHandler[]>);
+
+    let errors = [];
+    for (const contract in handlersByContract) {
+      const topics = handlersByContract[contract]
+        .map((h) => h.signature)
+        .map((s) => ethers.id(s));
       const logs = await provider.getLogs({
         fromBlock,
         toBlock,
-        address: USDC_CONTRACT,
-        topics: [handler.signature],
+        address: contract,
+        topics: [topics],
       });
 
-      for (const log of logs) {
-        const decoded = handler.decoder(log);
-        if (decoded) {
-          await handler.handler(decoded, log);
+      try {
+        for (const handler of handlersByContract[contract]) {
+          for (const log of logs) {
+            if (log.topics[0] !== ethers.id(handler.signature)) continue;
+            if (handler.filter && !handler.filter(log)) continue;
+
+            const decoded = handler.decoder(log);
+            if (decoded) {
+              await handler.handler(decoded, log);
+            }
+          }
         }
+      } catch (err) {
+        console.error(`Error processing block ${toBlock}:`, err);
+        errors.push(err);
       }
     }
 
     if (!block.hash) throw new Error("Block hash is null");
-    await prisma.block.create({
-      data: {
-        hash: block.hash,
-        blockNumber: block.number,
-        timestamp: new Date(block.timestamp * 1000),
-      },
-    });
+    if (!process.env.FORCE_BLOCK) {
+      await prisma.block.create({
+        data: {
+          hash: block.hash,
+          blockNumber: block.number,
+          timestamp: new Date(block.timestamp * 1000),
+          error:
+            errors.length > 0
+              ? errors.map((e: any) => e.message).join(", ")
+              : null,
+        },
+      });
+    }
+    if (errors.length > 0) {
+      console.error(
+        `Error processing blocks ${fromBlock} ${toBlock}:`,
+        errors.map((e: any) => e.message).join(", ")
+      );
+    }
   } catch (error) {
     console.error(`Error processing blocks ${fromBlock} ${toBlock}:`, error);
   }
 }
 
 // Poll for new blocks every 10 seconds
-setInterval(checkNewBlocks, 10000);
+if (!process.env.FORCE_BLOCK) {
+  checkNewBlocks();
+  setInterval(checkNewBlocks, 10000);
+} else {
+  console.log("🔍 Processing block from", process.env.FORCE_BLOCK);
+  processBlock(
+    Number(process.env.FORCE_BLOCK),
+    Number(process.env.FORCE_BLOCK) + 5
+  ).then(() => {
+    console.log("🔍 Done processing blocks from", process.env.FORCE_BLOCK);
+  });
+}
 
 console.log("🔍 Monitoring for incoming transactions...");

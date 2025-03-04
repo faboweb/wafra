@@ -3,15 +3,14 @@ import { StyleSheet, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Header from "@/components/Header";
 import Overview from "@/components/Overview";
-import HistoryList from "@/components/HistoryList";
+// import HistoryList from "@/components/HistoryList";
 import Footer from "@/components/Footer";
 import { Padding, Gap } from "../../GlobalStyles";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAccount } from "@/hooks/useAccount";
 import { useRouter } from "expo-router";
+import { TransactionHistory } from "@/components/TransactionHistory";
 
 const Dashboard = () => {
-  const insets = useSafeAreaInsets();
   const { account } = useAccount();
   const router = useRouter();
 
@@ -28,14 +27,10 @@ const Dashboard = () => {
         locations={[0, 0.38]}
         colors={["#dfffdf", "#fff"]}
       >
-        <View
-          style={{
-            paddingTop: insets.top,
-          }}
-        />
         <Header />
         <Overview />
-        <HistoryList />
+        {/* <HistoryList /> */}
+        <TransactionHistory />
       </LinearGradient>
       <Footer />
     </>
@@ -49,7 +44,6 @@ const styles = StyleSheet.create({
     height: 812, // TODO
     overflow: "hidden",
     paddingHorizontal: Padding.p_5xl,
-    paddingTop: Padding.p_5xl,
     gap: Gap.gap_sm,
     backgroundColor: "transparent",
     alignItems: "center",
