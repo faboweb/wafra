@@ -1,6 +1,3 @@
-import * as LocalAuthentication from "expo-local-authentication";
-import * as SecureStore from "expo-secure-store";
-
 import * as React from "react";
 import { Text, StyleSheet, View } from "react-native";
 import { Image } from "expo-image";
@@ -9,6 +6,7 @@ import { FontSize, FontFamily, Color, Border } from "@/GlobalStyles";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAccount } from "@/hooks/useAccount";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const UnlockScreen = () => {
   const router = useRouter();
@@ -19,6 +17,12 @@ const UnlockScreen = () => {
     if (account) {
       router.push("/(dashboard)");
     }
+
+    AsyncStorage.getItem("account").then((result) => {
+      if (result !== "true") {
+        router.push("/(onboard)");
+      }
+    });
   }, []);
 
   // React.useEffect(() => {
