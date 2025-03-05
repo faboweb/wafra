@@ -4,7 +4,7 @@ import countries from "@/constants/countries";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as LocalAuthentication from "expo-local-authentication";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 interface Account {
   country: string;
   address: string;
@@ -30,8 +30,22 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   const router = useRouter();
 
-  const signOut = () => {
-    router.push("../");
+  React.useEffect(() => {
+    const getAccount = async () => {
+      const result = await SecureStore.getItemAsync("account");
+      if (result) {
+        setAccount(JSON.parse(result));
+      }
+    };
+
+    getAccount();
+  }, []);
+
+  const signOut = async () => {
+    await SecureStore.deleteItemAsync("account");
+    await AsyncStorage.removeItem("account");
+
+    router.push("../(onboard)");
 
     setAccount(null);
     setDepositAddress(null);
@@ -44,6 +58,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     await SecureStore.setItemAsync("account", JSON.stringify(account), {
       requireAuthentication: true,
     });
+    await AsyncStorage.setItem("account", "true");
 
     router.push("../(dashboard)");
   };

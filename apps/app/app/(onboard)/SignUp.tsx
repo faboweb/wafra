@@ -14,7 +14,6 @@ import {
 import { useRouter } from "expo-router";
 import { preAuthenticate } from "thirdweb/wallets";
 import { client } from "@/constants/thirdweb";
-import countries from "@/constants/countries";
 
 const SignUp = () => {
   const router = useRouter();
@@ -23,18 +22,14 @@ const SignUp = () => {
   const [error, setError] = React.useState("");
 
   const signUp = async () => {
-    const phoneNumber =
-      countries.find((c) => c.value === country)?.phoneCode + phone;
     try {
-      console.log("Sending code to", phoneNumber);
+      console.log("Sending code to", phone);
       await preAuthenticate({
         client,
         strategy: "phone",
-        phoneNumber,
+        phoneNumber: phone,
       });
-      router.push(
-        "./PhoneVerification?phone=" + phoneNumber + "&country=" + country
-      );
+      router.push("./PhoneVerification?phone=" + phone + "&country=" + country);
     } catch (err: any) {
       setError(err.message);
     }
@@ -66,7 +61,7 @@ const SignUp = () => {
       </View>
       <View style={[styles.buttongroup, styles.heroSpaceBlock]}>
         <Btn caption="Continue" onButtonPress={signUp} />
-        <View style={styles.buttongroupChild} />
+        {/* <View style={styles.buttongroupChild} /> */}
       </View>
     </View>
   );
@@ -117,7 +112,7 @@ const styles = StyleSheet.create({
   buttongroup: {
     bottom: 0,
     left: 0,
-    width: 375,
+    width: "100%",
     paddingHorizontal: Padding.p_5xl,
     zIndex: 1,
     position: "absolute",

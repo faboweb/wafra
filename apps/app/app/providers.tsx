@@ -10,6 +10,7 @@ import { ReactNode } from "react";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MenuProvider } from "react-native-popup-menu";
+import { InsetColorProvider } from "@/hooks/useInsetColor";
 
 export function Providers({ children }: { children: ReactNode }) {
   const colorScheme = useColorScheme();
@@ -23,7 +24,9 @@ export function Providers({ children }: { children: ReactNode }) {
             <ThemeProvider
               value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
             >
-              <MenuProvider>{children}</MenuProvider>
+              <InsetColorProvider>
+                <MenuProvider>{children}</MenuProvider>
+              </InsetColorProvider>
             </ThemeProvider>
           </ThirdwebProvider>
         </AccountProvider>
