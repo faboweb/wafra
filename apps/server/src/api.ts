@@ -165,6 +165,17 @@ app.get("/yield", async (req: any, res: any) => {
   res.status(200).send({ yield: annualizedYield });
 });
 
+app.post("/order", async (req: any, res: any) => {
+  const { address, amount, currency } = req.body;
+
+  // create random id
+  const id = Math.random().toString(36).substring(2, 15);
+
+  res.status(200).send({
+    orderId: id,
+  });
+});
+
 app.get("/health", async (req: any, res: any) => {
   res.status(200).send({ message: "OK" });
 });

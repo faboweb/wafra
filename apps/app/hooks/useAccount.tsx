@@ -45,7 +45,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     await SecureStore.deleteItemAsync("account");
     await AsyncStorage.removeItem("account");
 
-    router.push("../(onboard)");
+    router.push("/(onboard)");
 
     setAccount(null);
     setDepositAddress(null);
@@ -60,7 +60,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     });
     await AsyncStorage.setItem("account", "true");
 
-    router.push("../(dashboard)");
+    router.push("/(dashboard)");
   };
 
   const unlock = async () => {
