@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 import { useBalances } from "@/hooks/useBalances";
 import { useYield } from "@/hooks/useYield";
 import { useCurrency } from "@/hooks/useCurrency";
+import * as React from "react";
 
 const Overview = () => {
   const router = useRouter();

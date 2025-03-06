@@ -70,7 +70,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         const result = await SecureStore.getItemAsync("account", {
           requireAuthentication: true,
         });
-        console.log("result", result);
         if (!result) {
           router.push("/(onboard)");
           return;
@@ -84,6 +83,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   };
 
   React.useEffect(() => {
+    console.log("getDepositAddress", account);
     const getDepositAddress = async () => {
       if (!account?.address) return;
       try {
@@ -91,11 +91,12 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           `${process.env.EXPO_PUBLIC_API_URL}/deposit/address/${account.address}`,
           {
             headers: {
-              Authorization: process.env.EXPO_PUBLIC_API_KEY || "",
+              Authorization: process.env.EXPO_PUBLIC_AUTHORIZATION || "",
             },
           }
         );
         const data = await response.json();
+        console.log("data", data);
         setDepositAddress(data.depositAddress);
       } catch (error) {
         console.error("Error fetching deposit address:", error);
