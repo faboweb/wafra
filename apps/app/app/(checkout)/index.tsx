@@ -11,6 +11,7 @@ import { useAccount } from "@/hooks/useAccount";
 import countries from "@/constants/countries";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRoute } from "@react-navigation/native";
+import { useInsetColor } from "@/hooks/useInsetColor";
 
 const CheckoutStart = () => {
   const [amount, setAmount] = React.useState(100);
@@ -22,6 +23,14 @@ const CheckoutStart = () => {
   const params = route.params as {
     error: boolean;
   };
+  const { setInsetColors } = useInsetColor();
+
+  React.useEffect(() => {
+    setInsetColors(
+      Color.colorLightgoldenrodyellow,
+      Color.colorLightgoldenrodyellow
+    );
+  }, []);
 
   const deposit = () => {
     if (!country) return;
@@ -41,10 +50,9 @@ const CheckoutStart = () => {
           alignItems: "flex-start",
           flexDirection: "row",
           alignSelf: "stretch",
-          paddingTop: insets.top,
         }}
       >
-        <Pressable onPress={() => router.push("/(dashboard)")}>
+        <Pressable onPress={() => router.back()}>
           <IconButton image={require("@/assets/arrow-left.svg")} />
         </Pressable>
       </View>
@@ -105,7 +113,6 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   sendMoneyPeopleStep2: {
-    borderRadius: Border.br_13xl,
     backgroundColor: Color.colorLightgoldenrodyellow,
     flex: 1,
     width: "100%",

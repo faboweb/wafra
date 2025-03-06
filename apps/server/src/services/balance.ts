@@ -39,7 +39,8 @@ export async function updateAccountYield(address: string) {
 
   const timeYield = fundMetricsNow.sharePrice - fundMetricsThen.sharePrice;
   const effectiveYield =
-    (BigInt(timeYield * 100000) * accountBalance?.balance) / BigInt(100000);
+    (BigInt(Math.round(timeYield * 100000)) * accountBalance?.balance) /
+    BigInt(100000);
 
   return {
     address,

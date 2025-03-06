@@ -4,10 +4,15 @@ import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { View } from "react-native";
 import { useInsetColor } from "@/hooks/useInsetColor";
+import { useEffect } from "react";
 
 export default function RootLayoutInner() {
   const insets = useSafeAreaInsets();
   const { topInsetColor, bottomInsetColor } = useInsetColor();
+
+  useEffect(() => {
+    console.log(topInsetColor, bottomInsetColor);
+  }, [topInsetColor, bottomInsetColor]);
 
   return (
     <View
