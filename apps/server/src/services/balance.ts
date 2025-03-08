@@ -1,5 +1,5 @@
-import prisma from "../db.js";
-import { getEarliestTransaction } from "./history.js";
+import prisma from "../db";
+import { getEarliestTransaction } from "./history";
 
 export async function updateAccountYield(address: string) {
   const accountBalance = await prisma.accountBalance.findFirst({

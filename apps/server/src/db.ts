@@ -4,7 +4,7 @@ dotenv.config();
 
 const prisma = new PrismaClient();
 
-// Ensure the Prisma Client is properly terminated when the Node.js process ends
+// Ensure the Prisma Client is properly terminated when the Node process ends
 process.on("beforeExit", async () => {
   await prisma.$disconnect();
 });

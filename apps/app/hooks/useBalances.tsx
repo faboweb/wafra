@@ -23,7 +23,7 @@ export function useBalances(): UseQueryResult<Balance> {
         }
       );
       const res = await response.json();
-      return res.balance;
+      return res.balance || {};
     },
     throwOnError: true,
     staleTime: 1000 * 60 * 5,

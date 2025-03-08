@@ -25,43 +25,16 @@ export default function Checkout() {
     apiKey: process.env.EXPO_PUBLIC_TRANSAK_API_KEY!,
     environment: Environments.STAGING,
     partnerOrderId: params.orderId,
-    fiatAmount: params.amount,
-    fiatCurrency: params.currency,
+    cryptoAmount: params.amount,
     network: "base",
     cryptoCurrencyCode: "USDC",
-    walletAddress: depositAddress!,
-    disableWalletAddressForm: true,
-    productsAvailed: "BUY",
+    productsAvailed: "SELL",
 
     // Add other configuration options as needed
   };
 
-  const storeOrderId = async () => {
-    try {
-      await fetch(`${process.env.EXPO_PUBLIC_API_URL}/orders`, {
-        method: "POST",
-        headers: {
-          Authorization: process.env.EXPO_PUBLIC_AUTHORIZATION || "",
-        },
-        body: JSON.stringify({ ...params, depositAddress }),
-      });
-    } catch (err: any) {
-      throw new Error("Order wasn't tracked: ", err.message);
-    }
-  };
-
-  const handleTransakEvent = async (event: EventTypes) => {
-    if (event === Events.ORDER_COMPLETED) {
-      console.log("Order successful");
-
-      await storeOrderId();
-
-      router.push(`./Depositing`);
-    }
-    if (event === Events.ORDER_FAILED) {
-      console.log("Order failed");
-      router.push("/?error=true");
-    }
+  const handleTransakEvent = (event: EventTypes) => {
+    console.log(event);
   };
 
   return (

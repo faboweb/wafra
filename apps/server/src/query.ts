@@ -1,5 +1,5 @@
-import { fundContract, wfrToken } from "./contracts.js";
-import prisma from "./db.js";
+import { fundContract, wfrToken } from "./contracts";
+import prisma from "./db";
 
 export async function getTokenBalance(address: string): Promise<bigint> {
   const balance = await wfrToken.balanceOf(address);
