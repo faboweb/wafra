@@ -35,8 +35,8 @@ model Block {
 
 model Deposit {
   id          Int      @id @default(autoincrement())
-  transferTxHash        String? @unique
-  depositTxHash        String? @unique
+  transferTxHash String? @unique
+  depositTxHash String? @unique
   referenceHash String @unique
   from        String
   to          String?
@@ -94,3 +94,31 @@ model FundMetrics {
 
   @@index([timestamp])
 }
+
+model Order {
+  id Int      @id @default(autoincrement())
+  timestamp   DateTime @default(now())
+  amount Float
+  usdcAmount BigInt
+  currency String
+  depositAddress String
+  status String @default("pending") // pending, payed, deposited
+}
+
+model AccessKey {
+  id            Int      @id @default(autoincrement())
+  apiKey        String   @unique // Initial API key provided
+  userId        String   // External user ID from OAuth provider  
+  provider      String   // OAuth provider name (e.g., "google", "github")
+  accessToken   String   // Current access token
+  refreshToken  String   // Refresh token for getting new access tokens
+  scope         String?  // OAuth scopes
+  expiresAt     DateTime // When the access token expires
+  createdAt     DateTime @default(now())
+  lastUsedAt    DateTime @updatedAt
+  isRevoked     Boolean  @default(false)
+
+  @@index([userId])
+  @@index([apiKey])
+}
+

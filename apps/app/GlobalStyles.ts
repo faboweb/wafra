@@ -45,6 +45,8 @@ export const Color = {
   colorGreen_100: "rgba(0, 124, 1, 0.12)",
   taglineColor: "#6a6e6a",
   colorHoneydew: "#d5efd5",
+  primary: "#6200ee",
+  error: "red",
 };
 /* Gaps */
 export const Gap = {

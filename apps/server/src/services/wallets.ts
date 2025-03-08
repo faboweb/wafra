@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import prisma from "../db.js";
+import prisma from "../db";
 
 // in memory cache
 export let depositAddresses: string[] = [];

@@ -57,11 +57,12 @@ const Overview = () => {
             caption="Send"
             disabled
           />
-          <ActionButton
-            image={require("@/assets/reversewithdrawal01.svg")}
-            caption="Withdraw"
-            disabled
-          />
+          <Pressable onPress={() => router.push("/(withdraw)")}>
+            <ActionButton
+              image={require("@/assets/reversewithdrawal01.svg")}
+              caption="Withdraw"
+            />
+          </Pressable>
         </View>
       </View>
       <View style={[styles.balancegroups, styles.actionsFlexBox]}>

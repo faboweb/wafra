@@ -1,13 +1,14 @@
 import { ethers } from "ethers";
 import express from "express";
 import cors from "cors";
-import { updateWalletBalance } from "./query.js";
-import prisma from "./db.js";
-import { getRates } from "./services/currency-conversion.js";
-import { getTransactionsWithConversionRate } from "./services/history.js";
-import { getAnnualizedYield } from "./services/fund-metrics.js";
-import { getYieldSince } from "./services/balance.js";
-import { addWallet } from "./services/wallets.js";
+import { updateWalletBalance } from "./query";
+import prisma from "./db";
+import { getRates } from "./services/currency-conversion";
+import { getTransactionsWithConversionRate } from "./services/history";
+import { getAnnualizedYield } from "./services/fund-metrics";
+import { getYieldSince } from "./services/balance";
+import { addWallet } from "./services/wallets";
+import "./api";
 
 const app = express();
 const port = process.env.PORT || 3000;

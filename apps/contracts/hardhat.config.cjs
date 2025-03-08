@@ -36,6 +36,12 @@ module.exports = {
       url: "https://virtual.base.rpc.tenderly.co/d1134b1b-87db-46b4-9d8f-6976db404a19",
       accounts: [PRIVATE_KEY], // Use PRIVATE_KEY from environment variables
     },
+    baseFork: {
+      forking: {
+        url: "https://mainnet.base.org",
+        accounts: [PRIVATE_KEY], // Use PRIVATE_KEY from environment variables
+      },
+    },
     ethTestnet: {
       url: "https://1rpc.io/sepolia",
       accounts: [PRIVATE_KEY], // Use PRIVATE_KEY from environment variables

@@ -5,11 +5,11 @@ import {
   decodeRedemptionLog,
   decodeRedemptionProcessLog,
   decodeProtocolFeesCollectedLog,
-} from "./decoders.js";
-import prisma from "../db.js";
-import { transfer } from "./transfer.js";
-import { updateAccountYield } from "./balance.js";
-import { depositAddresses } from "./wallets.js";
+} from "./decoders";
+import prisma from "../db";
+import { transfer } from "./transfer";
+import { updateAccountYield } from "./balance";
+import { depositAddresses } from "./wallets";
 
 const USDC_CONTRACT = process.env.USDC_CONTRACT!.toLowerCase();
 const FUND_CONTRACT = process.env.FUND_CONTRACT!.toLowerCase();
@@ -66,18 +66,29 @@ export const usdcTransferHandler: TopicHandler = {
         address,
         decoded.amount
       );
-      await prisma.deposit.upsert({
-        create: {
-          referenceHash: log.transactionHash,
-          from: address,
-          to: ownerAddress,
-          value: decoded.amount.toString(),
-          depositTxHash,
-          transferTxHash,
-        },
-        update: {},
-        where: { referenceHash: log.transactionHash },
-      });
+      await prisma.$transaction([
+        prisma.deposit.upsert({
+          create: {
+            referenceHash: log.transactionHash,
+            from: address,
+            to: ownerAddress,
+            value: decoded.amount.toString(),
+            depositTxHash,
+            transferTxHash,
+          },
+          update: {},
+          where: { referenceHash: log.transactionHash },
+        }),
+        prisma.order.update({
+          where: {
+            depositAddress: address,
+            usdcAmount: decoded.amount,
+          },
+          data: {
+            status: "deposited",
+          },
+        }),
+      ]);
       console.log(`Transfer successful: ${depositTxHash}`);
     } catch (error: any) {
       await prisma.deposit.upsert({

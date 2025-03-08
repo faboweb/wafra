@@ -9,8 +9,8 @@
  */
 
 import { ethers, TypedDataDomain, Wallet, Signature } from "ethers";
-import { provider, usdcContract, fundContract } from "../contracts.js";
-import prisma from "../db.js";
+import { provider, usdcContract, fundContract } from "../contracts";
+import prisma from "../db";
 
 // Initialize transfer wallet from private key
 const transferWallet = new ethers.Wallet(

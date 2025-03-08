@@ -1,5 +1,5 @@
 import { CurrencyRate, Transaction } from "@prisma/client";
-import prisma from "../db.js";
+import prisma from "../db";
 
 export interface HistoricalBalance {
   timestamp: Date;

@@ -13,11 +13,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRoute } from "@react-navigation/native";
 import { useInsetColor } from "@/hooks/useInsetColor";
 
-const CheckoutStart = () => {
-  const [amount, setAmount] = React.useState(100);
+const WithdrawStart = () => {
+  const [amount, setAmount] = React.useState(10);
   const router = useRouter();
   const route = useRoute();
   const { account, depositAddress } = useAccount();
+  const insets = useSafeAreaInsets();
   const country = countries.find((c) => c.value === account?.country);
   const params = route.params as {
     error: boolean;
@@ -31,14 +32,14 @@ const CheckoutStart = () => {
     );
   }, []);
 
-  const deposit = () => {
+  const withdraw = () => {
     if (!country) return;
     if (!depositAddress) return;
 
     const orderId = Math.random().toString(36).substring(2, 15);
 
     router.push(
-      `/Checkout?orderId=${orderId}&amount=${amount}&currency=${country.currency}`
+      `/Withdraw?orderId=${orderId}&amount=${amount}&currency=${country.currency}`
     );
   };
 
@@ -76,8 +77,8 @@ const CheckoutStart = () => {
         />
         <View style={styles.buttongroup}>
           <Btn
-            caption="Deposit"
-            onButtonPress={() => deposit()}
+            caption="Withdraw"
+            onButtonPress={() => withdraw()}
             style={{
               flex: 1,
             }}
@@ -124,4 +125,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CheckoutStart;
+export default WithdrawStart;
