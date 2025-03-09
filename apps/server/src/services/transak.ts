@@ -9,42 +9,45 @@ const getAccessToken = async () => {
   return accessToken;
 };
 
-const request = (url: string, options?: any) => {
-  const _options = {
-    url: "https://api-stg.transak.com/partners/api/v2/refresh-token",
-    method: "POST",
+const request = async (url: string) => {
+  const accessToken = await getAccessToken();
+  const { data } = await axios({
+    url: process.env.TRANSAK_API_URL + url,
     headers: {
       accept: "application/json",
-      "api-secret": process.env.TRANSAK_API_SECRET!,
-      "content-type": "application/json",
-      ...options?.headers,
+      "access-token": accessToken,
     },
-    data: { apiKey: process.env.TRANSAK_API_KEY!, ...options?.data },
-  };
-  return axios
-    .request({
-      ..._options,
-      url: process.env.TRANSAK_API_URL + url,
-    })
-    .then(({ data }: any) => data);
-};
-
-const requestAuth = async (url: string) => {
-  const accessToken = await getAccessToken();
-  const { data } = await request(url, {
-    headers: { Authorization: accessToken },
   });
   return data;
 };
 
 const getRefreshToken = async () => {
-  const { data } = await request("/partners/api/v2/refresh-token");
+  console.log("Getting refresh token");
+  const options = {
+    url: process.env.TRANSAK_API_URL + "/partners/api/v2/refresh-token",
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "api-secret": process.env.TRANSAK_API_SECRET!,
+      "content-type": "application/json",
+    },
+    data: { apiKey: process.env.TRANSAK_API_KEY! },
+  };
+  const { data } = await axios(options).then(({ data }: any) => data);
   accessToken = data.accessToken;
   expiresAt = data.expiresAt;
 };
 
 export const getOrderById = async (orderId: string) => {
-  const { data } = await requestAuth(`/partners/api/v2/orders/${orderId}`);
+  const { data } = await request(
+    `/partners/api/v2/orders?startDate=${new Date(
+      Date.now() - 7 * 24 * 60 * 60 * 1000
+    ).toLocaleDateString("en-CA")}&endDate=${new Date().toLocaleDateString(
+      "en-CA"
+    )}`
+  );
 
-  return data;
+  const order = data.find((order: any) => order.partnerOrderId === orderId);
+
+  return order;
 };

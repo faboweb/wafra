@@ -29,7 +29,9 @@ export function TransactionHistory() {
     to,
     currency,
   });
-  const { data: orders } = useOrders();
+  const { data: orders, refetch: refetchOrders } = useOrders({
+    currency,
+  });
 
   if (isLoading && !transactions) return <Text>Loading transactions...</Text>;
   if (error) return <Text>Error loading transactions</Text>;
@@ -47,6 +49,7 @@ export function TransactionHistory() {
           onPress={() => {
             setFrom(new Date(Date.now() - 1000 * 60 * 60 * 24 * 30));
             setTo(new Date());
+            refetchOrders();
           }}
         />
         {/* <Text style={styles.e325027}>E£3,250.27</Text> */}

@@ -24,6 +24,7 @@ const HistoryRow = ({ transaction }: HistoryRowType) => {
     "redemption.processed": require("@/assets/frame-17.svg"),
     "fund.transfer": require("@/assets/frame-17.svg"),
     "usdc.transfer": require("@/assets/frame-17.svg"),
+    "purchase-pending": require("@/assets/frame-17.svg"),
   }[transaction.type];
   return (
     <View style={[styles.frameParent, styles.frameFlexBox]}>

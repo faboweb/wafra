@@ -1,5 +1,6 @@
-export async function query(url: string) {
+export async function query(url: string, options: RequestInit = {}) {
   const response = await fetch(url, {
+    ...options,
     headers: {
       Authorization: process.env.EXPO_PUBLIC_AUTHORIZATION || "",
     },

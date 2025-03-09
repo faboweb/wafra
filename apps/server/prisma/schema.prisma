@@ -97,6 +97,8 @@ model FundMetrics {
 
 model Order {
   id Int      @id @default(autoincrement())
+  orderId String @unique
+  foreignOrderId String? @unique
   timestamp   DateTime @default(now())
   amount Float
   usdcAmount BigInt

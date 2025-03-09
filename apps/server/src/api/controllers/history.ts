@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { ethers } from "ethers";
-import { getTransactionsWithConversionRate } from "@/services/history";
+import { getTransactionsWithConversionRate } from "@/services/history.js";
 
 export async function getHistory(req: Request, res: Response) {
   try {

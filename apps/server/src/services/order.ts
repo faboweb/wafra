@@ -1,8 +1,10 @@
 import prisma from "@/db";
 import { Order, Transaction } from "@prisma/client";
+import { addConversionRates } from "./history.js";
 
 export async function getFormattedOrders(
-  address: string
+  address: string,
+  currency: string
 ): Promise<Partial<Transaction>[]> {
   const wallet = await prisma.wallet.findUnique({
     where: {
@@ -29,11 +31,14 @@ export async function getFormattedOrders(
     },
   });
 
-  return orders.map((order: Order) => ({
-    id: order.id,
-    hash: String(order.id),
-    type: "purchase-" + order.status,
-    value: String((order.amount * 10) ^ 6), // usd to micro usd
-    createdAt: order.timestamp,
-  }));
+  return addConversionRates(
+    orders.map((order: Order) => ({
+      id: order.id,
+      hash: order.orderId,
+      type: "purchase-" + order.status,
+      value: order.usdcAmount.toString(),
+      createdAt: order.timestamp,
+    })),
+    currency || "USD"
+  );
 }
