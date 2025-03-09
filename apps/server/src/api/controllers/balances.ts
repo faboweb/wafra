@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { ethers } from "ethers";
 import prisma from "@/db";
-import { updateWalletBalance } from "@/services/balance";
-import { addWallet } from "@/services/wallets";
+import { updateWalletBalance } from "@/services/balance.js";
+import { addWallet } from "@/services/wallets.js";
 
 export async function getBalance(req: Request, res: Response) {
   try {

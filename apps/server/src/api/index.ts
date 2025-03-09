@@ -11,8 +11,14 @@ import orderRoutes from "./routes/orders";
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(expresson());
+app.use(express.json());
 app.use(cors());
+if (process.env.NODE_ENV === "development") {
+  app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path}`);
+    next();
+  });
+}
 
 // Routes
 app.use("/api", depositRoutes);

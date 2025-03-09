@@ -54,14 +54,17 @@ export default function Checkout() {
     if (event === Events.ORDER_COMPLETED) {
       console.log("Order successful");
 
-      await storeOrderId();
-
-      router.push(`./Depositing`);
+      router.push(`/(dashboard)`);
     }
     if (event === Events.ORDER_FAILED) {
       console.log("Order failed");
       router.push("/?error=true");
     }
+    if (event === Events.ORDER_CREATED) {
+      await storeOrderId();
+    }
+
+    console.log("Transak event: ", event);
   };
 
   return (

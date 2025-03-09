@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "./useAccount";
+import { query } from "@/data/query";
 
 export interface Transaction {
   id: string;
@@ -43,7 +44,7 @@ interface UseHistoryOptions {
 async function fetchHistory(
   address: string,
   options: UseHistoryOptions = {}
-): Promise<{ transactions: Transaction[]; total: number }> {
+): Promise<Transaction[]> {
   const params = new URLSearchParams({
     from:
       options.from?.toISOString() ||
@@ -52,13 +53,10 @@ async function fetchHistory(
     currency: options.currency || "USD",
   });
 
-  const response = await fetch(
+  const response = await query(
     `${process.env.EXPO_PUBLIC_API_URL}/history/${address}?${params}`
   );
-  if (!response.ok) {
-    throw new Error("Failed to fetch history");
-  }
-  return response.json();
+  return response;
 }
 
 export function useHistory(options: UseHistoryOptions = {}) {

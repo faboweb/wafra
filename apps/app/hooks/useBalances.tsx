@@ -1,6 +1,7 @@
 import { useAccount } from "./useAccount";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { useCurrency } from "./useCurrency";
+import { query } from "@/data/query";
 
 interface Balance {
   balance: number;
@@ -14,16 +15,10 @@ export function useBalances(): UseQueryResult<Balance> {
   return useQuery({
     queryKey: ["balances", account?.address, currency],
     queryFn: async () => {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/balance/${account?.address}?currency=${currency}`,
-        {
-          headers: {
-            Authorization: process.env.EXPO_PUBLIC_AUTHORIZATION || "",
-          },
-        }
+      const response = await query(
+        `${process.env.EXPO_PUBLIC_API_URL}/balance/${account?.address}?currency=${currency}`
       );
-      const res = await response.json();
-      return res.balance || {};
+      return response.balance || {};
     },
     throwOnError: true,
     staleTime: 1000 * 60 * 5,
