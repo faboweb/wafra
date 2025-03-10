@@ -6,18 +6,17 @@ require("dotenv").config({
 });
 
 async function main() {
-  console.log("Deploying Morpho Strategy...");
+  console.log("Deploying MorphoStrategy...");
 
   const MorphoStrategy = await ethers.getContractFactory("MorphoStrategy");
 
   const morphoStrategy = await upgrades.deployProxy(
     MorphoStrategy,
     [
-      process.env.MORPHO_BLUE_ADDRESS, // Morpho Blue address
-      process.env.MARKET_ID, // Market ID for USDC market
+      process.env.MORPHO_VAULT_ADDRESS, // Morpho Vault address
       process.env.USDC_ADDRESS, // USDC token address
-      process.env.ADMIN_ADDRESS, // Admin address
-      process.env.CONTROLLER_ADDRESS, // Controller address (FundContract)
+      process.env.OWNER_ADDRESS, // Admin address
+      process.env.OWNER_ADDRESS, // Controller address (FundContract)
     ],
     {
       kind: "uups",
@@ -28,7 +27,7 @@ async function main() {
   await morphoStrategy.waitForDeployment();
   const strategyAddress = await morphoStrategy.getAddress();
 
-  console.log("MorphoStrategy deployed to:", strategyAddress);
+  console.log("MorphoVaultStrategy deployed to:", strategyAddress);
 }
 
 main().catch((error) => {

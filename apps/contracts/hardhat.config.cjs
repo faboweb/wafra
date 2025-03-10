@@ -27,20 +27,20 @@ module.exports = {
       },
     ],
   },
+  // Add this section
+  dependencies: {
+    "@openzeppelin/contracts": "^5.0.0",
+    "@openzeppelin/contracts-upgradeable": "^5.0.0",
+    "@morpho-org/morpho-blue": "^1.0.0",
+  },
   networks: {
     base: {
       url: "https://mainnet.base.org",
       accounts: [PRIVATE_KEY], // Use PRIVATE_KEY from environment variables
     },
     baseTestnet: {
-      url: "https://virtual.base.rpc.tenderly.co/d1134b1b-87db-46b4-9d8f-6976db404a19",
+      url: "https://virtual.base.rpc.tenderly.co/7a007786-d93d-4956-b914-57b51344a612",
       accounts: [PRIVATE_KEY], // Use PRIVATE_KEY from environment variables
-    },
-    baseFork: {
-      forking: {
-        url: "https://mainnet.base.org",
-        accounts: [PRIVATE_KEY], // Use PRIVATE_KEY from environment variables
-      },
     },
     ethTestnet: {
       url: "https://1rpc.io/sepolia",

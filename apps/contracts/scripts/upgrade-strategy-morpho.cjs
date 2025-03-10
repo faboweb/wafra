@@ -1,4 +1,4 @@
-import { ethers, upgrades } from "hardhat";
+const { ethers, upgrades } = require("hardhat");
 
 async function main() {
   console.log("Upgrading MorphoStrategy...");
@@ -10,7 +10,7 @@ async function main() {
   );
 
   await upgraded.waitForDeployment();
-  console.log("MorphoStrategy upgraded");
+  console.log("MorphoStrategy upgraded to:", await upgraded.getAddress());
 }
 
 main().catch((error) => {

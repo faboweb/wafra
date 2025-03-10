@@ -14,6 +14,7 @@
   "license": "ISC",
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.8",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.12",
     "@nomicfoundation/hardhat-verify": "^2.0.12",
     "@types/chai": "^5.0.1",
     "chai": "^5.1.2",
@@ -24,6 +25,7 @@
   "dependencies": {
     "@aave/core-v3": "^1.19.3",
     "@aerodrome-finance/slipstream": "github:aerodrome-finance/slipstream",
+    "@morpho-org/morpho-blue": "github:morpho-org/morpho-blue",
     "@openzeppelin/contracts": "^5.2.0",
     "@openzeppelin/contracts-upgradeable": "^5.2.0",
     "@openzeppelin/hardhat-upgrades": "^3.9.0",

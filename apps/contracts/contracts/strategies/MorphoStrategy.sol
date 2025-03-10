@@ -6,9 +6,19 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@morpho-blue/interfaces/IMorpho.sol";
-import "@morpho-blue/interfaces/IIrm.sol";
 import "../interfaces/IStrategy.sol";
+import "hardhat/console.sol";   
+
+interface IMorphoVault is IERC20 {
+    function deposit(uint256 assets, address receiver) external returns (uint256 shares);
+    function withdraw(uint256 assets, address receiver, address owner) external returns (uint256 shares);
+    function redeem(uint256 shares, address receiver, address owner) external returns (uint256 assets);
+    function maxDeposit(address) external view returns (uint256);
+    function maxWithdraw(address owner) external view returns (uint256);
+    function previewRedeem(uint256 shares) external view returns (uint256);
+    function previewWithdraw(uint256 assets) external view returns (uint256);
+    function asset() external view returns (address);
+}
 
 contract MorphoStrategy is
     Initializable,
@@ -21,9 +31,8 @@ contract MorphoStrategy is
     bytes32 public constant CONTROLLER_ROLE = keccak256("CONTROLLER_ROLE");
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
-    IERC20 public usdc;
-    IMorpho public morpho;
-    Id public marketId;
+    IMorphoVault public vault;
+    IERC20 public asset;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -31,9 +40,8 @@ contract MorphoStrategy is
     }
 
     function initialize(
-        address _morpho,
-        bytes32 _marketId,
-        address _usdc,
+        address _vault,
+        address expectedAsset, // usdc
         address admin,
         address controller
     ) public initializer {
@@ -46,29 +54,27 @@ contract MorphoStrategy is
         _grantRole(CONTROLLER_ROLE, admin);
         _grantRole(CONTROLLER_ROLE, controller);
 
-        morpho = IMorpho(_morpho);
-        marketId = Id.wrap(_marketId);
-        usdc = IERC20(_usdc);
+        vault = IMorphoVault(_vault);
+
+        require(vault.asset() == expectedAsset, "Invalid vault asset");
+        asset = IERC20(vault.asset());
     }
 
     //-------------------------------------------------------------------------
     // Actions
     //-------------------------------------------------------------------------
 
-    function deposit(
-        uint256 amount
-    ) external override onlyRole(CONTROLLER_ROLE) {
-        usdc.transferFrom(msg.sender, address(this), amount);
-        usdc.approve(address(morpho), amount);
-        morpho.supply(marketId, amount, 0, address(this));
+    function deposit(uint256 amount) external override onlyRole(CONTROLLER_ROLE) {
+        asset.transferFrom(msg.sender, address(this), amount);
+        asset.approve(address(vault), amount);
+        vault.deposit(amount, address(this));
     }
 
     function withdraw(
         uint256 amount,
         address receiver
     ) external override onlyRole(CONTROLLER_ROLE) returns (uint256) {
-        uint256 balance = morpho.withdraw(marketId, amount, 0, address(this), receiver);
-        return balance;
+        return vault.withdraw(amount, receiver, address(this));
     }
 
     //--------------------------------------------------------------------------
@@ -76,13 +82,12 @@ contract MorphoStrategy is
     //--------------------------------------------------------------------------
 
     function totalValue() external view override returns (uint256) {
-        MarketParams memory market = morpho.market(marketId);
-        (uint256 supplyAssets, ) = morpho.position(marketId, address(this));
-        return supplyAssets;
+        uint256 shares = vault.balanceOf(address(this));
+        return vault.previewRedeem(shares);
     }
 
     function strategyName() external pure returns (string memory) {
-        return "Morpho Blue USDC Lending";
+        return "Morpho USDC Vault Strategy";
     }
 
     //--------------------------------------------------------------------------
@@ -92,4 +97,20 @@ contract MorphoStrategy is
     function _authorizeUpgrade(
         address newImplementation
     ) internal override onlyRole(ADMIN_ROLE) {}
+
+    //--------------------------------------------------------------------------
+    // Emergency Functions
+    //--------------------------------------------------------------------------
+
+    function emergencyWithdraw() external onlyRole(ADMIN_ROLE) {
+        uint256 shares = vault.balanceOf(address(this));
+        if (shares > 0) {
+            vault.redeem(shares, address(this), address(this));
+        }
+        
+        uint256 balance = asset.balanceOf(address(this));
+        if (balance > 0) {
+            asset.transfer(msg.sender, balance);
+        }
+    }
 }

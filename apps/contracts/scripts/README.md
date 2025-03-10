@@ -14,5 +14,12 @@ npx hardhat run scripts/deploy-strategy-aave.cjs --network base
 # add strategy to .env
 
 npx hardhat run scripts/test-strategy-aave.cjs --network base
+
+npx hardhat run scripts/deploy-strategy-morpho.cjs --network base
+
+# add strategy to .env
+
+npx hardhat run scripts/test-strategy-morpho.cjs --network base
+
 npx hardhat run scripts/add-strategies.cjs --network base
 npx hardhat run scripts/test-fund-deposit.cjs --network base
