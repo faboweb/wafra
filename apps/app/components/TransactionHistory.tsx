@@ -1,5 +1,9 @@
 import { Color, FontFamily, FontSize } from "@/GlobalStyles";
-import { useHistory } from "@/hooks/useHistory";
+import {
+  Transaction,
+  TransactionWithConversionRate,
+  useHistory,
+} from "@/hooks/useHistory";
 import { Button, ScrollView, StyleSheet, Text } from "react-native";
 import { View } from "react-native";
 import Btn from "./Btn";
@@ -7,6 +11,7 @@ import { Gap } from "@/GlobalStyles";
 import HistoryRow from "./HistoryRow";
 import { useCurrency } from "@/hooks/useCurrency";
 import { useState } from "react";
+import { useOrders } from "@/hooks/useOrders";
 
 export function TransactionHistory() {
   //   const [page, setPage] = useState(0);
@@ -22,6 +27,9 @@ export function TransactionHistory() {
   } = useHistory({
     from,
     to,
+    currency,
+  });
+  const { data: orders, refetch: refetchOrders } = useOrders({
     currency,
   });
 
@@ -41,6 +49,7 @@ export function TransactionHistory() {
           onPress={() => {
             setFrom(new Date(Date.now() - 1000 * 60 * 60 * 24 * 30));
             setTo(new Date());
+            refetchOrders();
           }}
         />
         {/* <Text style={styles.e325027}>E£3,250.27</Text> */}
@@ -50,9 +59,11 @@ export function TransactionHistory() {
           rowGap: 8,
         }}
       >
-        {transactions?.map((tx) => (
-          <HistoryRow key={tx.hash} transaction={tx} />
-        ))}
+        {transactions
+          ?.concat(...(orders || []))
+          ?.map((tx: TransactionWithConversionRate) => (
+            <HistoryRow key={tx.hash} transaction={tx} />
+          ))}
         <Btn
           caption="Load more"
           variant="List"

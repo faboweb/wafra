@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 import { useBalances } from "@/hooks/useBalances";
 import { useYield } from "@/hooks/useYield";
 import { useCurrency } from "@/hooks/useCurrency";
+import * as React from "react";
 
 const Overview = () => {
   const router = useRouter();
@@ -56,11 +57,12 @@ const Overview = () => {
             caption="Send"
             disabled
           />
-          <ActionButton
-            image={require("@/assets/reversewithdrawal01.svg")}
-            caption="Withdraw"
-            disabled
-          />
+          <Pressable onPress={() => router.push("/(withdraw)")}>
+            <ActionButton
+              image={require("@/assets/reversewithdrawal01.svg")}
+              caption="Withdraw"
+            />
+          </Pressable>
         </View>
       </View>
       <View style={[styles.balancegroups, styles.actionsFlexBox]}>

@@ -1,4 +1,5 @@
 {
+<<<<<<<< HEAD:apps/app/tsconfig.json
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "jsx": "react",
@@ -16,3 +17,11 @@
     "expo-env.d.ts"
   ]
 }
+========
+    "files": [],
+    "references": [
+      {"path": "./apps/app"},
+      {"path": "./apps/server"},
+    ]
+  }
+>>>>>>>> transak:tsconfig.json

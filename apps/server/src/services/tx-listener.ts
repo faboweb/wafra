@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import dotenv from "dotenv";
-import { TopicHandler, topicHandlers } from "./handlers.js";
-import prisma from "../db.js";
+import { TopicHandler, topicHandlers } from "./handlers";
+import prisma from "@/db";
 
 dotenv.config();
 
@@ -72,16 +72,19 @@ export async function processBlock(fromBlock: number, toBlock: number) {
     if (!block) return;
 
     // group handlers by contract
-    const handlersByContract = topicHandlers.reduce((acc, handler) => {
-      acc[handler.contract] = [...(acc[handler.contract] || []), handler];
-      return acc;
-    }, {} as Record<string, TopicHandler[]>);
+    const handlersByContract = topicHandlers.reduce(
+      (acc: any, handler: any) => {
+        acc[handler.contract] = [...(acc[handler.contract] || []), handler];
+        return acc;
+      },
+      {} as Record<string, TopicHandler[]>
+    );
 
     let errors = [];
     for (const contract in handlersByContract) {
       const topics = handlersByContract[contract]
-        .map((h) => h.signature)
-        .map((s) => ethers.id(s));
+        .map((h: any) => h.signature)
+        .map((s: any) => ethers.id(s));
       const logs = await provider.getLogs({
         fromBlock,
         toBlock,

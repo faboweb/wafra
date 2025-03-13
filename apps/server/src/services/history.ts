@@ -1,5 +1,5 @@
 import { CurrencyRate, Transaction } from "@prisma/client";
-import prisma from "../db.js";
+import prisma from "@/db.js";
 
 export interface HistoricalBalance {
   timestamp: Date;
@@ -28,8 +28,9 @@ export async function getTransactionsWithConversionRate(
   return await addConversionRates(transactions, currency);
 }
 
-async function addConversionRates(
-  transactions: Transaction[],
+// TODO refactor into other file
+export async function addConversionRates(
+  transactions: Partial<Transaction>[],
   currency: string
 ): Promise<TransactionWithConversionRate[]> {
   if (transactions.length === 0) {

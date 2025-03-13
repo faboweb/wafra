@@ -14,6 +14,9 @@ importers:
       '@aerodrome-finance/slipstream':
         specifier: github:aerodrome-finance/slipstream
         version: https://codeload.github.com/aerodrome-finance/slipstream/tar.gz/5b529b4d418a6d2e394391a153dfbd0c98de937d
+      '@morpho-org/morpho-blue':
+        specifier: github:morpho-org/morpho-blue
+        version: https://codeload.github.com/morpho-org/morpho-blue/tar.gz/9e2b0755b47bbe5b09bf1be8f00e060d4eab6f1c
       '@openzeppelin/contracts':
         specifier: ^5.2.0
         version: 5.2.0
@@ -33,6 +36,9 @@ importers:
       '@nomicfoundation/hardhat-chai-matchers':
         specifier: ^2.0.8
         version: 2.0.8(@nomicfoundation/hardhat-ethers@3.0.8(ethers@6.13.5)(hardhat@2.22.18))(chai@5.1.2)(ethers@6.13.5)(hardhat@2.22.18)
+      '@nomicfoundation/hardhat-network-helpers':
+        specifier: ^1.0.12
+        version: 1.0.12(hardhat@2.22.18)
       '@nomicfoundation/hardhat-verify':
         specifier: ^2.0.12
         version: 2.0.12(hardhat@2.22.18)
@@ -249,6 +255,10 @@ packages:
     resolution: {integrity: sha512-tghyZKLHZjcdlDqCA3gNZmLeR0XvOE9U1qoQO9ohyAZT6Pya+H9vkBPcsyXytmYLNgVoin7CKCmweo/R43V+tQ==}
     engines: {node: '>=12.0.0'}
 
+  '@morpho-org/morpho-blue@https://codeload.github.com/morpho-org/morpho-blue/tar.gz/9e2b0755b47bbe5b09bf1be8f00e060d4eab6f1c':
+    resolution: {tarball: https://codeload.github.com/morpho-org/morpho-blue/tar.gz/9e2b0755b47bbe5b09bf1be8f00e060d4eab6f1c}
+    version: 1.0.0
+
   '@noble/curves@1.2.0':
     resolution: {integrity: sha512-oYclrNgRaM9SsBUBVbb8M6DTV7ZHRTKugureoYEncY5c65HOmRzvSiTE3y5CYaPYJA/GVkrhXEoF0M3Ya9PMnw==}
 
@@ -333,6 +343,11 @@ packages:
     peerDependencies:
       ethers: ^6.1.0
       hardhat: ^2.0.0
+
+  '@nomicfoundation/hardhat-network-helpers@1.0.12':
+    resolution: {integrity: sha512-xTNQNI/9xkHvjmCJnJOTyqDSl8uq1rKb2WOVmixQxFtRd7Oa3ecO8zM0cyC2YmOK+jHB9WPZ+F/ijkHg1CoORA==}
+    peerDependencies:
+      hardhat: ^2.9.5
 
   '@nomicfoundation/hardhat-verify@2.0.12':
     resolution: {integrity: sha512-Lg3Nu7DCXASQRVI/YysjuAX2z8jwOCbS0w5tz2HalWGSTZThqA0v9N0v0psHbKNqzPJa8bNOeapIVSziyJTnAg==}
@@ -968,6 +983,12 @@ packages:
   ethers-decode-error@2.1.3:
     resolution: {integrity: sha512-x27u04XC/s8MRpuqiylIXbj4KMrt/5clYS2nle1b0bgbWFuoUZocDzjfXEfc5KzVmCQuITD9elqyO2VyxTGwdw==}
     engines: {node: '>=16'}
+    peerDependencies:
+      ethers: ^6.0.0
+
+  ethers-maths@4.3.0:
+    resolution: {integrity: sha512-Eod2zfJ6w1KWRhBGvB9PqB0VtCh9hWUwhjjsn7nqbfdV8Px98nVZ56Cyxcr2nEzwRcO/YzI7X05c8uOlsEZn1Q==}
+    engines: {node: '>=12.0'}
     peerDependencies:
       ethers: ^6.0.0
 
@@ -2149,6 +2170,15 @@ snapshots:
       tweetnacl: 1.0.3
       tweetnacl-util: 0.15.1
 
+  '@morpho-org/morpho-blue@https://codeload.github.com/morpho-org/morpho-blue/tar.gz/9e2b0755b47bbe5b09bf1be8f00e060d4eab6f1c':
+    dependencies:
+      ethers: 6.13.5
+      ethers-maths: 4.3.0(ethers@6.13.5)
+      lodash: 4.17.21
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   '@noble/curves@1.2.0':
     dependencies:
       '@noble/hashes': 1.3.2
@@ -2222,6 +2252,11 @@ snapshots:
       lodash.isequal: 4.5.0
     transitivePeerDependencies:
       - supports-color
+
+  '@nomicfoundation/hardhat-network-helpers@1.0.12(hardhat@2.22.18)':
+    dependencies:
+      ethereumjs-util: 7.1.5
+      hardhat: 2.22.18
 
   '@nomicfoundation/hardhat-verify@2.0.12(hardhat@2.22.18)':
     dependencies:
@@ -3101,6 +3136,10 @@ snapshots:
       rlp: 2.2.7
 
   ethers-decode-error@2.1.3(ethers@6.13.5):
+    dependencies:
+      ethers: 6.13.5
+
+  ethers-maths@4.3.0(ethers@6.13.5):
     dependencies:
       ethers: 6.13.5
 

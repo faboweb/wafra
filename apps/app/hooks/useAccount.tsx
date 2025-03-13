@@ -4,7 +4,8 @@ import countries from "@/constants/countries";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as LocalAuthentication from "expo-local-authentication";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { query } from "@/data/query";
 interface Account {
   country: string;
   address: string;
@@ -30,8 +31,22 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   const router = useRouter();
 
-  const signOut = () => {
-    router.push("../");
+  React.useEffect(() => {
+    const getAccount = async () => {
+      const result = await SecureStore.getItemAsync("account");
+      if (result) {
+        setAccount(JSON.parse(result));
+      }
+    };
+
+    getAccount();
+  }, []);
+
+  const signOut = async () => {
+    await SecureStore.deleteItemAsync("account");
+    await AsyncStorage.removeItem("account");
+
+    router.push("/(onboard)");
 
     setAccount(null);
     setDepositAddress(null);
@@ -44,8 +59,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     await SecureStore.setItemAsync("account", JSON.stringify(account), {
       requireAuthentication: true,
     });
+    await AsyncStorage.setItem("account", "true");
 
-    router.push("../(dashboard)");
+    router.push("/(dashboard)");
   };
 
   const unlock = async () => {
@@ -55,7 +71,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         const result = await SecureStore.getItemAsync("account", {
           requireAuthentication: true,
         });
-        console.log("result", result);
         if (!result) {
           router.push("/(onboard)");
           return;
@@ -69,22 +84,13 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   };
 
   React.useEffect(() => {
+    console.log("getDepositAddress", account);
     const getDepositAddress = async () => {
       if (!account?.address) return;
-      try {
-        const response = await fetch(
-          `${process.env.EXPO_PUBLIC_API_URL}/deposit/address/${account.address}`,
-          {
-            headers: {
-              Authorization: process.env.EXPO_PUBLIC_API_KEY || "",
-            },
-          }
-        );
-        const data = await response.json();
-        setDepositAddress(data.depositAddress);
-      } catch (error) {
-        console.error("Error fetching deposit address:", error);
-      }
+      const response = await query(
+        `${process.env.EXPO_PUBLIC_API_URL}/deposit/address/${account.address}`
+      );
+      setDepositAddress(response.depositAddress);
     };
 
     getDepositAddress();

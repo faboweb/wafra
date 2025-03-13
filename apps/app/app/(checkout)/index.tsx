@@ -1,81 +1,46 @@
 import * as React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View, Text } from "react-native";
 import Hero from "@/components/Hero";
 import UnderlineInput from "@/components/UnderlineInput";
 import NumberKeyboard from "@/components/NumberKeyboard";
 import Btn from "@/components/Btn";
 import { Color, Border, Padding, Gap } from "../../GlobalStyles";
 import { useRouter } from "expo-router";
-import {
-  onRampSDKNativeEvent,
-  startOnrampSDK,
-} from "@onramp.money/onramp-react-native-sdk";
 import IconButton from "@/components/IconButton";
 import { useAccount } from "@/hooks/useAccount";
-import countries, { onrampCurrencyCodes } from "@/constants/countries";
+import countries from "@/constants/countries";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useRoute } from "@react-navigation/native";
+import { useInsetColor } from "@/hooks/useInsetColor";
 
-const SendMoneyPeopleStep = () => {
+const CheckoutStart = () => {
   const [amount, setAmount] = React.useState(100);
   const router = useRouter();
+  const route = useRoute();
   const { account, depositAddress } = useAccount();
-  const insets = useSafeAreaInsets();
   const country = countries.find((c) => c.value === account?.country);
+  const params = route.params as {
+    error: boolean;
+  };
+  const { setInsetColors } = useInsetColor();
+
+  React.useEffect(() => {
+    setInsetColors(
+      Color.colorLightgoldenrodyellow,
+      Color.colorLightgoldenrodyellow
+    );
+  }, []);
 
   const deposit = () => {
     if (!country) return;
     if (!depositAddress) return;
-    // @ts-ignore
-    const onrampCurrency = onrampCurrencyCodes[country.currency];
-    if (!onrampCurrency) {
-      throw new Error("Onramp doesn't support currency");
-    }
-    const prefix = country.phoneCode;
-    const phoneNumber = encodeURIComponent(
-      prefix + "-" + account?.phone.trim().slice(prefix.length - 1)
+
+    const orderId = Math.random().toString(36).substring(2, 15);
+
+    router.push(
+      `/Checkout?orderId=${orderId}&amount=${amount}&currency=${country.currency}`
     );
-    console.log(phoneNumber);
-    startOnrampSDK({
-      appId: 1424661, // Replace this with the appID obtained during onboarding
-      walletAddress: depositAddress, // Replace with the user's wallet address
-      flowType: 1, // 1 -> Onramp, 2 -> Offramp, 3 -> Merchant checkout
-      // fiatType: 1, // 1 -> INR, 2 -> TRY (Turkish Lira) etc. visit Fiat Currencies page to view full list of supported fiat currencies
-      // paymentMethod: 1, // 1 -> Instant transfer (UPI), 2 -> Bank transfer (IMPS/FAST)
-      // ... Include other configuration options here
-      addressTag: account?.address,
-      fiatAmount: amount,
-      fiatType: onrampCurrency,
-      coinCode: "116",
-      network: "8453",
-      phoneNumber,
-    });
   };
-
-  React.useEffect(() => {
-    console.log("account", account);
-  }, [account]);
-
-  React.useEffect(() => {
-    const onRampEventListener = onRampSDKNativeEvent.addListener(
-      "widgetEvents",
-      async (eventData) => {
-        if (
-          [
-            "ONRAMP_WIDGET_CLOSE_REQUEST",
-            "ONRAMP_WIDGET_CLOSE_REQUEST_CONFIRMED",
-          ].includes(eventData.type)
-        ) {
-          return;
-        }
-        console.log("Received onRampEvent:", eventData);
-        // router.push("./DepositSuccess");
-      }
-    );
-
-    return () => {
-      onRampEventListener.remove();
-    };
-  }, []);
 
   return (
     <View style={styles.sendMoneyPeopleStep2}>
@@ -84,15 +49,17 @@ const SendMoneyPeopleStep = () => {
           alignItems: "flex-start",
           flexDirection: "row",
           alignSelf: "stretch",
-          paddingTop: insets.top,
         }}
       >
-        <Pressable onPress={() => router.push("/(dashboard)")}>
+        <Pressable onPress={() => router.back()}>
           <IconButton image={require("@/assets/arrow-left.svg")} />
         </Pressable>
       </View>
       <Hero />
       <UnderlineInput value={amount} prefix={country?.currency} />
+      {params.error && (
+        <Text style={{ color: "red" }}>Error: {params.error}</Text>
+      )}
       <View
         style={[
           styles.frame,
@@ -145,7 +112,6 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   sendMoneyPeopleStep2: {
-    borderRadius: Border.br_13xl,
     backgroundColor: Color.colorLightgoldenrodyellow,
     flex: 1,
     width: "100%",
@@ -158,4 +124,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SendMoneyPeopleStep;
+export default CheckoutStart;

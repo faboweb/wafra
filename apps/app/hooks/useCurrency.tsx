@@ -17,10 +17,12 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
   const [currencySymbol, setCurrencySymbol] = useState<string>("€");
 
   const formatCurrency = (amount: number | bigint) => {
-    return amount.toLocaleString(undefined, {
-      style: "currency",
-      currency: currency,
-    });
+    return (
+      amount?.toLocaleString(undefined, {
+        style: "currency",
+        currency: currency,
+      }) || "0"
+    );
   };
 
   React.useEffect(() => {

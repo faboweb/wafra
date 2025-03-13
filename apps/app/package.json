@@ -23,6 +23,7 @@
     "@react-navigation/native": "^7.0.14",
     "@tanstack/react-query": "^5.66.11",
     "@thirdweb-dev/react-native-adapter": "^1.5.1",
+    "@transak/react-native-sdk": "^2.0.5",
     "@walletconnect/react-native-compat": "^2.17.3",
     "amazon-cognito-identity-js": "^6.3.12",
     "expo": "^52.0.23",
@@ -37,12 +38,13 @@
     "expo-local-authentication": "~15.0.2",
     "expo-localization": "^16.0.1",
     "expo-modules-core": "^2.1.2",
-    "expo-router": "^4.0.15",
+    "expo-router": "^4.0.17",
     "expo-secure-store": "~14.0.1",
     "expo-splash-screen": "^0.29.18",
     "expo-status-bar": "^2.0.0",
     "expo-system-ui": "^4.0.6",
     "expo-web-browser": "^14.0.1",
+    "libphonenumber-js": "^1.12.4",
     "node-cache": "^5.1.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -52,16 +54,18 @@
     "react-native-gesture-handler": "2.19.0",
     "react-native-get-random-values": "1.11.0",
     "react-native-image-picker": "7.1.2",
+    "react-native-inappbrowser-reborn": "^3.7.0",
     "react-native-input-select": "^2.1.1",
     "react-native-mmkv": "^2.12.2",
     "react-native-passkey": "^3.0.0-beta2",
     "react-native-popup-menu": "^0.16.1",
     "react-native-quick-crypto": "0.7.0",
-    "react-native-reanimated": "^3.16.6",
+    "react-native-reanimated": "^3.16.7",
     "react-native-safe-area-context": "4.10.1",
     "react-native-screens": "^4.4.0",
     "react-native-svg": "15.2.0",
     "react-native-web": "0.19.12",
+    "react-native-webview": "^13.13.2",
     "thirdweb": "^5.72.0"
   },
   "devDependencies": {
@@ -76,5 +80,10 @@
     "react-test-renderer": "18.2.0",
     "typescript": "~5.3.3"
   },
-  "private": true
+  "private": true,
+  "pnpm": {
+    "overrides": {
+      "query-string": "^7.1.3"
+    }
+  }
 }

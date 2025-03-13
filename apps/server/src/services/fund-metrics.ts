@@ -1,5 +1,5 @@
-import { fundContract, wfrToken } from "../contracts.js";
-import prisma from "../db.js";
+import { fundContract, wfrToken } from "../contracts";
+import prisma from "@/db";
 
 async function updateFundMetrics() {
   console.log("Updating fund metrics");

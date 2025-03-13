@@ -42,6 +42,30 @@ async function main() {
   await tx.wait();
 
   console.log("AAVE strategy added");
+
+  const MorphoStrategy = await ethers.getContractFactory("MorphoStrategy");
+  const morphoStrategy = MorphoStrategy.attach(
+    process.env.MORPHO_STRATEGY_ADDRESS
+  );
+
+  tx = await morphoStrategy.grantRole(
+    controllerRoleHash,
+    process.env.FUND_CONTRACT_ADDRESS
+  );
+  await tx.wait();
+
+  console.log(
+    "Fund is Controller",
+    await morphoStrategy.hasRole(
+      controllerRoleHash,
+      process.env.FUND_CONTRACT_ADDRESS
+    )
+  );
+
+  tx = await fundContract.addStrategy(process.env.MORPHO_STRATEGY_ADDRESS, 10);
+  await tx.wait();
+
+  console.log("Morpho strategy added");
 }
 
 main()

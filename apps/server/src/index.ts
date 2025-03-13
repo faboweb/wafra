@@ -1,7 +1,7 @@
-import "./api.js";
-import "./services/tx-listener.js";
-import "./query.js";
-import "./services/fund-metrics.js";
+import "./api";
+import "./services/tx-listener";
+import "./services/fund-metrics";
+// TODO move non active services to different folder
 
 // Start the server
 console.log("Starting server...");

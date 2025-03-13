@@ -4,9 +4,18 @@ import { StyleSheet, Text, View } from "react-native";
 import Btn from "@/components/Btn";
 import { FontSize, FontFamily, Color, Border } from "@/GlobalStyles";
 import { useRouter } from "expo-router";
+import { useInsetColor } from "@/hooks/useInsetColor";
 
 const Onboarding = () => {
   const router = useRouter();
+  const { setInsetColors } = useInsetColor();
+
+  React.useEffect(() => {
+    setInsetColors(
+      Color.colorLightgoldenrodyellow,
+      Color.colorLightgoldenrodyellow
+    );
+  }, []);
 
   return (
     <View style={styles.onboarding}>
