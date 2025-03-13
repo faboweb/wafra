@@ -1,0 +1,13 @@
+# This file defines ownership of code in the repository
+# Each line is a file pattern followed by one or more owners
+# See https://help.github.com/articles/about-codeowners/ for more information
+
+# Default owners for everything in the repo
+* @faboweb
+
+# Specific owners for certain file types
+*.sol @faboweb
+*.ts @faboweb
+*.js @faboweb
+*.json @faboweb
+*.md @faboweb 
