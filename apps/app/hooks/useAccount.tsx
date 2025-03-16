@@ -1,11 +1,10 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { useCurrency } from "./useCurrency";
 import countries from "@/constants/countries";
-import { useRouter } from "expo-router";
-import * as SecureStore from "expo-secure-store";
-import * as LocalAuthentication from "expo-local-authentication";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter as useExpoRouter } from "expo-router"; // For Expo Router on mobile and web
 import { query } from "@/data/query";
+import { useStorage } from "./useStorage";
+
 interface Account {
   country: string;
   address: string;
@@ -17,25 +16,34 @@ interface AccountContextProps {
   depositAddress: string | null;
   signIn: (account: Account) => void;
   signOut: () => void;
-  unlock: () => void;
+  isMobile: boolean;
 }
 
 const AccountContext = createContext<AccountContextProps | undefined>(
   undefined
 );
 
+const isMobile =
+  // @ts-ignore
+  typeof window !== "undefined" && typeof window.Expo === "object";
+
 export const AccountProvider = ({ children }: { children: ReactNode }) => {
   const [account, setAccount] = useState<Account | null>(null);
   const { currency, setCurrency } = useCurrency();
   const [depositAddress, setDepositAddress] = useState<string | null>(null);
-
-  const router = useRouter();
+  const router = useExpoRouter();
+  const storage = useStorage();
 
   React.useEffect(() => {
+    // Fetch account from SecureStore if available
     const getAccount = async () => {
-      const result = await SecureStore.getItemAsync("account");
-      if (result) {
-        setAccount(JSON.parse(result));
+      try {
+        const result = await storage.getItem<Account>("account");
+        if (result) {
+          setAccount(result);
+        }
+      } catch (error) {
+        console.error("Error fetching account from storage", error);
       }
     };
 
@@ -43,58 +51,30 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signOut = async () => {
-    await SecureStore.deleteItemAsync("account");
-    await AsyncStorage.removeItem("account");
+    try {
+      // Remove account from SecureStore on mobile and AsyncStorage on web
+      await storage.removeItem("account");
 
-    router.push("/(onboard)");
+      setAccount(null);
+      setDepositAddress(null);
+      setCurrency("USD");
 
-    setAccount(null);
-    setDepositAddress(null);
-    setCurrency("USD");
-  };
-
-  const signIn = async (account: Account) => {
-    setAccount(account);
-
-    await SecureStore.setItemAsync("account", JSON.stringify(account), {
-      requireAuthentication: true,
-    });
-    await AsyncStorage.setItem("account", "true");
-
-    router.push("/(dashboard)");
-  };
-
-  const unlock = async () => {
-    const faceIdResult = await LocalAuthentication.authenticateAsync();
-    if (faceIdResult.success) {
-      try {
-        const result = await SecureStore.getItemAsync("account", {
-          requireAuthentication: true,
-        });
-        if (!result) {
-          router.push("/(onboard)");
-          return;
-        }
-        setAccount(JSON.parse(result));
-        router.push("/(dashboard)");
-      } catch (err) {
-        console.log("failed", err);
-      }
+      router.push("/(onboard)");
+    } catch (error) {
+      console.error("Error signing out", error);
     }
   };
 
-  React.useEffect(() => {
-    console.log("getDepositAddress", account);
-    const getDepositAddress = async () => {
-      if (!account?.address) return;
-      const response = await query(
-        `${process.env.EXPO_PUBLIC_API_URL}/deposit/address/${account.address}`
-      );
-      setDepositAddress(response.depositAddress);
-    };
+  const signIn = async (account: Account) => {
+    try {
+      await storage.setItem("account", account);
+      setAccount(account);
 
-    getDepositAddress();
-  }, [account?.address]);
+      router.push("/(dashboard)");
+    } catch (error) {
+      console.error("Error signing in", error);
+    }
+  };
 
   React.useEffect(() => {
     if (account?.country) {
@@ -105,9 +85,27 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [account?.country]);
 
+  // Get deposit address from API
+  React.useEffect(() => {
+    if (!account || !account.address) return;
+
+    const getDepositAddress = async () => {
+      try {
+        const response = await query(
+          `${process.env.EXPO_PUBLIC_API_URL}/deposit/address/${account.address}`
+        );
+        setDepositAddress(response.depositAddress);
+      } catch (error) {
+        console.error("Error fetching deposit address", error);
+      }
+    };
+
+    getDepositAddress();
+  }, [account?.address]);
+
   return (
     <AccountContext.Provider
-      value={{ account, depositAddress, signIn, signOut, unlock }}
+      value={{ account, depositAddress, signIn, signOut, isMobile }}
     >
       {children}
     </AccountContext.Provider>
