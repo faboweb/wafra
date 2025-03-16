@@ -7,16 +7,34 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../interfaces/IStrategy.sol";
-import "hardhat/console.sol";   
+import "hardhat/console.sol";
 
 interface IMorphoVault is IERC20 {
-    function deposit(uint256 assets, address receiver) external returns (uint256 shares);
-    function withdraw(uint256 assets, address receiver, address owner) external returns (uint256 shares);
-    function redeem(uint256 shares, address receiver, address owner) external returns (uint256 assets);
+    function deposit(
+        uint256 assets,
+        address receiver
+    ) external returns (uint256 shares);
+
+    function withdraw(
+        uint256 assets,
+        address receiver,
+        address owner
+    ) external returns (uint256 shares);
+
+    function redeem(
+        uint256 shares,
+        address receiver,
+        address owner
+    ) external returns (uint256 assets);
+
     function maxDeposit(address) external view returns (uint256);
+
     function maxWithdraw(address owner) external view returns (uint256);
+
     function previewRedeem(uint256 shares) external view returns (uint256);
+
     function previewWithdraw(uint256 assets) external view returns (uint256);
+
     function asset() external view returns (address);
 }
 
@@ -64,7 +82,9 @@ contract MorphoStrategy is
     // Actions
     //-------------------------------------------------------------------------
 
-    function deposit(uint256 amount) external override onlyRole(CONTROLLER_ROLE) {
+    function deposit(
+        uint256 amount
+    ) external override onlyRole(CONTROLLER_ROLE) {
         asset.transferFrom(msg.sender, address(this), amount);
         asset.approve(address(vault), amount);
         vault.deposit(amount, address(this));
@@ -102,15 +122,21 @@ contract MorphoStrategy is
     // Emergency Functions
     //--------------------------------------------------------------------------
 
-    function emergencyWithdraw() external onlyRole(ADMIN_ROLE) {
+    function emergencyWithdraw()
+        external
+        onlyRole(CONTROLLER_ROLE)
+        returns (uint256)
+    {
         uint256 shares = vault.balanceOf(address(this));
         if (shares > 0) {
             vault.redeem(shares, address(this), address(this));
         }
-        
+
         uint256 balance = asset.balanceOf(address(this));
         if (balance > 0) {
             asset.transfer(msg.sender, balance);
         }
+
+        return balance;
     }
 }

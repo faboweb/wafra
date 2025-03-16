@@ -66,7 +66,7 @@ contract AaveStrategy is
     function withdraw(
         uint256 amount,
         address receiver
-    ) external override onlyRole(CONTROLLER_ROLE) returns (uint256) {
+    ) public override onlyRole(CONTROLLER_ROLE) returns (uint256) {
         uint256 balance = aavePool.withdraw(
             address(usdc),
             amount,
@@ -80,7 +80,7 @@ contract AaveStrategy is
     // Queries
     //--------------------------------------------------------------------------
 
-    function totalValue() external view override returns (uint256) {
+    function totalValue() public view override returns (uint256) {
         return aToken.balanceOf(address(this));
     }
 
@@ -95,4 +95,18 @@ contract AaveStrategy is
     function _authorizeUpgrade(
         address newImplementation
     ) internal override onlyRole(ADMIN_ROLE) {}
+
+    //--------------------------------------------------------------------------
+    // Emergency Functions
+    //--------------------------------------------------------------------------
+
+    function emergencyWithdraw()
+        external
+        onlyRole(CONTROLLER_ROLE)
+        returns (uint256)
+    {
+        uint256 balance = totalValue();
+        withdraw(balance, msg.sender);
+        return balance;
+    }
 }
