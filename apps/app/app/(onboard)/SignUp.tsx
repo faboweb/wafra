@@ -22,6 +22,10 @@ const SignUp = () => {
   const [error, setError] = React.useState("");
 
   const signUp = async () => {
+    if (!phone) {
+      setError("Please enter a valid phone number and country code");
+      return;
+    }
     try {
       console.log("Sending code to", phone);
       await preAuthenticate({

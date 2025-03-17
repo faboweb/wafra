@@ -17,6 +17,8 @@
       "bundleIdentifier": "com.wafra.demo",
       "associatedDomains": [
         "webcredentials:wafra.money",
+        "applinks:wafra.money",
+        "webcredentials:wafra.money",
         "applinks:wafra.money"
       ],
       "infoPlist": {
@@ -28,7 +30,8 @@
               "NSIncludesSubdomains": true
             }
           }
-        }
+        },
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
