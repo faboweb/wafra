@@ -57,7 +57,7 @@ const Onboarding = () => {
           marginRight: 24,
         }}
         caption="Get Started"
-        onButtonPress={() => router.push("/SignUp")}
+        onButtonPress={() => router.push("/(onboard)/SignUp")}
       />
     </View>
   );

@@ -1,4 +1,5 @@
 import { Platform } from "react-native";
+// @ts-ignore
 import { useNavigate, useLocation, useRouter } from "router";
 
 type RouterActions = {

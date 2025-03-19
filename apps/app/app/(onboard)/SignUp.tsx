@@ -3,14 +3,7 @@ import { Image } from "@/components/CrossPlatformImage";
 import { StyleSheet, Text, View } from "react-native";
 import PhoneForm from "@/components/PhoneForm";
 import Btn from "@/components/Btn";
-import {
-  FontSize,
-  FontFamily,
-  Color,
-  Gap,
-  Padding,
-  Border,
-} from "../../GlobalStyles";
+import { FontSize, FontFamily, Color, Gap, Padding } from "../../GlobalStyles";
 import { useRouter } from "@/hooks/useRouter";
 import { preAuthenticate } from "thirdweb/wallets";
 import { client } from "@/constants/thirdweb";
