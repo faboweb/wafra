@@ -1,0 +1,80 @@
+@font-face {
+    font-family: 'DMSans';
+    src: url('/assets/fonts/DMSans-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'DMSans';
+    src: url('/assets/fonts/DMSans-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/Poppins-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  } 
+  
+  @font-face {
+    font-family: 'Poppins-Bold';
+    src: url('/assets/fonts/Poppins-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Poppins-Medium';
+    src: url('/assets/fonts/Poppins-Medium.ttf') format('truetype');
+    font-weight: medium;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Poppins-SemiBold';
+    src: url('/assets/fonts/Poppins-SemiBold.ttf') format('truetype');
+    font-weight: semi-bold;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Poppins-Light';
+    src: url('/assets/fonts/Poppins-Light.ttf') format('truetype');
+    font-weight: light;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Inter';
+    src: url('/assets/fonts/Inter-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Inter-Bold';
+    src: url('/assets/fonts/Inter-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Inter-SemiBold';
+    src: url('/assets/fonts/Inter-SemiBold.ttf') format('truetype');
+    font-weight: semi-bold;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Inter-Medium';
+    src: url('/assets/fonts/Inter-Medium.ttf') format('truetype');
+    font-weight: medium;
+    font-style: normal;
+  }
+
+body {
+  font-family: "DMSans", sans-serif;
+}
