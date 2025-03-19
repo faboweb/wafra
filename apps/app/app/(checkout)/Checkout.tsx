@@ -9,26 +9,22 @@ import {
   EventTypes,
 } from "@transak/react-native-sdk";
 import { useAccount } from "@/hooks/useAccount";
-import { useRoute } from "@react-navigation/native";
 import { useState } from "react";
 import { query } from "@/data/query";
 
 export default function Checkout() {
   const router = useRouter();
-  const route = useRoute();
   const { depositAddress } = useAccount();
-  const params = route.params as {
-    orderId: string;
-    amount: number;
-    currency: string;
-  };
+  const orderId = router.getParam("orderId");
+  const amount = router.getParam("amount");
+  const currency = router.getParam("currency");
   const [orderProcessing, setOrderProcessing] = useState(false);
   const transakConfig: TransakConfig = {
     apiKey: process.env.EXPO_PUBLIC_TRANSAK_API_KEY!,
     environment: Environments.STAGING,
-    partnerOrderId: params.orderId,
-    fiatAmount: params.amount,
-    fiatCurrency: params.currency,
+    partnerOrderId: orderId!,
+    fiatAmount: Number(amount!),
+    fiatCurrency: currency!,
     network: "base",
     cryptoCurrencyCode: "USDC",
     walletAddress: depositAddress!,
@@ -40,12 +36,9 @@ export default function Checkout() {
 
   const storeOrderId = async () => {
     try {
-      await query(
-        `${process.env.EXPO_PUBLIC_API_URL}/orders/${params.orderId}`,
-        {
-          method: "POST",
-        }
-      );
+      await query(`${process.env.EXPO_PUBLIC_API_URL}/orders/${orderId}`, {
+        method: "POST",
+      });
     } catch (err: any) {
       throw new Error("Order wasn't tracked: ", err.message);
     }

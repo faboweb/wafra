@@ -4,28 +4,21 @@ import { useRouter } from "@/hooks/useRouter";
 import {
   TransakWebView,
   Environments,
-  Events,
   TransakConfig,
   EventTypes,
 } from "@transak/react-native-sdk";
-import { useAccount } from "@/hooks/useAccount";
-import { useRoute } from "@react-navigation/native";
 
 export default function Checkout() {
   const router = useRouter();
-  const route = useRoute();
-  const { depositAddress } = useAccount();
-  const params = route.params as {
-    orderId: string;
-    amount: number;
-    currency: string;
-  };
+  const orderId = router.getParam("orderId");
+  const amount = router.getParam("amount");
+  const currency = router.getParam("currency");
 
   const transakConfig: TransakConfig = {
     apiKey: process.env.EXPO_PUBLIC_TRANSAK_API_KEY!,
     environment: Environments.STAGING,
-    partnerOrderId: params.orderId,
-    cryptoAmount: params.amount,
+    partnerOrderId: orderId!,
+    cryptoAmount: Number(amount!),
     network: "base",
     cryptoCurrencyCode: "USDC",
     productsAvailed: "SELL",

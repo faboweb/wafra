@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StyleSheet, View } from "react-native";
-import { LinearGradient } from "@/components/CrossPlatformGradient";
+import { CrossPlatformGradient } from "@/components/CrossPlatformGradient";
 import Header from "@/components/Header";
 import Overview from "@/components/Overview";
 // import HistoryList from "@/components/HistoryList";
@@ -21,32 +21,35 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <>
-      <LinearGradient
-        style={styles.dashboard}
-        locations={[0, 0.38]}
+    <View style={styles.container}>
+      <CrossPlatformGradient
+        style={styles.gradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 0.38 }}
         colors={["#dfffdf", "#fff"]}
-      >
-        <Header />
-        <Overview />
-        {/* <HistoryList /> */}
-        <TransactionHistory />
-      </LinearGradient>
+      />
+      <Header />
+      <Overview />
+      <TransactionHistory />
       <Footer />
-    </>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  dashboard: {
+  gradient: {
+    width: "100%",
+    height: "100%",
+    position: "absolute",
+    top: 0,
+    left: 0,
+  },
+  container: {
     flex: 1,
     width: "100%",
-    height: 812, // TODO
-    overflow: "hidden",
-    paddingHorizontal: Padding.p_5xl,
-    gap: Gap.gap_sm,
+    height: "100%",
     backgroundColor: "transparent",
-    alignItems: "center",
+    padding: Padding.p_5xl,
   },
 });
 

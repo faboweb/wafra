@@ -1,67 +1,38 @@
 import * as React from "react";
-import { Routes, Route } from "react-router-dom";
-import { Suspense, lazy } from "react";
-
-// Lazy load web components
-// const Onboard = lazy(() => import("./(onboard)"));
-// const Dashboard = lazy(() => import("./(dashboard)"));
-// const Checkout = lazy(() => import("./(checkout)"));
-// const Withdraw = lazy(() => import("./(withdraw)"));
-import Onboard from "./(onboard)";
-import OnboardSignUp from "./(onboard)/SignUp";
-import OnboardFingerprint from "./(onboard)/Fingerprint";
-import OnboardPhoneVerification from "./(onboard)/PhoneVerification";
-import Dashboard from "./(dashboard)";
-import Checkout from "./(checkout)";
-import CheckoutCheckout from "./(checkout)/Checkout";
-import CheckoutDepositing from "./(checkout)/Depositing";
-import CheckoutDepositSuccess from "./(checkout)/DepositSuccess";
-import Withdraw from "./(withdraw)";
-import WithdrawDepositSuccess from "./(withdraw)/WithdrawSuccess";
-import WithdrawWithdraw from "./(withdraw)/Withdraw";
+import { StyleSheet, View } from "react-native";
 import { Providers } from "@/providers/providers";
+import WebRouter from "./_router.web";
 
 export default function WebLayout() {
   return (
-    <Providers>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Routes>
-          <Route path="/" element={<Onboard />} />
-          <Route path="/(dashboard)/*" element={<Dashboard />} />
-          <Route path="/(checkout)/*" element={<Checkout />} />
-          <Route
-            path="/(checkout)/CheckoutCheckout"
-            element={<CheckoutCheckout />}
-          />
-          <Route
-            path="/(checkout)/CheckoutDepositing"
-            element={<CheckoutDepositing />}
-          />
-          <Route
-            path="/(checkout)/CheckoutDepositSuccess"
-            element={<CheckoutDepositSuccess />}
-          />
-          <Route path="/(withdraw)/*" element={<Withdraw />} />
-          <Route
-            path="/(withdraw)/WithdrawDepositSuccess"
-            element={<WithdrawDepositSuccess />}
-          />
-          <Route
-            path="/(withdraw)/WithdrawWithdraw"
-            element={<WithdrawWithdraw />}
-          />
-          <Route path="/(onboard)/*" element={<Onboard />} />
-          <Route path="/(onboard)/SignUp" element={<OnboardSignUp />} />
-          <Route
-            path="/(onboard)/Fingerprint"
-            element={<OnboardFingerprint />}
-          />
-          <Route
-            path="/(onboard)/PhoneVerification"
-            element={<OnboardPhoneVerification />}
-          />
-        </Routes>
-      </Suspense>
-    </Providers>
+    <div style={styles.container}>
+      <div style={styles.content}>
+        <Providers>
+          <WebRouter />
+        </Providers>
+      </div>
+    </div>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100%",
+    width: "100%",
+    backgroundColor: "#f5f5f5",
+  },
+  content: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    maxWidth: "430px",
+    minHeight: "100%",
+    backgroundColor: "white",
+    boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+    flex: 1,
+  },
+});

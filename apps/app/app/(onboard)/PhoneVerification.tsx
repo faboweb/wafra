@@ -1,25 +1,20 @@
 import * as React from "react";
 import { Image } from "@/components/CrossPlatformImage";
-import { Pressable, StyleSheet, Text, View, Platform } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import PinInput from "@/components/PinInput";
 import NumberKeyboard from "@/components/NumberKeyboard";
 import Btn from "@/components/Btn";
 import { FontSize, FontFamily, Color, Padding, Border } from "@/GlobalStyles";
 import { useRouter } from "@/hooks/useRouter";
-import { useSearchParams } from "react-router-dom";
 import { inAppWallet, preAuthenticate } from "thirdweb/wallets";
 import { client } from "@/constants/thirdweb";
 import { useAccount } from "@/hooks/useAccount";
 
 const PhoneVerification = () => {
   const router = useRouter();
-  const searchParams =
-    Platform.OS === "web"
-      ? useSearchParams()
-      : { get: (key: string) => router.getParam(key) };
 
-  const phone = searchParams.get("phone") || "";
-  const country = searchParams.get("country") || "";
+  const phone = router.getParam("phone") || "";
+  const country = router.getParam("country") || "";
 
   const [otp, setOTP] = React.useState<number>();
   const { signIn } = useAccount();
@@ -67,7 +62,7 @@ const PhoneVerification = () => {
           <View style={styles.frame}>
             <Pressable onPress={() => router.back()}>
               <Image
-                source={require("@/assets/icons.svg")}
+                source={"@/assets/icons.svg"}
                 style={[
                   styles.icons,
                   {

@@ -2,7 +2,7 @@ import * as React from "react";
 import { Platform } from "react-native";
 
 const WebLayout = React.lazy(() => import("./_layout.web"));
-const MobileLayout = React.lazy(() => import("./_layout_inner"));
+const MobileLayout = React.lazy(() => import("./_router.mobile"));
 
 function App() {
   console.log("Platform.OS", Platform.OS);

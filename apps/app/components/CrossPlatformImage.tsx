@@ -33,7 +33,10 @@ export function Image({ source, style, contentFit }: Props) {
       ...webStyle,
       objectFit: contentFit, // Map contentFit to CSS object-fit
     };
-    return <img src={source} style={normalizedStyle} alt="" />;
+    const extendedPath = source
+      .replace("@/assets", "/assets")
+      .replace("@assets", "/assets");
+    return <img src={extendedPath} style={normalizedStyle} alt="" />;
   }
 
   return <ExpoImage source={source} style={style} contentFit={contentFit} />;

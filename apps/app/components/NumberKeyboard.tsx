@@ -18,7 +18,7 @@ const NumberKeyboard = ({
     <View style={styles.numberKeyboard}>
       {showDribble && (
         <Image
-          source={require("@/assets/vector-2.svg")}
+          source={"@/assets/vector-2.svg"}
           style={[
             styles.vectorIcon,
             {
@@ -78,7 +78,7 @@ const NumberKeyboard = ({
         ]}
       >
         <Image
-          source={require("@/assets/frame.svg")}
+          source={"@/assets/frame.svg"}
           style={[
             {
               width: 32,

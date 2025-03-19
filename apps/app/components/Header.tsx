@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Image } from "@/components/CrossPlatformImage";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import IconButton from "./IconButton";
 import { Gap } from "@/GlobalStyles";
 import {
@@ -17,13 +17,13 @@ const Header = () => {
       <Image
         style={[styles.wafraConcept1b1Icon, styles.headerLayout]}
         contentFit="cover"
-        source={require("@/assets/logo.svg")}
+        source={"@/assets/logo.svg"}
       />
       <View style={[styles.frameParent, styles.headerFlexBox]}>
-        {/* <IconButton image={require("@/assets/search01.svg")} /> */}
+        {/* <IconButton image={"@/assets/search01.svg"} /> */}
         <Menu>
           <MenuTrigger>
-            <IconButton image={require("@/assets/morehorizontal.svg")} />
+            <IconButton image={"@/assets/morehorizontal.svg"} />
           </MenuTrigger>
           <MenuOptions>
             <MenuOption onSelect={() => signOut()} text="Sign Out" />

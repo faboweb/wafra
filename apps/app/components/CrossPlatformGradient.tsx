@@ -72,7 +72,13 @@ export function CrossPlatformGradient({
   );
 }
 
-export function LinearGradient({ children }: { children: React.ReactNode }) {
+export function LinearGradient({
+  children,
+  style,
+}: {
+  children: React.ReactNode;
+  style?: ViewStyle;
+}) {
   return (
     <CrossPlatformGradient
       colors={["#4c669f", "#3b5998", "#192f6a"]}
@@ -81,6 +87,7 @@ export function LinearGradient({ children }: { children: React.ReactNode }) {
       style={{
         flex: 1,
         padding: 15,
+        ...style,
       }}
     >
       {children}

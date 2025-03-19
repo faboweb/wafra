@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Image } from "@/components/CrossPlatformImage";
-import { StyleSheet, View, ImageSourcePropType } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Border, Color, Padding } from "@/GlobalStyles";
 
 export type IconButtonType = {
-  image?: ImageSourcePropType;
+  image?: string;
 };
 
 const IconButton = ({ image }: IconButtonType) => {

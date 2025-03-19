@@ -26,7 +26,7 @@ const Fingerprint = () => {
             <Image
               style={[styles.frameIcon, styles.framePosition]}
               contentFit="cover"
-              source={require("@/assets/frame1.png")}
+              source={"@/assets/frame1.png"}
             />
           </View>
         </View>

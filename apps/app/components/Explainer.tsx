@@ -10,7 +10,7 @@ const Explainer = () => {
         <View style={styles.cardChild} />
         <View style={styles.frame}>
           <Image
-            source={require("@/assets/unlock-icon.svg")}
+            source={"@/assets/unlock-icon.svg"}
             style={{
               width: 56,
               height: 56,

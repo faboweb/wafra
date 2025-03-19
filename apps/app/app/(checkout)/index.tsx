@@ -4,12 +4,11 @@ import Hero from "@/components/Hero";
 import UnderlineInput from "@/components/UnderlineInput";
 import NumberKeyboard from "@/components/NumberKeyboard";
 import Btn from "@/components/Btn";
-import { Color, Border, Padding, Gap } from "../../GlobalStyles";
+import { Color, Padding, Gap } from "../../GlobalStyles";
 import { useRouter } from "@/hooks/useRouter";
 import IconButton from "@/components/IconButton";
 import { useAccount } from "@/hooks/useAccount";
 import countries from "@/constants/countries";
-import { useRoute } from "@react-navigation/native";
 import { useInsetColor } from "@/hooks/useInsetColor";
 import { useEffect } from "react";
 import { CrossPlatformGradient } from "@/components/CrossPlatformGradient";
@@ -18,12 +17,9 @@ import Header from "@/components/Header";
 const CheckoutStart = () => {
   const [amount, setAmount] = React.useState(100);
   const router = useRouter();
-  const route = useRoute();
   const { account, depositAddress } = useAccount();
   const country = countries.find((c) => c.value === account?.country);
-  const params = route.params as {
-    error: boolean;
-  };
+  const error = router.getParam("error");
   const { setInsetColors } = useInsetColor();
 
   React.useEffect(() => {
@@ -40,7 +36,7 @@ const CheckoutStart = () => {
     const orderId = Math.random().toString(36).substring(2, 15);
 
     router.push(
-      `/Checkout?orderId=${orderId}&amount=${amount}&currency=${country.currency}`
+      `/(checkout)/Checkout?orderId=${orderId}&amount=${amount}&currency=${country.currency}`
     );
   };
 
@@ -72,14 +68,12 @@ const CheckoutStart = () => {
           }}
         >
           <Pressable onPress={() => router.back()}>
-            <IconButton image={require("@/assets/arrow-left.svg")} />
+            <IconButton image={"@/assets/arrow-left.svg"} />
           </Pressable>
         </View>
         <Hero />
         <UnderlineInput value={amount} prefix={country?.currency} />
-        {params.error && (
-          <Text style={{ color: "red" }}>Error: {params.error}</Text>
-        )}
+        {error && <Text style={{ color: "red" }}>Error: {error}</Text>}
         <View
           style={[
             styles.frame,

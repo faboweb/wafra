@@ -37,7 +37,7 @@ const OutlinedInputField = ({
             <Image
               style={styles.trailingIcon}
               contentFit="cover"
-              source={require("@/assets/trailing-icon.png")}
+              source={"@/assets/trailing-icon.png"}
             />
             <Text style={styles.trailingText}>Edit</Text>
           </View>

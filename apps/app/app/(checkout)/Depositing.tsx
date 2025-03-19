@@ -7,14 +7,7 @@ import {
   Platform,
 } from "react-native";
 import Btn from "@/components/Btn";
-import {
-  Color,
-  FontSize,
-  FontFamily,
-  Gap,
-  Border,
-  Padding,
-} from "../../GlobalStyles";
+import { Color, FontSize, FontFamily, Gap, Border } from "../../GlobalStyles";
 import { useRouter } from "@/hooks/useRouter";
 import { useSearchParams } from "react-router-dom";
 import { Image } from "@/components/CrossPlatformImage";
@@ -91,7 +84,7 @@ const Depositing = () => {
       >
         <View>
           <Image
-            source={require("@/assets/ornament1.svg")}
+            source={"@/assets/ornament1.svg"}
             style={[styles.ornamentIcon, { width: 462, height: 152 }]}
           />
           <View style={[styles.successsection, styles.successsectionFlexBox]}>
@@ -121,7 +114,7 @@ const Depositing = () => {
     <View style={[styles.sendMoneyTopupSuccess, styles.successsectionFlexBox]}>
       <View>
         <Image
-          source={require("@/assets/ornament1.svg")}
+          source=\{("@/assets/ornament1.svg")\}
           style={[styles.ornamentIcon, { width: 462, height: 152 }]}
         />
         <View style={[styles.successsection, styles.successsectionFlexBox]}>

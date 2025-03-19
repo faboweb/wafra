@@ -16,7 +16,7 @@ const Hero = () => {
           ]}
         >
           <Image
-            source={require("@/assets/ornament4.svg")}
+            source={"@/assets/ornament4.svg"}
             style={{
               width: 499,
               height: 229,
@@ -26,7 +26,7 @@ const Hero = () => {
           <View style={styles.frame2}>
             <Text style={styles.deposit}>Deposit</Text>
             <Image
-              source={require("@/assets/picture.svg")}
+              source={"@/assets/picture.svg"}
               style={{
                 width: 164,
                 height: 164,
@@ -35,7 +35,7 @@ const Hero = () => {
           </View>
         </View>
         {/* <Image
-          source={require("@/assets/frame2.svg")}
+          source={"@/assets/frame2.svg"}
           style={[
             styles.frameIcon,
             {

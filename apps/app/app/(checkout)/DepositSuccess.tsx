@@ -1,13 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import Btn from "@/components/Btn";
-import {
-  Color,
-  FontSize,
-  FontFamily,
-  Gap,
-  Border,
-  Padding,
-} from "../../GlobalStyles";
+import { Color, FontSize, FontFamily, Gap, Border } from "../../GlobalStyles";
 import { useRouter } from "@/hooks/useRouter";
 import { Image } from "@/components/CrossPlatformImage";
 
@@ -18,7 +11,7 @@ const SendMoneyTopupSuccess = () => {
     <View style={[styles.sendMoneyTopupSuccess, styles.successsectionFlexBox]}>
       <View>
         <Image
-          source={require("@/assets/ornament1.svg")}
+          source={"@/assets/ornament1.svg"}
           style={[
             styles.ornamentIcon,
             {
@@ -41,7 +34,7 @@ const SendMoneyTopupSuccess = () => {
           </Text>
           <View style={styles.downloadReceipt}>
             <Image
-              source={require("@/assets/icons1.svg")}
+              source={"@/assets/icons1.svg"}
               style={[
                 styles.icons,
                 {

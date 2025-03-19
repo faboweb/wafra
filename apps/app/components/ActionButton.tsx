@@ -1,5 +1,5 @@
 import { Image } from "@/components/CrossPlatformImage";
-import { StyleSheet, View, Text, ImageSourcePropType } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import {
   Border,
   Color,
@@ -10,7 +10,7 @@ import {
 } from "@/GlobalStyles";
 
 export type ActionButtonType = {
-  image?: ImageSourcePropType;
+  image?: string;
   caption?: string;
   disabled?: boolean;
 };

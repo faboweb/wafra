@@ -2,7 +2,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { Providers } from "../providers/providers";
-import RootLayoutInner from "./_layout_inner";
+import RouterMobile from "./_router.mobile";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -26,7 +26,7 @@ export default function RootLayout() {
 
   return (
     <Providers>
-      <RootLayoutInner />
+      <RouterMobile />
     </Providers>
   );
 }

@@ -38,7 +38,7 @@ const BalanceCard = ({
       <View style={styles.walletParent}>
         <Text style={[styles.wallet, styles.walletClr]}>{balanceGroup}</Text>
         <Image
-          source={require("@/assets/frame-36.svg")}
+          source={"@/assets/frame-36.svg"}
           style={[
             styles.frameChild,
             {

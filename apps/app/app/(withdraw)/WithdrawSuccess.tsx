@@ -18,7 +18,7 @@ const SendMoneyTopupSuccess = () => {
     <View style={[styles.sendMoneyTopupSuccess, styles.successsectionFlexBox]}>
       <View>
         <Image
-          source={require("@/assets/ornament1.svg")}
+          source={"@/assets/ornament1.svg"}
           style={[
             styles.ornamentIcon,
             {
@@ -41,7 +41,7 @@ const SendMoneyTopupSuccess = () => {
           </Text>
           <View style={styles.downloadReceipt}>
             <Image
-              source={require("@/assets/icons1.svg")}
+              source={"@/assets/icons1.svg"}
               style={[
                 styles.icons,
                 {

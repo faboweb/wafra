@@ -48,18 +48,14 @@ const Overview = () => {
         <View style={[styles.actions, styles.actionsFlexBox]}>
           <Pressable onPress={() => router.push("/(checkout)")}>
             <ActionButton
-              image={require("@/assets/moneyreceivecircle.svg")}
+              image={"@/assets/moneyreceivecircle.svg"}
               caption="Deposit"
             />
           </Pressable>
-          <ActionButton
-            image={require("@/assets/sent.svg")}
-            caption="Send"
-            disabled
-          />
+          <ActionButton image={"@/assets/sent.svg"} caption="Send" disabled />
           <Pressable onPress={() => router.push("/(withdraw)")}>
             <ActionButton
-              image={require("@/assets/reversewithdrawal01.svg")}
+              image={"@/assets/reversewithdrawal01.svg"}
               caption="Withdraw"
             />
           </Pressable>

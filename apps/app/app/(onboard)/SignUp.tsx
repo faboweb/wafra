@@ -3,7 +3,7 @@ import { Image } from "@/components/CrossPlatformImage";
 import { StyleSheet, Text, View } from "react-native";
 import PhoneForm from "@/components/PhoneForm";
 import Btn from "@/components/Btn";
-import { FontSize, FontFamily, Color, Gap, Padding } from "../../GlobalStyles";
+import { FontSize, FontFamily, Color, Gap, Padding } from "@/GlobalStyles";
 import { useRouter } from "@/hooks/useRouter";
 import { preAuthenticate } from "thirdweb/wallets";
 import { client } from "@/constants/thirdweb";
@@ -26,7 +26,9 @@ const SignUp = () => {
         strategy: "phone",
         phoneNumber: phone,
       });
-      router.push("./PhoneVerification?phone=" + phone + "&country=" + country);
+      router.push(
+        "/(onboard)/PhoneVerification?phone=" + phone + "&country=" + country
+      );
     } catch (err: any) {
       setError(err.message);
     }
@@ -37,7 +39,7 @@ const SignUp = () => {
       <View style={[styles.topsection, styles.heroFlexBox]}>
         <View style={[styles.hero, styles.heroSpaceBlock]}>
           <Image
-            source={require("@/assets/ornament.svg")}
+            source={"@/assets/ornament.svg"}
             style={[
               styles.ornamentIcon,
               {

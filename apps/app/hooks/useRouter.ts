@@ -58,7 +58,7 @@ export function useRouter(): RouterActions {
       if (Platform.OS === "web") {
         return location?.pathname || "/";
       } else {
-        return "/";
+        return expoRouter?.getCurrentPath() || "/";
       }
     },
 

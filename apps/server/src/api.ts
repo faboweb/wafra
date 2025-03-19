@@ -15,7 +15,12 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
 
-app.get("/deposit/address/:address", async (req: any, res: any) => {
+app.get("*", (req: any, res: any, next: any) => {
+  console.log("request", req.originalUrl);
+  next();
+});
+
+app.get("/api/deposit/address/:address", async (req: any, res: any) => {
   try {
     const headers = req.headers;
     const authorization = headers.authorization;
@@ -47,7 +52,7 @@ app.get("/deposit/address/:address", async (req: any, res: any) => {
   }
 });
 
-app.get("/balance/:address", async (req: any, res: any) => {
+app.get("/api/balance/:address", async (req: any, res: any) => {
   try {
     const headers = req.headers;
     const authorization = headers.authorization;
@@ -130,12 +135,12 @@ app.get("/balance/:address", async (req: any, res: any) => {
   }
 });
 
-app.get("/rates", async (req: any, res: any) => {
+app.get("/api/rates", async (req: any, res: any) => {
   const rates = await getRates();
   res.status(200).send(rates);
 });
 
-app.get("/history/:address", async (req: any, res: any) => {
+app.get("/api/history/:address", async (req: any, res: any) => {
   const address = req.params.address;
   if (!address || !ethers.isAddress(address)) {
     return res.status(400).send({ message: "Address is required" });
@@ -156,7 +161,7 @@ app.get("/history/:address", async (req: any, res: any) => {
   res.status(200).send(history);
 });
 
-app.get("/yield", async (req: any, res: any) => {
+app.get("/api/yield", async (req: any, res: any) => {
   const annualizedYield = await getAnnualizedYield();
   if (annualizedYield === 0) {
     return res.status(200).send({ yield: 0.45 });

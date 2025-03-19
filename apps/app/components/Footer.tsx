@@ -9,25 +9,25 @@ const Footer = () => {
     <View style={styles.footer}>
       <View style={styles.frameParent}>
         <View style={styles.frameGroup}>
-          <FooterButton image={require("@/assets/home04.svg")} caption="Home" />
+          <FooterButton image={"@/assets/home04.svg"} caption="Home" />
           <FooterButton
-            image={require("@/assets/tradeup.svg")}
+            image={"@/assets/tradeup.svg"}
             caption="Earn"
             disabled
           />
           <FooterButton
-            image={require("@/assets/creditcard.svg")}
+            image={"@/assets/creditcard.svg"}
             caption="Card"
             disabled
           />
           <FooterButton
-            image={require("@/assets/starfour.svg")}
+            image={"@/assets/starfour.svg"}
             caption="Referrals"
             disabled
           />
         </View>
         <Image
-          source={require("@/assets/vector-1.svg")}
+          source={"@/assets/vector-1.svg"}
           style={[
             styles.frameChild,
             {
