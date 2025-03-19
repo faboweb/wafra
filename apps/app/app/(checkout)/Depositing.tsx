@@ -114,7 +114,7 @@ const Depositing = () => {
     <View style={[styles.sendMoneyTopupSuccess, styles.successsectionFlexBox]}>
       <View>
         <Image
-          source=\{("@/assets/ornament1.svg")\}
+          source={"@/assets/ornament1.svg"}
           style={[styles.ornamentIcon, { width: 462, height: 152 }]}
         />
         <View style={[styles.successsection, styles.successsectionFlexBox]}>
