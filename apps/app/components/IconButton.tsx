@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Image } from "expo-image";
+import { Image } from "@/components/CrossPlatformImage";
 import { StyleSheet, View, ImageSourcePropType } from "react-native";
 import { Border, Color, Padding } from "@/GlobalStyles";
 

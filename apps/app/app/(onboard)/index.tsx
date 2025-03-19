@@ -1,14 +1,22 @@
 import * as React from "react";
-import { Image } from "expo-image";
+import { Image } from "@/components/CrossPlatformImage";
 import { StyleSheet, Text, View } from "react-native";
 import Btn from "@/components/Btn";
-import { FontSize, FontFamily, Color, Border } from "@/GlobalStyles";
-import { useRouter } from "expo-router";
+import { FontSize, FontFamily, Color } from "@/GlobalStyles";
+import { useRouter } from "@/hooks/useRouter";
 import { useInsetColor } from "@/hooks/useInsetColor";
+import { useAccount } from "@/hooks/useAccount";
+import { useEffect } from "react";
+import vector2 from "@/assets/vector-2.svg";
+import ornament1 from "@/assets/ornament1.svg";
+import image from "@/assets/image@3x.png";
+import ornament3 from "@/assets/ornament3@3x.png";
+import logo from "@/assets/logo.svg";
 
 const Onboarding = () => {
   const router = useRouter();
   const { setInsetColors } = useInsetColor();
+  const { account } = useAccount();
 
   React.useEffect(() => {
     setInsetColors(
@@ -17,33 +25,29 @@ const Onboarding = () => {
     );
   }, []);
 
+  useEffect(() => {
+    if (account) {
+      router.push("/(dashboard)");
+    }
+  }, [account]);
+
   return (
     <View style={styles.onboarding}>
-      <Image
-        source={require("@/assets/vector-2.svg")}
-        style={styles.ornamentIcon}
-      />
-      <Image
-        source={require("@/assets/ornament1.svg")}
-        style={styles.ornamentIcon}
-      />
+      <Image source={vector2} style={styles.ornamentIcon} />
+      <Image source={ornament1} style={styles.ornamentIcon} />
       <Text style={[styles.aNewEra, styles.aNewEraPosition]}>
         A New Era of Saving Money!
       </Text>
-      <Image
-        style={styles.imageIcon}
-        contentFit="cover"
-        source={require("@/assets/image.png")}
-      />
+      <Image style={styles.imageIcon} contentFit="cover" source={image} />
       <Image
         style={styles.ornamentIcon2}
         contentFit="cover"
-        source={require("@/assets/ornament3.png")}
+        source={ornament3}
       />
       <Image
         style={[styles.wafraConcept1b1Icon, styles.aNewEraPosition]}
         contentFit="cover"
-        source={require("@/assets/logo.svg")}
+        source={logo}
       />
       <Btn
         style={{

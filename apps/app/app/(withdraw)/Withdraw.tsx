@@ -1,6 +1,6 @@
 import * as React from "react";
 import { View, StyleSheet, Button } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter } from "@/hooks/useRouter";
 import {
   TransakWebView,
   Environments,

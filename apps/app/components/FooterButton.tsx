@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import { Image } from "@/components/CrossPlatformImage";
 import { StyleSheet, Text, View } from "react-native";
 import { FontSize, FontFamily, Color, Gap } from "../GlobalStyles";
 

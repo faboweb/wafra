@@ -10,6 +10,10 @@
   "license": "ISC",
   "packageManager": "pnpm@8.6.2",
   "devDependencies": {
+    "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "hardhat": "^2.22.18"
+  },
+  "dependencies": {
+    "react-router-dom": "^6.22.0"
   }
 }

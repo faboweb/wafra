@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
-import { Image } from "expo-image";
-import { Color, FontFamily, FontSize, Border } from "@/GlobalStyles";
+import { Image } from "@/components/CrossPlatformImage";
+import { Color, FontFamily, FontSize } from "@/GlobalStyles";
 
 export type NumberKeyboardType = {
   showDribble?: boolean;

@@ -1,13 +1,13 @@
 import * as React from "react";
 import { StyleSheet, View } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { LinearGradient } from "@/components/CrossPlatformGradient";
 import Header from "@/components/Header";
 import Overview from "@/components/Overview";
 // import HistoryList from "@/components/HistoryList";
 import Footer from "@/components/Footer";
 import { Padding, Gap } from "../../GlobalStyles";
 import { useAccount } from "@/hooks/useAccount";
-import { useRouter } from "expo-router";
+import { useRouter } from "@/hooks/useRouter";
 import { TransactionHistory } from "@/components/TransactionHistory";
 
 const Dashboard = () => {
@@ -16,7 +16,7 @@ const Dashboard = () => {
 
   React.useEffect(() => {
     if (!account) {
-      router.push("../");
+      router.push("/");
     }
   }, []);
 

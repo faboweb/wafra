@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+  Platform,
+} from "react-native";
 import Btn from "@/components/Btn";
 import {
   Color,
@@ -9,10 +15,10 @@ import {
   Border,
   Padding,
 } from "../../GlobalStyles";
-import { useRouter, useLocalSearchParams } from "expo-router";
-import { Image } from "expo-image";
+import { useRouter } from "@/hooks/useRouter";
+import { useSearchParams } from "react-router-dom";
+import { Image } from "@/components/CrossPlatformImage";
 import { useQuery } from "@tanstack/react-query";
-import { Linking } from "react-native";
 
 interface DepositStatus {
   status: "pending" | "processing" | "completed" | "failed";
@@ -24,7 +30,12 @@ interface DepositStatus {
 
 const Depositing = () => {
   const router = useRouter();
-  const { orderId } = useLocalSearchParams();
+  const searchParams =
+    Platform.OS === "web"
+      ? useSearchParams()
+      : { get: (key: string) => router.getParam(key) };
+
+  const orderId = searchParams.get("orderId");
   const [shouldPoll, setShouldPoll] = useState(true);
 
   const { data: depositStatus, error } = useQuery<DepositStatus>({

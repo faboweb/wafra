@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Image } from "expo-image";
+import { Image } from "@/components/CrossPlatformImage";
 import { StyleSheet, Text, View } from "react-native";
 import IconButton from "./IconButton";
 import { Gap } from "@/GlobalStyles";

@@ -1,5 +1,5 @@
-import { Image } from "expo-image";
-import { StyleSheet, Text, View, ImageSourcePropType } from "react-native";
+import { Image } from "@/components/CrossPlatformImage";
+import { StyleSheet, Text, View } from "react-native";
 import {
   FontFamily,
   FontSize,

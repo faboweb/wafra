@@ -8,8 +8,8 @@ import {
   Border,
   Padding,
 } from "../../GlobalStyles";
-import { useRouter } from "expo-router";
-import { Image } from "expo-image";
+import { useRouter } from "@/hooks/useRouter";
+import { Image } from "@/components/CrossPlatformImage";
 
 const SendMoneyTopupSuccess = () => {
   const router = useRouter();

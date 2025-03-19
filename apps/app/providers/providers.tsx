@@ -11,6 +11,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MenuProvider } from "react-native-popup-menu";
 import { InsetColorProvider } from "@/hooks/useInsetColor";
+import { RouterProvider } from "@/providers/RouterProvider";
 
 export function Providers({ children }: { children: ReactNode }) {
   const colorScheme = useColorScheme();
@@ -18,19 +19,21 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CurrencyProvider>
-        <AccountProvider>
-          <ThirdwebProvider>
-            <ThemeProvider
-              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-            >
-              <InsetColorProvider>
-                <MenuProvider>{children}</MenuProvider>
-              </InsetColorProvider>
-            </ThemeProvider>
-          </ThirdwebProvider>
-        </AccountProvider>
-      </CurrencyProvider>
+      <RouterProvider>
+        <CurrencyProvider>
+          <AccountProvider>
+            <ThirdwebProvider>
+              <ThemeProvider
+                value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+              >
+                <InsetColorProvider>
+                  <MenuProvider>{children}</MenuProvider>
+                </InsetColorProvider>
+              </ThemeProvider>
+            </ThirdwebProvider>
+          </AccountProvider>
+        </CurrencyProvider>
+      </RouterProvider>
     </QueryClientProvider>
   );
 }

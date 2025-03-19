@@ -2,7 +2,7 @@ import { Text, StyleSheet, View, Pressable } from "react-native";
 import ActionButton from "./ActionButton";
 import BalanceCard from "./BalanceCard";
 import { FontSize, FontFamily, Color, Gap } from "@/GlobalStyles";
-import { useRouter } from "expo-router";
+import { useRouter } from "@/hooks/useRouter";
 import { useBalances } from "@/hooks/useBalances";
 import { useYield } from "@/hooks/useYield";
 import { useCurrency } from "@/hooks/useCurrency";

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Border, Color, FontSize, FontFamily } from "@/GlobalStyles";
-import { Image } from "expo-image";
+import { Image } from "@/components/CrossPlatformImage";
 
 const Explainer = () => {
   return (

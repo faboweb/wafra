@@ -1,16 +1,10 @@
 import * as React from "react";
 import { Text, StyleSheet, View } from "react-native";
-import { Image } from "expo-image";
+import { Image } from "@/components/CrossPlatformImage";
 import Explainer from "@/components/Explainer";
 import Btn from "@/components/Btn";
-import {
-  FontSize,
-  FontFamily,
-  Color,
-  Border,
-  Padding,
-} from "../../GlobalStyles";
-import { useRouter } from "expo-router";
+import { FontSize, FontFamily, Color, Border, Padding } from "@/GlobalStyles";
+import { useRouter } from "@/hooks/useRouter";
 
 const Fingerprint = () => {
   const router = useRouter();
@@ -51,7 +45,7 @@ const Fingerprint = () => {
           buttonHeight="unset"
           buttonBackgroundColor="rgba(27, 23, 37, 0)"
           getStartedColor="#1b1725"
-          onButtonPress={() => router.push("/dashboard")}
+          onButtonPress={() => router.push("/(dashboard)")}
         />
         <Btn
           icon={false}
@@ -65,7 +59,7 @@ const Fingerprint = () => {
           buttonHeight="unset"
           buttonBackgroundColor="#1b1725"
           getStartedColor="#fff"
-          onButtonPress={() => router.push("/dashboard")}
+          onButtonPress={() => router.push("/(dashboard)")}
         />
         <View style={[styles.buttongroupChild, styles.buttongroupPosition]} />
       </View>

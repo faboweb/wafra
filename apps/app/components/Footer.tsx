@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StyleSheet, View } from "react-native";
-import { Image } from "expo-image";
+import { Image } from "@/components/CrossPlatformImage";
 import FooterButton from "./FooterButton";
 import { Gap, Color, Padding } from "@/GlobalStyles";
 

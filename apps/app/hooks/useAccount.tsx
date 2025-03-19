@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { useCurrency } from "./useCurrency";
 import countries from "@/constants/countries";
-import { useRouter as useExpoRouter } from "expo-router"; // For Expo Router on mobile and web
+import { useRouter } from "@/hooks/useRouter";
 import { query } from "@/data/query";
 import { useStorage } from "./useStorage";
 
@@ -31,7 +31,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   const [account, setAccount] = useState<Account | null>(null);
   const { currency, setCurrency } = useCurrency();
   const [depositAddress, setDepositAddress] = useState<string | null>(null);
-  const router = useExpoRouter();
+  const router = useRouter();
   const storage = useStorage();
 
   React.useEffect(() => {
@@ -112,10 +112,15 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useAccount = (): AccountContextProps => {
+export const useAccountContext = (): AccountContextProps => {
   const context = useContext(AccountContext);
   if (context === undefined) {
     throw new Error("useAccount must be used within an AccountProvider");
   }
+  return context;
+};
+
+export const useAccount = () => {
+  const context = useAccountContext();
   return context;
 };

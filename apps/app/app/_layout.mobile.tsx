@@ -1,7 +1,7 @@
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { Providers } from "./providers";
+import { Providers } from "../providers/providers";
 import RootLayoutInner from "./_layout_inner";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.

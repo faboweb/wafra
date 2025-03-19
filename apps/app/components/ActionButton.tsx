@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import { Image } from "@/components/CrossPlatformImage";
 import { StyleSheet, View, Text, ImageSourcePropType } from "react-native";
 import {
   Border,

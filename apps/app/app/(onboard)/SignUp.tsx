@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Image } from "expo-image";
+import { Image } from "@/components/CrossPlatformImage";
 import { StyleSheet, Text, View } from "react-native";
 import PhoneForm from "@/components/PhoneForm";
 import Btn from "@/components/Btn";
@@ -11,7 +11,7 @@ import {
   Padding,
   Border,
 } from "../../GlobalStyles";
-import { useRouter } from "expo-router";
+import { useRouter } from "@/hooks/useRouter";
 import { preAuthenticate } from "thirdweb/wallets";
 import { client } from "@/constants/thirdweb";
 

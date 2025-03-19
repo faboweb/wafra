@@ -1,21 +1,26 @@
 import * as React from "react";
-import { Image } from "expo-image";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image } from "@/components/CrossPlatformImage";
+import { Pressable, StyleSheet, Text, View, Platform } from "react-native";
 import PinInput from "@/components/PinInput";
 import NumberKeyboard from "@/components/NumberKeyboard";
 import Btn from "@/components/Btn";
 import { FontSize, FontFamily, Color, Padding, Border } from "@/GlobalStyles";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "@/hooks/useRouter";
+import { useSearchParams } from "react-router-dom";
 import { inAppWallet, preAuthenticate } from "thirdweb/wallets";
 import { client } from "@/constants/thirdweb";
 import { useAccount } from "@/hooks/useAccount";
 
 const PhoneVerification = () => {
   const router = useRouter();
-  const { phone, country } = useLocalSearchParams<{
-    phone: string;
-    country: string;
-  }>();
+  const searchParams =
+    Platform.OS === "web"
+      ? useSearchParams()
+      : { get: (key: string) => router.getParam(key) };
+
+  const phone = searchParams.get("phone") || "";
+  const country = searchParams.get("country") || "";
+
   const [otp, setOTP] = React.useState<number>();
   const { signIn } = useAccount();
 
@@ -85,7 +90,7 @@ const PhoneVerification = () => {
           <Text style={styles.didntReceiveCodeContainer}>
             <Text
               style={styles.didntReceiveCode}
-            >{`Didn’t receive code? `}</Text>
+            >{`Didn't receive code? `}</Text>
             <Pressable onPress={requestAgain}>
               <Text style={styles.requestAgain}>Request Again</Text>
             </Pressable>
