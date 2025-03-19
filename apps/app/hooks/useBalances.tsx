@@ -20,7 +20,7 @@ export function useBalances(): UseQueryResult<Balance> {
       );
       return response.balance || {};
     },
-    throwOnError: true,
+    throwOnError: false,
     staleTime: 1000 * 60 * 5,
   });
 }
