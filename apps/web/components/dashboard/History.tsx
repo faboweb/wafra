@@ -57,8 +57,8 @@ const NoTransactionsCard = ({ onDeposit }: { onDeposit: () => void }) => (
       <Text className="text-wafra-gray text-center mb-6">
         Make your first deposit and start earning with Wafra
       </Text>
-      <Button onPress={onDeposit} className="bg-wafra-green">
-        <Text className="text-white font-medium">Deposit</Text>
+      <Button onPress={onDeposit} variant="primary" size="lg">
+        <Text className="font-medium">Deposit</Text>
       </Button>
     </CardContent>
   </Card>

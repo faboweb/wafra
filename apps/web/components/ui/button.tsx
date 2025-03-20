@@ -3,7 +3,7 @@ import { Pressable, type PressableProps } from 'react-native';
 import { cn } from '~/lib/utils';
 
 type ButtonProps = PressableProps & {
-  variant?: 'default' | 'ghost' | 'icon';
+  variant?: 'default' | 'ghost' | 'icon' | 'primary';
   size?: 'default' | 'sm' | 'lg';
 };
 
@@ -14,6 +14,7 @@ const Button = React.forwardRef<Pressable, ButtonProps>(
       default: 'bg-wafra-green-light',
       ghost: 'bg-transparent',
       icon: 'bg-wafra-green-light p-2.5',
+      primary: 'bg-wafra-green-light text-wafra-black',
     };
 
     const sizeStyles = {

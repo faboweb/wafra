@@ -9,11 +9,15 @@ type QuickAction = {
 };
 
 const QuickActionButton = ({ icon: Icon, label, onPress }: QuickAction) => (
-  <Button variant="ghost" className="flex-1 items-center gap-2 py-3" onPress={onPress}>
-    <View className="w-12 h-12 rounded-full bg-[#e8f5e8] items-center justify-center">
-      <Icon size={24} className="text-foreground" />
+  <Button variant="ghost" className="flex-1 items-center gap-2 py-3 flex-col" onPress={onPress}>
+    <View className="rounded-xl bg-gray-100 items-center justify-center p-4 web:transition-colors web:duration-200 web:hover:bg-wafra-green-light">
+      <Icon
+        size={20}
+        className="text-gray-600 web:transition-colors web:duration-200 web:group-hover:text-wafra-green"
+        color="#4b5563"
+      />
     </View>
-    <Text className="text-sm text-[#71717a]">{label}</Text>
+    <Text className="text-sm text-wafra-gray">{label}</Text>
   </Button>
 );
 
