@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { useCurrency } from './useCurrency';
-import countries from '../constants/countries';
+import { useCurrency } from '@/hooks/useCurrency';
+import countries from '@/constants/countries';
 import { useNavigation } from '@react-navigation/native';
-import { query } from '../data/query';
-import { useStorage } from './useStorage';
+import { query } from '@/lib/query';
+import { useStorage } from '@/hooks/useStorage';
 
 interface Account {
   country: string;

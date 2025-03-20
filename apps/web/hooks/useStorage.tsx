@@ -1,9 +1,10 @@
 import { useCallback } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function useStorage() {
   const getItem = useCallback(async <T>(key: string): Promise<T | null> => {
     try {
-      const item = localStorage.getItem(key);
+      const item = await AsyncStorage.getItem(key);
       return item ? JSON.parse(item) : null;
     } catch (error) {
       console.error("Error getting item from storage", error);
@@ -13,7 +14,7 @@ export function useStorage() {
 
   const setItem = useCallback(async <T>(key: string, value: T): Promise<void> => {
     try {
-      localStorage.setItem(key, JSON.stringify(value));
+      await AsyncStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
       console.error("Error setting item in storage", error);
     }
@@ -21,7 +22,7 @@ export function useStorage() {
 
   const removeItem = useCallback(async (key: string): Promise<void> => {
     try {
-      localStorage.removeItem(key);
+      await AsyncStorage.removeItem(key);
     } catch (error) {
       console.error("Error removing item from storage", error);
     }

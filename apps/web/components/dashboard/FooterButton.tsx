@@ -1,20 +1,23 @@
-import { Image, Text, View } from 'react-native';
+import { Pressable } from 'react-native';
+import { Text } from '../ui/text';
+import { LucideIcon } from 'lucide-react-native';
 
 export type FooterButtonType = {
-  image: any;
+  icon: LucideIcon;
   caption: string;
   disabled?: boolean;
+  onPress: () => void;
 };
 
-const FooterButton = ({ image, caption, disabled }: FooterButtonType) => {
+export const FooterButton = ({ icon: Icon, caption, disabled, onPress }: FooterButtonType) => {
   return (
-    <View className={`w-[77px] items-center gap-1 ${disabled ? 'opacity-50' : ''}`}>
-      <Image source={image} style={{ width: 24, height: 24 }} />
-      <Text className="self-stretch text-[11px] font-inter text-[#010e01] text-center">
+    <Pressable
+      className={`w-[77px] items-center gap-1 ${disabled ? 'opacity-50' : ''}`}
+      onPress={onPress}>
+      <Icon size={24} className={!disabled ? 'text-wafra-green' : 'text-wafra-black'} />
+      <Text className="self-stretch text-[11px] font-inter text-wafra-black text-center">
         {caption}
       </Text>
-    </View>
+    </Pressable>
   );
 };
-
-export default FooterButton;

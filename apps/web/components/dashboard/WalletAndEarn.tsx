@@ -13,13 +13,13 @@ const StatCard = ({ title, amount, apy, onPress }: StatCardProps) => (
   <Card className="flex-1" onPress={onPress}>
     <CardHeader className="pb-2">
       <View className="flex-row justify-between items-center">
-        <Text className="text-base font-medium">{title}</Text>
-        <ChevronRight size={16} className="text-foreground" />
+        <Text className="text-base font-medium text-wafra-black">{title}</Text>
+        <ChevronRight size={16} className="text-wafra-black" />
       </View>
     </CardHeader>
     <CardContent>
-      <Text className="text-xl font-semibold mb-1">{amount}</Text>
-      <Text className="text-sm text-[#71717a]">{apy} Avg. APY</Text>
+      <Text className="text-xl font-semibold mb-1 text-wafra-black">{amount}</Text>
+      <Text className="text-sm text-wafra-gray">{apy} Avg. APY</Text>
     </CardContent>
   </Card>
 );

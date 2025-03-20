@@ -3,6 +3,9 @@ import { ScrollView, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Banknote, ArrowDownToLine, Wallet, Send } from 'lucide-react-native';
 import { useAccount } from '@/hooks/useAccount';
+import { useBalances } from '@/hooks/useBalances';
+import { useHistory } from '@/hooks/useHistory';
+import { useCurrency } from '@/hooks/useCurrency';
 import Header from '@/components/dashboard/Header';
 import { Balance } from '@/components/dashboard/Balance';
 import { QuickActions } from '@/components/dashboard/QuickActions';
@@ -12,6 +15,9 @@ import { Footer } from '@/components/dashboard/Footer';
 
 const Dashboard = () => {
   const { account } = useAccount();
+  const { data: balances } = useBalances();
+  const { data: transactions, isLoading: isHistoryLoading } = useHistory();
+  const { formatCurrency } = useCurrency();
   const navigation = useNavigation();
 
   React.useEffect(() => {
@@ -19,33 +25,6 @@ const Dashboard = () => {
       navigation.navigate('Login');
     }
   }, [account, navigation]);
-
-  const transactions: Transaction[] = [
-    {
-      icon: Banknote,
-      title: 'Payouts February',
-      amount: 'E£12,345.67',
-      isPositive: true,
-    },
-    {
-      icon: ArrowDownToLine,
-      title: 'Bond Payout',
-      amount: 'E£9,876.54',
-      isPositive: true,
-    },
-    {
-      icon: Wallet,
-      title: 'Deposited',
-      amount: 'E£4,567.89',
-      isPositive: true,
-    },
-    {
-      icon: Send,
-      title: 'Sent To @ahmed',
-      amount: 'E£3,765.43',
-      isPositive: false,
-    },
-  ];
 
   const handleDeposit = () => {
     navigation.navigate('Deposit');
@@ -71,25 +50,41 @@ const Dashboard = () => {
     navigation.navigate('Earn');
   };
 
+  const formattedTransactions: Transaction[] =
+    transactions?.map((tx) => ({
+      icon: tx.type === 'deposit' ? ArrowDownToLine : Send,
+      title: tx.type === 'deposit' ? 'Deposit' : 'Transfer',
+      amount: formatCurrency(Number(tx.value)),
+      isPositive: tx.type === 'deposit',
+    })) || [];
+
   return (
     <View className="flex-1 bg-white">
       <Header />
-      <ScrollView className="flex-1">
-        <Balance totalBalance="E£20,116.99" profit="+E£20,116.99" />
+      <ScrollView className="flex-1 px-4">
+        <Balance
+          totalBalance={formatCurrency(balances?.balance || 0)}
+          profit={formatCurrency(balances?.effectiveYield || 0)}
+        />
         <QuickActions onDeposit={handleDeposit} onSend={handleSend} onWithdraw={handleWithdraw} />
         <WalletAndEarn
           wallet={{
-            amount: 'E£20,116.99',
-            apy: '30%',
+            amount: formatCurrency(balances?.availableBalance || 0),
+            apy: 0.44,
             onPress: handleWalletPress,
           }}
           earn={{
-            amount: 'E£5,116.99',
-            apy: '45%',
+            amount: formatCurrency(0),
+            apy: 0.44,
             onPress: handleEarnPress,
           }}
         />
-        <History transactions={transactions} onViewAll={handleViewAllHistory} />
+        <History
+          transactions={formattedTransactions}
+          onViewAll={handleViewAllHistory}
+          onDeposit={handleDeposit}
+          isLoading={isHistoryLoading}
+        />
       </ScrollView>
       <Footer />
     </View>

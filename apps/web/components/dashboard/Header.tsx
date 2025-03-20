@@ -24,13 +24,13 @@ const Header = () => {
     <View className="flex-row items-center justify-between px-4 py-3">
       <Image source={require('@/assets/logo.svg')} className="w-[80px] h-6" />
       <View className="flex-row items-center gap-2">
-        <Button variant="ghost" className="rounded-full bg-[#e8f5e8] p-2">
-          <Search size={20} className="text-foreground" />
+        <Button variant="ghost" className="rounded-full bg-wafra-green-lighter p-2">
+          <Search size={20} className="text-wafra-black" />
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="rounded-full bg-[#e8f5e8] p-2">
-              <MoreHorizontal size={20} className="text-foreground" />
+            <Button variant="ghost" className="rounded-full bg-wafra-green-lighter p-2">
+              <MoreHorizontal size={20} className="text-wafra-black" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>

@@ -1,21 +1,19 @@
 import * as React from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, type PressableProps } from 'react-native';
+import { cn } from '~/lib/utils';
 
-interface ButtonProps {
+type ButtonProps = PressableProps & {
   variant?: 'default' | 'ghost' | 'icon';
   size?: 'default' | 'sm' | 'lg';
-  children?: React.ReactNode;
-  onPress?: () => void;
-  className?: string;
-}
+};
 
-const Button = React.forwardRef<View, ButtonProps>(
+const Button = React.forwardRef<Pressable, ButtonProps>(
   ({ variant = 'default', size = 'default', children, onPress, className = '' }, ref) => {
     const baseStyles = 'flex-row items-center justify-center rounded-[10px]';
     const variantStyles = {
-      default: 'bg-[#d5efd5]',
+      default: 'bg-wafra-green-light',
       ghost: 'bg-transparent',
-      icon: 'bg-[#d5efd5] p-2.5',
+      icon: 'bg-wafra-green-light p-2.5',
     };
 
     const sizeStyles = {
