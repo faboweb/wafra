@@ -7,11 +7,6 @@ import { useRouter } from "@/hooks/useRouter";
 import { useInsetColor } from "@/hooks/useInsetColor";
 import { useAccount } from "@/hooks/useAccount";
 import { useEffect } from "react";
-import vector2 from "@/assets/vector-2.svg";
-import ornament1 from "@/assets/ornament1.svg";
-import image from "@/assets/image@3x.png";
-import ornament3 from "@/assets/ornament3@3x.png";
-import logo from "@/assets/logo.svg";
 
 const Onboarding = () => {
   const router = useRouter();
@@ -33,21 +28,25 @@ const Onboarding = () => {
 
   return (
     <View style={styles.onboarding}>
-      <Image source={vector2} style={styles.ornamentIcon} />
-      <Image source={ornament1} style={styles.ornamentIcon} />
+      <Image source={"@/assets/vector-2.svg"} style={styles.ornamentIcon} />
+      <Image source={"@/assets/ornament1.svg"} style={styles.ornamentIcon} />
       <Text style={[styles.aNewEra, styles.aNewEraPosition]}>
         A New Era of Saving Money!
       </Text>
-      <Image style={styles.imageIcon} contentFit="cover" source={image} />
+      <Image
+        style={styles.imageIcon}
+        contentFit="cover"
+        source={"@/assets/image@3x.png"}
+      />
       <Image
         style={styles.ornamentIcon2}
         contentFit="cover"
-        source={ornament3}
+        source={"@/assets/ornament3@3x.png"}
       />
       <Image
         style={[styles.wafraConcept1b1Icon, styles.aNewEraPosition]}
         contentFit="cover"
-        source={logo}
+        source={"@/assets/logo.svg"}
       />
       <Btn
         style={{

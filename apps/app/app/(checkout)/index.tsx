@@ -58,7 +58,6 @@ const CheckoutStart = () => {
       ]}
       style={styles.checkout}
     >
-      <Header />
       <View style={styles.sendMoneyPeopleStep2}>
         <View
           style={{
@@ -67,7 +66,7 @@ const CheckoutStart = () => {
             alignSelf: "stretch",
           }}
         >
-          <Pressable onPress={() => router.back()}>
+          <Pressable onPress={() => router.push("/(dashboard)")}>
             <IconButton image={"@/assets/arrow-left.svg"} />
           </Pressable>
         </View>

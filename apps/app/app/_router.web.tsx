@@ -11,7 +11,7 @@ const OnboardPhoneVerification = lazy(
 );
 const Dashboard = lazy(() => import("./(dashboard)"));
 const Checkout = lazy(() => import("./(checkout)"));
-const CheckoutCheckout = lazy(() => import("./(checkout)/Checkout"));
+const CheckoutCheckout = lazy(() => import("./(checkout)/Checkout.web"));
 const CheckoutDepositing = lazy(() => import("./(checkout)/Depositing"));
 const CheckoutDepositSuccess = lazy(
   () => import("./(checkout)/DepositSuccess")
@@ -27,30 +27,21 @@ export default function WebRouter() {
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
         <Route path="/" element={<Onboard />} />
-        <Route path="/(dashboard)/*" element={<Dashboard />} />
-        <Route path="/(checkout)/*" element={<Checkout />} />
+        <Route path="/(dashboard)" element={<Dashboard />} />
+        <Route path="/(checkout)" element={<Checkout />} />
+        <Route path="/(checkout)/Checkout" element={<CheckoutCheckout />} />
+        <Route path="/(checkout)/Depositing" element={<CheckoutDepositing />} />
         <Route
-          path="/(checkout)/CheckoutCheckout"
-          element={<CheckoutCheckout />}
-        />
-        <Route
-          path="/(checkout)/CheckoutDepositing"
-          element={<CheckoutDepositing />}
-        />
-        <Route
-          path="/(checkout)/CheckoutDepositSuccess"
+          path="/(checkout)/DepositSuccess"
           element={<CheckoutDepositSuccess />}
         />
         <Route path="/(withdraw)/*" element={<Withdraw />} />
         <Route
-          path="/(withdraw)/WithdrawDepositSuccess"
+          path="/(withdraw)/DepositSuccess"
           element={<WithdrawDepositSuccess />}
         />
-        <Route
-          path="/(withdraw)/WithdrawWithdraw"
-          element={<WithdrawWithdraw />}
-        />
-        <Route path="/(onboard)/*" element={<Onboard />} />
+        <Route path="/(withdraw)Withdraw" element={<WithdrawWithdraw />} />
+        <Route path="/(onboard)" element={<Onboard />} />
         <Route path="/(onboard)/SignUp" element={<OnboardSignUp />} />
         <Route path="/(onboard)/Fingerprint" element={<OnboardFingerprint />} />
         <Route

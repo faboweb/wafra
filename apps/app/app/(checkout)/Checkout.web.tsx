@@ -37,6 +37,7 @@ export default function Checkout() {
   };
 
   Transak.on(Transak.EVENTS.TRANSAK_WIDGET_CLOSE, () => {
+    transak.close();
     router.push(`/(checkout)`);
   });
 

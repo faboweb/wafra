@@ -1,6 +1,6 @@
 import { Platform } from "react-native";
 // @ts-ignore
-import { useNavigate, useLocation, useRouter } from "router";
+import { useNavigate, useLocation, useRouter as useExpoRouter } from "router";
 
 type RouterActions = {
   push: (
@@ -13,7 +13,7 @@ type RouterActions = {
 };
 
 export function useRouter(): RouterActions {
-  const expoRouter = Platform.OS !== "web" ? useRouter() : null;
+  const expoRouter = Platform.OS !== "web" ? useExpoRouter() : null;
   const navigate = Platform.OS === "web" ? useNavigate() : null;
   const location = Platform.OS === "web" ? useLocation() : null;
 
