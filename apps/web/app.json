@@ -23,14 +23,14 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.faboweb.web"
+      "bundleIdentifier": "com.wafra.money"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.faboweb.web"
+      "package": "com.wafra.money"
     }
   }
 }

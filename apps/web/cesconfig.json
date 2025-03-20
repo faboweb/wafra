@@ -8,10 +8,6 @@
       "options": {
         "type": "stack"
       }
-    },
-    {
-      "name": "unistyles",
-      "type": "styling"
     }
   ],
   "flags": {

@@ -3,9 +3,10 @@ import '~/global.css';
 import { Theme, ThemeProvider, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import { NAV_THEME } from '~/lib/constants';
 import { useColorScheme } from '~/lib/useColorScheme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -20,6 +21,7 @@ export function ThemeProviderWrapper({ children }: { children: React.ReactNode }
   const hasMounted = React.useRef(false);
   const { colorScheme, isDarkColorScheme } = useColorScheme();
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
+  const insets = useSafeAreaInsets();
 
   useIsomorphicLayoutEffect(() => {
     if (hasMounted.current) {
@@ -39,10 +41,12 @@ export function ThemeProviderWrapper({ children }: { children: React.ReactNode }
   }
 
   return (
-    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? 'light' : 'dark'} />
-      {children}
-    </ThemeProvider>
+    <View className="flex-1" style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
+      <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+        <StatusBar style={isDarkColorScheme ? 'light' : 'dark'} />
+        {children}
+      </ThemeProvider>
+    </View>
   );
 }
 
