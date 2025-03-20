@@ -12,6 +12,7 @@ import { QuickActions } from '@/components/dashboard/QuickActions';
 import { WalletAndEarn } from '@/components/dashboard/WalletAndEarn';
 import { History, Transaction } from '@/components/dashboard/History';
 import { Footer } from '@/components/dashboard/Footer';
+import { CrossPlatformGradient } from 'components/ui/CrossPlatformGradient';
 
 const Dashboard = () => {
   const { account } = useAccount();
@@ -60,6 +61,11 @@ const Dashboard = () => {
 
   return (
     <View className="flex-1 bg-white">
+      <CrossPlatformGradient
+        colors={['#d5efd5', '#ffffff']}
+        end={{ x: 0.5, y: 0.38 }}
+        style={{ height: '100%', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+      />
       <Header />
       <ScrollView className="flex-1 px-4">
         <Balance
