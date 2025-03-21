@@ -36,7 +36,7 @@ export default function RootStack() {
     <NavigationContainer>
       <Providers>
         <Stack.Navigator
-          initialRouteName="PhoneVerification"
+          initialRouteName="Onboarding"
           screenOptions={{
             headerShown: false,
           }}>

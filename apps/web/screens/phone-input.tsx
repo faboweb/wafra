@@ -51,26 +51,26 @@ const PhoneInputScreen = () => {
 
   return (
     <View className="flex-1 bg-wafra-yellow p-6">
-      <View className="flex-1">
-        <View className="h-[241px] flex-row justify-end items-center">
-          <Text className="text-[32px] leading-[56px] font-semibold font-poppins text-wafra-gray text-center flex-1">
-            Open Your Account
-          </Text>
-        </View>
-        <View className="mt-8">
-          <TextInput
-            className="w-full h-16 bg-white rounded-lg px-4 text-xl"
-            placeholder="Phone Number"
-            placeholderTextColor="#71717a"
-            value={phone}
-            onChangeText={setPhone}
-            keyboardType="phone-pad"
-            autoComplete="tel"
-          />
-          {error && <Text className="text-red-500 mt-2">{error}</Text>}
+      <Text className="text-[32px] leading-[56px] font-semibold font-poppins text-wafra-gray text-center mb-8">
+        Open Your Account
+      </Text>
+      <View className="flex-1 justify-center">
+        <View className="items-center">
+          <View className="w-full px-4">
+            <TextInput
+              className="w-full h-16 bg-white rounded-lg px-4 text-xl"
+              placeholder="Phone Number"
+              placeholderTextColor="#71717a"
+              value={phone}
+              onChangeText={setPhone}
+              keyboardType="phone-pad"
+              autoComplete="tel"
+            />
+            {error && <Text className="text-red-500 mt-2 text-center">{error}</Text>}
+          </View>
         </View>
       </View>
-      <Button className="mb-6" onPress={handleContinue}>
+      <Button onPress={handleContinue}>
         <Text className="text-white text-base font-medium font-poppins">Continue</Text>
       </Button>
     </View>

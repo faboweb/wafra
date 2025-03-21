@@ -9,43 +9,81 @@ const OnboardingScreen = () => {
   const navigation = useNavigation();
   const { account } = useAccount();
 
-  React.useEffect(() => {
-    if (account) {
-      console.log('account', account);
-      navigation.navigate('Dashboard');
-    }
-  }, [account]);
+  // React.useEffect(() => {
+  //   if (account) {
+  //     navigation.navigate('Dashboard' as never);
+  //   }
+  // }, [account]);
 
   return (
     <View className="flex-1 bg-wafra-yellow">
-      <Image
-        source={require('../assets/vector-2.svg')}
-        className="absolute top-[461px] -left-[94px]"
-      />
-      <Image
-        source={require('../assets/dribble-line-green.svg')}
-        className="absolute top-[461px] -left-[94px]"
-      />
-      <Text className="absolute top-[152px] left-6 text-[32px] leading-[56px] font-semibold font-poppins text-wafra-gray">
-        A New Era of Saving Money!
-      </Text>
-      <Image
-        source={require('../assets/women-phone.png')}
-        className="absolute top-[353px] left-[61px] w-[342px] h-[465px]"
-      />
-      <Image
-        source={require('../assets/new-dribble.png')}
-        className="absolute top-[372px] left-[294px] w-[45px] h-[45px]"
-      />
+      {/* Logo */}
       <Image
         source={require('../assets/logo.svg')}
-        className="absolute top-20 left-6 w-[111px] h-[33px]"
+        style={{
+          width: 111,
+          height: 33,
+        }}
       />
-      <Button
-        className="absolute bottom-6 left-6 right-6"
-        onPress={() => navigation.navigate('PhoneInput' as never)}>
-        <Text className="text-white text-base font-medium font-poppins">Get Started</Text>
-      </Button>
+
+      {/* Main Content */}
+      <View className="flex-1 px-6 pt-32">
+        <View className="relative">
+          <Text
+            className="text-5xl leading-[56px] font-semibold font-poppins text-black"
+            style={{
+              fontSize: 42,
+              lineHeight: 56,
+              fontFamily: 'Poppins-Bold',
+            }}>
+            A New Era of{'\n'}Saving Money!
+          </Text>
+          <Image
+            source={require('../assets/dribble-line-green.svg')}
+            style={{
+              width: 180,
+              height: 8,
+            }}
+          />
+        </View>
+
+        <View className="flex-1"></View>
+
+        {/* Bottom Image */}
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+          }}>
+          <Image
+            source={require('../assets/women-phone.png')}
+            style={{
+              width: 320,
+              height: 500,
+            }}
+          />
+          <Image
+            source={require('../assets/new-dribble.png')}
+            style={{
+              width: 60,
+              height: 60,
+              position: 'absolute',
+              top: 16,
+              right: 30,
+            }}
+          />
+        </View>
+
+        {/* Bottom Button */}
+        <View className="mb-8">
+          <Button
+            onPress={() => navigation.navigate('PhoneInput' as never)}
+            className="w-full bg-black rounded-full py-4">
+            <Text className="text-white text-base font-medium font-poppins">Get Started</Text>
+          </Button>
+        </View>
+      </View>
     </View>
   );
 };
