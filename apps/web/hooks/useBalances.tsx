@@ -15,9 +15,7 @@ export function useBalances(): UseQueryResult<Balance> {
   return useQuery({
     queryKey: ['balances', account?.address, currency],
     queryFn: async () => {
-      const response = await query(
-        `${process.env.NEXT_PUBLIC_API_URL}/balance/${account?.address}?currency=${currency}`
-      );
+      const response = await query(`/balance/${account?.address}?currency=${currency}`);
       return response.balance || {};
     },
     throwOnError: false,

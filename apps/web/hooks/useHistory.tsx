@@ -43,7 +43,7 @@ async function fetchHistory(
     currency: options.currency || 'USD',
   });
 
-  const response = await query(`${process.env.NEXT_PUBLIC_API_URL}/history/${address}?${params}`);
+  const response = await query(`/history/${address}?${params}`);
   return response;
 }
 

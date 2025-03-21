@@ -35,6 +35,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const getAccount = async () => {
       try {
         const result = await storage.getItem<Account>('account');
+        console.log('result', result);
         if (result) {
           setAccount(result);
         }
@@ -83,9 +84,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
     const getDepositAddress = async () => {
       try {
-        const response = await query(
-          `${process.env.NEXT_PUBLIC_API_URL}/deposit/address/${account.address}`
-        );
+        const response = await query(`/deposit/address/${account.address}`);
         setDepositAddress(response.depositAddress);
       } catch (error) {
         console.error('Error fetching deposit address', error);

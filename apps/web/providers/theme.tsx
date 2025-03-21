@@ -41,12 +41,14 @@ export function ThemeProviderWrapper({ children }: { children: React.ReactNode }
   }
 
   return (
-    <View className="flex-1" style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
-      <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+      {/* <View className="h-100 w-full absolute top-0 left-0 bg-red-500" />
+      <View className="h-100 w-full absolute bottom-0 left-0 bg-blue-500" /> */}
+      <View className="flex-1" style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
         <StatusBar style={isDarkColorScheme ? 'light' : 'dark'} />
         {children}
-      </ThemeProvider>
-    </View>
+      </View>
+    </ThemeProvider>
   );
 }
 

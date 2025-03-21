@@ -1,6 +1,7 @@
 import { Text, View } from 'react-native';
 import { Card, CardContent, CardHeader } from '../ui/card';
 import { ChevronRight } from 'lucide-react-native';
+import { useCurrency } from '../../hooks/useCurrency';
 
 type StatCardProps = {
   title: string;
@@ -26,22 +27,33 @@ const StatCard = ({ title, amount, apy, onPress }: StatCardProps) => (
 
 type WalletAndEarnProps = {
   wallet: {
-    amount: string;
+    amount: number;
     apy: string;
     onPress?: () => void;
   };
   earn: {
-    amount: string;
+    amount: number;
     apy: string;
     onPress?: () => void;
   };
 };
 
 export const WalletAndEarn = ({ wallet, earn }: WalletAndEarnProps) => {
+  const { formatCurrency } = useCurrency();
   return (
     <View className="flex-row px-4 gap-4 mt-4">
-      <StatCard title="Wallet" amount={wallet.amount} apy={wallet.apy} onPress={wallet.onPress} />
-      <StatCard title="Earn" amount={earn.amount} apy={earn.apy} onPress={earn.onPress} />
+      <StatCard
+        title="Wallet"
+        amount={formatCurrency(wallet?.amount || 0)}
+        apy={wallet?.apy || '0%'}
+        onPress={wallet?.onPress}
+      />
+      <StatCard
+        title="Earn"
+        amount={earn?.amount || '0'}
+        apy={earn?.apy || '0%'}
+        onPress={earn?.onPress}
+      />
     </View>
   );
 };

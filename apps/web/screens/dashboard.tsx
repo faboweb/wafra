@@ -15,84 +15,50 @@ import { Footer } from '@/components/dashboard/Footer';
 import { CrossPlatformGradient } from 'components/ui/CrossPlatformGradient';
 
 const Dashboard = () => {
-  const { account } = useAccount();
-  const { data: balances } = useBalances();
-  const { data: transactions, isLoading: isHistoryLoading } = useHistory();
-  const { formatCurrency } = useCurrency();
   const navigation = useNavigation();
+  const { account } = useAccount();
+  const { data: balances, refetch: refetchBalances } = useBalances();
+  const { data: transactions, isLoading } = useHistory();
+  const { formatCurrency } = useCurrency();
 
   React.useEffect(() => {
     if (!account) {
       navigation.navigate('Login');
     }
-  }, [account, navigation]);
+  }, [account]);
 
-  const handleDeposit = () => {
-    navigation.navigate('Deposit');
-  };
+  const formattedTransactions = transactions?.map((tx) => ({
+    ...tx,
+    icon: tx.type === 'deposit' ? 'arrow-down-circle' : 'arrow-up-circle',
+    title: tx.type === 'deposit' ? 'Deposit' : 'Transfer',
+  }));
 
-  const handleSend = () => {
-    navigation.navigate('Send');
-  };
-
-  const handleWithdraw = () => {
-    navigation.navigate('Withdraw');
-  };
-
-  const handleViewAllHistory = () => {
-    navigation.navigate('History');
-  };
-
-  const handleWalletPress = () => {
-    navigation.navigate('Wallet');
-  };
-
-  const handleEarnPress = () => {
-    navigation.navigate('Earn');
-  };
-
-  const formattedTransactions: Transaction[] =
-    transactions?.map((tx) => ({
-      icon: tx.type === 'deposit' ? ArrowDownToLine : Send,
-      title: tx.type === 'deposit' ? 'Deposit' : 'Transfer',
-      amount: formatCurrency(Number(tx.value)),
-      isPositive: tx.type === 'deposit',
-    })) || [];
+  if (!account) {
+    return null;
+  }
 
   return (
-    <View className="flex-1 bg-white">
-      <CrossPlatformGradient
-        colors={['#d5efd5', '#ffffff']}
-        end={{ x: 0.5, y: 0.38 }}
-        style={{ height: '100%', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
-      />
-      <Header />
+    <View className="flex-1 bg-gradient-to-b from-wafra-green-lightest to-white">
       <ScrollView className="flex-1 px-4">
+        <Header />
         <Balance
-          totalBalance={formatCurrency(balances?.balance || 0)}
-          profit={formatCurrency(balances?.effectiveYield || 0)}
+          balance={balances?.total || 0}
+          effectiveYield={balances?.effectiveYield || 0}
+          onRefresh={refetchBalances}
         />
-        <QuickActions onDeposit={handleDeposit} onSend={handleSend} onWithdraw={handleWithdraw} />
+        <QuickActions
+          onDeposit={() => navigation.navigate('Deposit')}
+          onSend={() => {}}
+          onWithdraw={() => {}}
+        />
         <WalletAndEarn
-          wallet={{
-            amount: formatCurrency(balances?.availableBalance || 0),
-            apy: 0.44,
-            onPress: handleWalletPress,
-          }}
-          earn={{
-            amount: formatCurrency(0),
-            apy: 0.44,
-            onPress: handleEarnPress,
-          }}
+          availableBalance={balances?.available || 0}
+          earnedBalance={balances?.earned || 0}
+          yield={balances?.yield || 0}
+          effectiveYield={balances?.effectiveYield || 0}
         />
-        <History
-          transactions={formattedTransactions}
-          onViewAll={handleViewAllHistory}
-          onDeposit={handleDeposit}
-          isLoading={isHistoryLoading}
-        />
+        <History transactions={formattedTransactions || []} isLoading={isLoading} />
       </ScrollView>
-      <Footer />
     </View>
   );
 };
