@@ -3,17 +3,9 @@ import { View, Image } from 'react-native';
 import { Text } from '../components/ui/text';
 import { useNavigation } from '@react-navigation/native';
 import { Button } from '../components/ui/button';
-import { useAccount } from '../hooks/useAccount';
 
 const OnboardingScreen = () => {
   const navigation = useNavigation();
-  const { account } = useAccount();
-
-  // React.useEffect(() => {
-  //   if (account) {
-  //     navigation.navigate('Dashboard' as never);
-  //   }
-  // }, [account]);
 
   return (
     <View className="flex-1 bg-wafra-yellow">

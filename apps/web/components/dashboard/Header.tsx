@@ -22,7 +22,13 @@ const Header = () => {
 
   return (
     <View className="flex-row items-center justify-between px-4 py-3">
-      <Image source={require('@/assets/logo.svg')} className="w-[80px] h-6" />
+      <Image
+        source={require('@/assets/logo.svg')}
+        style={{
+          width: 80,
+          height: 24,
+        }}
+      />
       <View className="flex-row items-center gap-2">
         <Button variant="ghost" className="rounded-full bg-wafra-green-lighter p-2">
           <Search size={20} className="text-wafra-black" />

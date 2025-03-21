@@ -3,7 +3,7 @@ import { View, Pressable } from 'react-native';
 import { Text } from '../components/ui/text';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Button } from '../components/ui/button';
-import NumberKeyboard from '../components/ui/number-keyboard';
+import { NumberKeyboard } from '../components/ui/number-keyboard';
 import OTPInput, { OTPInputRef } from '../components/ui/otp-input';
 import { useAccount } from '../hooks/useAccount';
 import { connectWallet, requestVerificationCode } from '../lib/thirdweb';

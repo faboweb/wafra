@@ -8,7 +8,7 @@ export type NumberKeyboardType = {
   onDelete?: () => void;
 };
 
-const NumberKeyboard = ({ showDribble, onPress, onDelete }: NumberKeyboardType) => {
+export const NumberKeyboard = ({ showDribble, onPress, onDelete }: NumberKeyboardType) => {
   return (
     <View className="w-full flex-row flex-wrap">
       {showDribble && <View className="absolute top-16 left-0 w-[633px] h-[291px]" />}
@@ -73,5 +73,3 @@ const NumberKeyboard = ({ showDribble, onPress, onDelete }: NumberKeyboardType) 
     </View>
   );
 };
-
-export default NumberKeyboard;

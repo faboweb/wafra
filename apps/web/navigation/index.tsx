@@ -4,17 +4,21 @@ import { Providers } from 'providers';
 
 import DashboardPage from 'screens/dashboard';
 import DepositPage from 'screens/deposit';
-import CheckoutPage from 'screens/checkout';
+import CheckoutPageWeb from 'screens/checkout.web';
+import CheckoutPageMobile from 'screens/checkout.mobile';
 import DepositingPage from 'screens/depositing';
 import OnboardingScreen from '../screens/onboarding';
 import PhoneInputScreen from '../screens/phone-input';
 import PhoneVerificationScreen from '../screens/phone-verification';
+import { Platform } from 'react-native';
+import SplashScreen from '../screens/splash';
 
 export type RootStackParamList = {
+  Splash: undefined;
   Onboarding: undefined;
   PhoneInput: undefined;
   PhoneVerification: {
-    phone: string;
+    phoneNumber: string;
     country: string;
   };
   Dashboard: undefined;
@@ -36,10 +40,12 @@ export default function RootStack() {
     <NavigationContainer>
       <Providers>
         <Stack.Navigator
-          initialRouteName="Onboarding"
+          initialRouteName="Splash"
           screenOptions={{
             headerShown: false,
+            animation: 'fade',
           }}>
+          <Stack.Screen name="Splash" component={SplashScreen} />
           <Stack.Screen name="Onboarding" component={OnboardingScreen} />
           <Stack.Screen name="PhoneInput" component={PhoneInputScreen} />
           <Stack.Screen name="PhoneVerification" component={PhoneVerificationScreen} />
@@ -53,7 +59,7 @@ export default function RootStack() {
           />
           <Stack.Screen
             name="Checkout"
-            component={CheckoutPage}
+            component={Platform.OS === 'web' ? CheckoutPageWeb : CheckoutPageMobile}
             options={{
               headerShown: false,
             }}

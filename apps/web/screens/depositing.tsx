@@ -35,6 +35,21 @@ export default function DepositingScreen() {
     }
   }, [depositStatus?.status]);
 
+  useEffect(() => {
+    if (
+      process.env.EXPO_PUBLIC_ENVIRONMENT === 'development' ||
+      process.env.EXPO_PUBLIC_ENVIRONMENT === 'staging'
+    ) {
+      fetch(`/api/deposits/${orderId}/complete`).then((res) => {
+        if (res.ok) {
+          console.log('Deposit completed');
+        } else {
+          console.log('Deposit failed');
+        }
+      });
+    }
+  }, []);
+
   if (error) {
     return (
       <View className="flex-1 items-center justify-center p-4">
