@@ -1,18 +1,13 @@
 import * as React from 'react';
 import { View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import {
-  TransakWebView,
-  Environments,
-  Events,
-  TransakConfig,
-  EventTypes,
-} from '@transak/react-native-sdk';
+import { TransakWebView, Transak, Events } from '@transak/react-native-sdk';
 import { useAccount } from '@/hooks/useAccount';
 import { useState } from 'react';
-import { query } from '@/lib/query';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
+import { createTransakConfig } from '@/lib/transak';
+import { storeOrderId } from 'lib/transak';
 
 export default function CheckoutScreen() {
   const navigation = useNavigation();
@@ -25,63 +20,50 @@ export default function CheckoutScreen() {
   };
   const [orderProcessing, setOrderProcessing] = useState(false);
 
-  const transakConfig: TransakConfig = {
-    apiKey: process.env.EXPO_PUBLIC_TRANSAK_API_KEY!,
-    environment: Environments.STAGING,
-    partnerOrderId: orderId,
-    fiatAmount: Number(amount),
-    fiatCurrency: currency,
-    network: 'base',
-    cryptoCurrencyCode: 'USDC',
-    walletAddress: depositAddress!,
-    disableWalletAddressForm: true,
-    productsAvailed: 'BUY',
-  };
+  const transakConfig = createTransakConfig({
+    orderId,
+    amount,
+    currency,
+    depositAddress: depositAddress!,
+  });
 
-  const storeOrderId = async () => {
-    try {
-      await query(`/orders/${orderId}`, {
-        method: 'POST',
-      });
-    } catch (err: any) {
-      throw new Error("Order wasn't tracked: ", err.message);
-    }
-  };
+  const handleTransakEvent = (event: Transak.EVENTS) => {
+    console.log('event', event);
 
-  const handleTransakEvent = async (event: EventTypes) => {
-    if (event === Events.ORDER_COMPLETED) {
-      console.log('Order successful');
-      setOrderProcessing(false);
-      navigation.navigate('Dashboard' as never);
-    }
     if (event === Events.ORDER_FAILED) {
-      console.log('Order failed');
-      setOrderProcessing(false);
-      navigation.navigate('Deposit' as never, { error: true } as never);
+      navigation.navigate('Deposit', { error: true });
     }
+
     if (event === Events.ORDER_CREATED) {
-      await storeOrderId();
     }
+
     if (event === Events.ORDER_PROCESSING) {
-      setOrderProcessing(true);
+      setOrderProcessing?.(true);
     }
 
-    console.log('Transak event: ', event);
-  };
+    if (event === Events.ORDER_COMPLETED) {
+      navigation.navigate('Depositing', { orderId } as never);
+    }
 
-  const abortOrder = async () => {
-    setOrderProcessing(false);
-    navigation.navigate('Deposit' as never);
-  };
+    if (event === Events.ORDER_CANCELLED) {
+      navigation.navigate('Deposit');
+    }
 
-  console.log('Order processing: ', orderProcessing);
+    if (event === Events.ORDER_SUCCESSFUL) {
+      navigation.navigate('Depositing', { orderId } as never);
+    }
+
+    if (event === Events.WIDGET_CLOSE) {
+      navigation.navigate('Deposit');
+    }
+  };
 
   return (
     <View className="flex-1">
       <View className={`h-${orderProcessing ? '0' : 'full'}`}>
         <TransakWebView transakConfig={transakConfig} onTransakEvent={handleTransakEvent} />
         <View className="p-4">
-          <Button variant="destructive" onPress={abortOrder}>
+          <Button variant="destructive" onPress={() => navigation.navigate('Deposit')}>
             <Text>Abort</Text>
           </Button>
         </View>

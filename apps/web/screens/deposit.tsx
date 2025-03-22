@@ -8,6 +8,17 @@ import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { NumberKeyboard } from '../components/ui/number-keyboard';
+import { query } from 'lib/query';
+
+async function createOrder(orderId: string) {
+  try {
+    await query(`/orders/${orderId}`, {
+      method: 'POST',
+    });
+  } catch (err: any) {
+    throw new Error("Order wasn't tracked: ", err.message);
+  }
+}
 
 export default function DepositScreen() {
   const [amount, setAmount] = React.useState(100);
@@ -15,16 +26,13 @@ export default function DepositScreen() {
   const { account } = useAccount();
   const { currency } = useCurrency();
 
-  // React.useEffect(() => {
-  //   if (!account) {
-  //     navigation.navigate('Login' as never);
-  //   }
-  // }, [account]);
-
-  const deposit = () => {
+  const deposit = async () => {
     if (!account) return;
 
     const orderId = Math.random().toString(36).substring(2, 15);
+
+    await createOrder(orderId);
+
     navigation.navigate(
       'Checkout' as never,
       {

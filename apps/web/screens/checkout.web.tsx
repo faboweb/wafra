@@ -1,61 +1,58 @@
 import React, { useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { TransakConfig, Transak } from '@transak/transak-sdk';
+import { Transak } from '@transak/transak-sdk';
 import { useAccount } from '@/hooks/useAccount';
-import { query } from '@/lib/query';
+import { Text } from '@/components/ui/text';
+import { createTransakConfig } from '@/lib/transak';
 
 export default function CheckoutScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { depositAddress } = useAccount();
+
   const { orderId, amount, currency } = route.params as {
     orderId: string;
     amount: number;
     currency: string;
   };
 
-  const transakConfig: TransakConfig = {
-    apiKey: process.env.EXPO_PUBLIC_TRANSAK_API_KEY!,
-    environment: Transak.ENVIRONMENTS.STAGING,
-    partnerOrderId: orderId,
-    fiatAmount: amount,
-    fiatCurrency: currency,
-    network: 'base',
-    cryptoCurrencyCode: 'USDC',
-    walletAddress: depositAddress!,
-    disableWalletAddressForm: true,
-    productsAvailed: 'BUY',
-  };
-
-  const storeOrderId = async () => {
-    try {
-      await query(`/orders/${orderId}`, {
-        method: 'POST',
-      });
-    } catch (err: any) {
-      throw new Error("Order wasn't tracked: ", err.message);
-    }
-  };
+  const transakConfig = createTransakConfig({
+    orderId,
+    amount,
+    currency,
+    depositAddress: depositAddress!,
+  });
 
   useEffect(() => {
+    if (!depositAddress) {
+      alert('No deposit address found');
+      navigation.navigate('Dashboard' as never);
+      return;
+    }
+
     const transak = new Transak(transakConfig);
     transak.init();
 
     Transak.on(Transak.EVENTS.TRANSAK_WIDGET_CLOSE, () => {
+      console.log(Transak.EVENTS.TRANSAK_WIDGET_CLOSE);
       transak.close();
       navigation.navigate('Deposit' as never);
     });
 
     Transak.on(Transak.EVENTS.TRANSAK_ORDER_CREATED, async (orderData) => {
-      await storeOrderId();
+      console.log(Transak.EVENTS.TRANSAK_ORDER_CREATED);
     });
 
     Transak.on(Transak.EVENTS.TRANSAK_ORDER_SUCCESSFUL, async (orderData) => {
-      navigation.navigate('Dashboard' as never);
+      console.log(Transak.EVENTS.TRANSAK_ORDER_SUCCESSFUL);
+      transak.close();
+      navigation.navigate('Depositing' as never, { orderId } as never);
     });
 
     Transak.on(Transak.EVENTS.TRANSAK_ORDER_FAILED, async (orderData) => {
+      console.log(Transak.EVENTS.TRANSAK_ORDER_FAILED);
+      transak.close();
       navigation.navigate('Deposit' as never, { error: true } as never);
     });
 
@@ -66,7 +63,7 @@ export default function CheckoutScreen() {
 
   return (
     <View className="flex-1 items-center justify-center">
-      <Text>Processing...</Text>
+      <Text className="text-lg font-medium">Processing...</Text>
     </View>
   );
 }

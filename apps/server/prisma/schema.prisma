@@ -104,7 +104,7 @@ model Order {
   usdcAmount BigInt
   currency String
   depositAddress String
-  status String @default("pending") // pending, payed, deposited
+  status String @default("created") // created, processing, payed, completed, failed
 }
 
 model AccessKey {

@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import dotenv from "dotenv";
-import { TopicHandler, topicHandlers } from "./handlers";
+import { TopicHandler, topicHandlers } from "./handlers.js";
 import prisma from "@/db";
 
 dotenv.config();

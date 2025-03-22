@@ -1,24 +1,12 @@
 import { Request, Response } from "express";
-import prisma from "@/db";
-import { getOrderById } from "@/services/transak.js";
-import { getFormattedOrders } from "@/services/order.js";
+import { getFormattedOrders, listenToOrderFlow } from "@/services/order.js";
 
+// we are not creating the order here, we are just listening to the order creation flow from Transak
 export async function createOrder(req: Request, res: Response) {
   try {
     const { id: orderId } = req.params;
 
-    const order = await getOrderById(orderId);
-
-    await prisma.order.create({
-      data: {
-        orderId,
-        foreignOrderId: order.id,
-        currency: order.fiatCurrency,
-        amount: order.fiatAmount,
-        usdcAmount: BigInt(order.cryptoAmount * 10 ** 6),
-        depositAddress: order.walletAddress,
-      },
-    });
+    listenToOrderFlow(orderId);
 
     res.json({ orderId });
   } catch (err) {

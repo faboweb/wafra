@@ -3,12 +3,10 @@ import { View, Text, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
+import { query } from 'lib/query';
 
 interface DepositStatus {
-  status: 'pending' | 'processing' | 'completed' | 'failed';
-  value: string;
-  transferTxHash?: string;
-  depositTxHash?: string;
+  status: 'created' | 'processing' | 'payed' | 'completed' | 'failed';
   error?: string;
 }
 
@@ -20,35 +18,17 @@ export default function DepositingScreen() {
 
   const { data: depositStatus, error } = useQuery<DepositStatus>({
     queryKey: ['deposit-status', orderId],
-    queryFn: async () => {
-      const response = await fetch(`/api/deposits/${orderId}/status`);
-      if (!response.ok) throw new Error('Failed to fetch deposit status');
-      return response.json();
-    },
-    refetchInterval: shouldPoll ? 3000 : false,
+    queryFn: async () => await query(`/deposits/${orderId}/status`),
+    refetchInterval: shouldPoll ? 10000 : false,
     enabled: !!orderId,
   });
 
   useEffect(() => {
+    console.log('depositStatus', depositStatus);
     if (depositStatus?.status === 'completed' || depositStatus?.status === 'failed') {
       setShouldPoll(false);
     }
-  }, [depositStatus?.status]);
-
-  useEffect(() => {
-    if (
-      process.env.EXPO_PUBLIC_ENVIRONMENT === 'development' ||
-      process.env.EXPO_PUBLIC_ENVIRONMENT === 'staging'
-    ) {
-      fetch(`/api/deposits/${orderId}/complete`).then((res) => {
-        if (res.ok) {
-          console.log('Deposit completed');
-        } else {
-          console.log('Deposit failed');
-        }
-      });
-    }
-  }, []);
+  }, [depositStatus]);
 
   if (error) {
     return (

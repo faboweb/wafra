@@ -85,7 +85,7 @@ export const usdcTransferHandler: TopicHandler = {
             usdcAmount: decoded.amount,
           },
           data: {
-            status: "deposited",
+            status: "completed",
           },
         }),
       ]);
